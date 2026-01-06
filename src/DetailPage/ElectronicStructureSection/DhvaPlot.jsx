@@ -45,7 +45,7 @@ function buildBandTraces(wc, bandColorMap) {
       name: `Band ${b.band_number}`,
       hoverinfo: "skip",
       marker: {
-        color: bandColorMap[b.band_number],
+        color: bandColorMap?.[b.band_number] ?? "#000",
         size: 4,
       },
     }));
@@ -104,9 +104,9 @@ const COMMON_LAYOUT_CONFIG = {
 };
 
 /* ---------------- component ---------------- */
-
 export default function DhvaPlot({ datasets, bandColorMap }) {
   const containerRef = useRef(null);
+  const plotInitializedRef = useRef(false);
 
   const [selectedFermiShift, setSelectedFermiShift] = useState(null);
   const [selectedMfPath, setSelectedMfPath] = useState(null);
@@ -126,14 +126,20 @@ export default function DhvaPlot({ datasets, bandColorMap }) {
     ? selectedMfPath
     : mfPaths[0];
 
-  // Update plot
+  // Cleanup on unmount
   useEffect(() => {
-    if (!containerRef.current) return;
-    return () => Plotly.purge(containerRef.current);
+    return () => {
+      if (plotInitializedRef.current && containerRef.current) {
+        Plotly.purge(containerRef.current);
+      }
+      plotInitializedRef.current = false;
+    };
   }, []);
 
+  // Update plot
   useEffect(() => {
-    if (!currentData || !effectiveMfPath || !containerRef.current) return;
+    const container = containerRef.current;
+    if (!container || !currentData || !effectiveMfPath) return;
 
     const wc = currentData.skeaf_workchains.find(
       (w) => w.mf_path === effectiveMfPath,
@@ -143,12 +149,14 @@ export default function DhvaPlot({ datasets, bandColorMap }) {
     const traces = buildBandTraces(wc, bandColorMap);
     if (!traces.length) return;
 
+    plotInitializedRef.current = true;
+
     const maxY = getMaxY(currentData);
     const [firstLabel, lastLabel] = getMfPathEdgeLabels(effectiveMfPath);
     const lastIndex = Math.max(...traces.map((t) => t.x.at(-1)));
 
     Plotly.react(
-      containerRef.current,
+      container,
       traces,
       {
         ...COMMON_LAYOUT_CONFIG,

@@ -13,6 +13,9 @@ import { loadXY } from "../../common/aiidaRestApiUtils";
 import { loadDhva } from "../../common/MCrestApiUtils";
 
 // we do some hardcoding here while its a demo; TODO - cleanup
+// TODO - this fully rerenders when switching methodology (this is a free place for performance gains)
+// Perhaps switching page structure is a nice way to avoid this.
+
 const fermiMethod = "pbesol-v1";
 
 const S3_ROOT_URL =
