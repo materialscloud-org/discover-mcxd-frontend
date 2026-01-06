@@ -1,32 +1,20 @@
-import { useEffect, useRef, useState, useMemo } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FermiVisualiser } from "fermisurface-visualiser";
-import { McloudSpinner } from "mc-react-library";
-
 import { Form, Button } from "react-bootstrap";
 
-export default function FermiVisualiserReact({
-  data,
-  loading = false,
-  spinnerScale = 15,
-  bandColorMap,
-}) {
+export default function FermiVisualiserReact({ data, bandColorMap }) {
   const containerRef = useRef(null);
   const visRef = useRef(null);
 
   const baseEf = data?.fermiEnergy ?? 0;
   const [fermiLevel, setFermiLevel] = useState(baseEf);
 
-  const sliderConfig = useMemo(
-    () => ({
-      min: baseEf - 2,
-      max: baseEf + 2,
-      step: 0.05,
-    }),
-    [baseEf],
-  );
+  useEffect(() => {
+    setFermiLevel(baseEf);
+  }, [baseEf]);
 
   useEffect(() => {
-    if (loading || !containerRef.current || !data) return;
+    if (!containerRef.current || !data) return;
 
     visRef.current = new FermiVisualiser(containerRef.current, data, {
       colorPalette: Object.values(bandColorMap),
@@ -34,11 +22,13 @@ export default function FermiVisualiserReact({
     visRef.current.update(baseEf);
 
     return () => {
-      if (visRef.current?.dispose) visRef.current.dispose();
-      if (containerRef.current) containerRef.current.innerHTML = "";
+      visRef.current?.dispose?.();
+      if (containerRef.current) {
+        containerRef.current.innerHTML = "";
+      }
       visRef.current = null;
     };
-  }, [data, loading, baseEf]);
+  }, [data, baseEf, bandColorMap]);
 
   useEffect(() => {
     if (!visRef.current) return;
@@ -58,10 +48,8 @@ export default function FermiVisualiserReact({
           borderRadius: "4px",
         }}
       >
-        {/* Plot */}
         <div ref={containerRef} style={{ width: "100%", height: "100%" }} />
 
-        {/* Slider overlay */}
         <div
           style={{
             position: "absolute",
@@ -90,11 +78,11 @@ export default function FermiVisualiserReact({
           </div>
 
           <Form.Range
-            min={sliderConfig.min}
-            max={sliderConfig.max}
-            step={sliderConfig.step}
+            min={baseEf - 2}
+            max={baseEf + 2}
+            step={0.05}
             value={fermiLevel}
-            onChange={(e) => setFermiLevel(parseFloat(e.target.value))}
+            onChange={(e) => setFermiLevel(+e.target.value)}
           />
         </div>
       </div>

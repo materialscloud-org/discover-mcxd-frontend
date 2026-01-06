@@ -12,6 +12,7 @@ import { WarningBoxOtherMethod } from "../../common/WarningBox";
 import { loadXY } from "../../common/aiidaRestApiUtils";
 import { loadDhva } from "../../common/MCrestApiUtils";
 
+// we do some hardcoding here while its a demo; TODO - cleanup
 const fermiMethod = "pbesol-v1";
 
 const S3_ROOT_URL =
@@ -106,13 +107,17 @@ export default function ElectronicStructureSection({ params }) {
 
   if (loading)
     return (
-      <Row>
-        <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
-          <McloudSpinner />
-        </div>
-      </Row>
+      <>
+        <div className="section-heading">Electronic structure</div>
+
+        <Row>
+          <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
+            <McloudSpinner />
+          </div>
+        </Row>
+      </>
     );
-  if (error) return <Row></Row>;
+  if (error) return <></>;
 
   return (
     <div>
