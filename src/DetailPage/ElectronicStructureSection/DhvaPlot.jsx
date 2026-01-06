@@ -1,52 +1,59 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Plotly from "plotly.js-basic-dist-min";
+
+/* ---------------- utils ---------------- */
 
 function getMfPathEdgeLabels(path) {
   const parts = path.split("_");
-  if (parts.length === 2) return parts;
-  return [path, path]; // fallback if format unexpected
+  return parts.length === 2 ? parts : [path, path];
 }
 
+// builds unique X from the many-to-one array
 function buildDiscreteX(phi = [], theta = []) {
   let step = -1;
   let lastKey = null;
 
   return phi.map((p, i) => {
-    const t = theta?.[i] ?? null;
-    const key = `${p}|${t}`;
-
+    const key = `${p}|${theta?.[i] ?? ""}`;
     if (key !== lastKey) {
       step += 1;
       lastKey = key;
     }
-
     return step;
   });
 }
 
 function getMaxY(data) {
-  if (!data?.skeaf_workchains) return 0;
-
-  let maxY = -Infinity;
-
-  for (const wc of data.skeaf_workchains) {
+  let max = 0;
+  for (const wc of data?.skeaf_workchains ?? []) {
     for (const band of wc.bands ?? []) {
-      const freq = band.xyData?.freq;
-      if (!Array.isArray(freq)) continue;
-
-      for (const v of freq) {
-        if (typeof v === "number" && v > maxY) {
-          maxY = v;
-        }
+      for (const v of band.xyData?.freq ?? []) {
+        if (typeof v === "number" && v > max) max = v;
       }
     }
   }
-
-  return maxY === -Infinity ? 0 : maxY;
+  return max;
 }
 
+function buildBandTraces(wc, bandColorMap) {
+  return wc.bands
+    .filter((b) => b.xyData?.freq && (b.xyData?.phi || b.xyData?.theta))
+    .map((b) => ({
+      x: buildDiscreteX(b.xyData.phi, b.xyData.theta),
+      y: b.xyData.freq,
+      mode: "markers",
+      name: `Band ${b.band_number}`,
+      hoverinfo: "skip",
+      marker: {
+        color: bandColorMap[b.band_number],
+        size: 4,
+      },
+    }));
+}
+
+/* ---------------- layout ---------------- */
+
 const COMMON_LAYOUT_CONFIG = {
-  // Common Y-axis settings
   yaxis: {
     zeroline: false,
     showgrid: false,
@@ -54,41 +61,33 @@ const COMMON_LAYOUT_CONFIG = {
     ticks: "inside",
     tickfont: { size: 14, color: "#333" },
     title: {
+      text: "frequency [kT]",
       font: { size: 16, color: "#333" },
       standoff: 10,
-      text: "frequency kT",
     },
-    // Do NOT set 'tickvals' or 'ticktext' here
   },
-
-  // Common X-axis settings
   xaxis: {
     zeroline: false,
     showgrid: true,
     ticks: "inside",
     tickfont: { size: 14, color: "#333" },
     title: {
+      text: "Rotation",
       font: { size: 16, color: "#333" },
       standoff: 10,
-      text: "Rotation",
     },
-    // No tickvals/ticktext
   },
-
-  // Legend defaults
   legend: {
     orientation: "v",
-    y: 0.985,
     x: 0.985,
+    y: 0.985,
     xanchor: "right",
     font: { size: 14, color: "#333" },
-    bgcolor: "rgba(250, 250, 250, 1.0)",
+    bgcolor: "rgba(250,250,250,1)",
     bordercolor: "#ccc",
     borderwidth: 1,
   },
-
   margin: { l: 65, r: 10, t: 10, b: 50 },
-
   shapes: [
     {
       type: "rect",
@@ -104,98 +103,71 @@ const COMMON_LAYOUT_CONFIG = {
   ],
 };
 
+/* ---------------- component ---------------- */
+
 export default function DhvaPlot({ datasets, bandColorMap }) {
   const containerRef = useRef(null);
-  const mountedRef = useRef(false);
-  const [selectedMfPath, setSelectedMfPath] = useState(null);
+
   const [selectedFermiShift, setSelectedFermiShift] = useState(null);
+  const [selectedMfPath, setSelectedMfPath] = useState(null);
 
-  // Extract mfPaths from the currently selected dataset
-  const currentData =
-    datasets?.find((d) => d.fermiShift === selectedFermiShift)?.data ?? null;
-
-  const mfPaths = currentData?.skeaf_workchains?.map((wc) => wc.mf_path) ?? [];
-
-  // Guard against missing DOM
-  useEffect(() => {
-    mountedRef.current = true;
-
-    return () => {
-      mountedRef.current = false;
-      if (containerRef.current) {
-        Plotly.purge(containerRef.current);
-      }
-    };
-  }, []);
-
-  // Initialize selections
-  useEffect(() => {
-    if (!mountedRef.current) return;
-    if (!datasets || !datasets.length) return;
-    if (!selectedFermiShift) setSelectedFermiShift(datasets[0].fermiShift);
+  const currentData = useMemo(() => {
+    if (!datasets?.length) return null;
+    const match = datasets.find((d) => d.fermiShift === selectedFermiShift);
+    return (match ?? datasets[0]).data;
   }, [datasets, selectedFermiShift]);
 
-  useEffect(() => {
-    if (!mountedRef.current) return;
-    if (!currentData || !mfPaths.length) return;
-    if (!selectedMfPath) setSelectedMfPath(mfPaths[0]);
-  }, [currentData, mfPaths, selectedMfPath]);
+  const mfPaths = useMemo(
+    () => currentData?.skeaf_workchains?.map((wc) => wc.mf_path) ?? [],
+    [currentData],
+  );
+
+  const effectiveMfPath = mfPaths.includes(selectedMfPath)
+    ? selectedMfPath
+    : mfPaths[0];
 
   // Update plot
   useEffect(() => {
-    if (!mountedRef.current) return;
-    if (!selectedMfPath || !currentData) return;
     if (!containerRef.current) return;
+    return () => Plotly.purge(containerRef.current);
+  }, []);
+
+  useEffect(() => {
+    if (!currentData || !effectiveMfPath || !containerRef.current) return;
 
     const wc = currentData.skeaf_workchains.find(
-      (wc) => wc.mf_path === selectedMfPath,
+      (w) => w.mf_path === effectiveMfPath,
     );
     if (!wc) return;
 
-    const maxY = getMaxY(currentData);
-
-    const traces = wc.bands
-      .filter(
-        (band) => band.xyData?.freq && (band.xyData?.phi || band.xyData?.theta),
-      )
-      .map((band) => {
-        const x = buildDiscreteX(band.xyData.phi, band.xyData.theta);
-        const color = bandColorMap[band.band_number];
-        return {
-          x,
-          y: band.xyData.freq,
-          mode: "markers",
-          name: `Band ${band.band_number}`,
-          hoverinfo: "skip",
-          marker: { color, size: 4 },
-        };
-      });
-
+    const traces = buildBandTraces(wc, bandColorMap);
     if (!traces.length) return;
 
-    const [firstLabel, lastLabel] = getMfPathEdgeLabels(selectedMfPath);
-    const lastIndex = Math.max(...traces.map((t) => t.x[t.x.length - 1]));
+    const maxY = getMaxY(currentData);
+    const [firstLabel, lastLabel] = getMfPathEdgeLabels(effectiveMfPath);
+    const lastIndex = Math.max(...traces.map((t) => t.x.at(-1)));
 
-    const layout = {
-      ...COMMON_LAYOUT_CONFIG,
-      xaxis: {
-        ...COMMON_LAYOUT_CONFIG.xaxis,
-        tickvals: [0, lastIndex],
-        ticktext: [firstLabel, lastLabel],
-        range: [-2, lastIndex + 2],
+    Plotly.react(
+      containerRef.current,
+      traces,
+      {
+        ...COMMON_LAYOUT_CONFIG,
+        xaxis: {
+          ...COMMON_LAYOUT_CONFIG.xaxis,
+          tickvals: [0, lastIndex],
+          ticktext: [firstLabel, lastLabel],
+          range: [-2, lastIndex + 2],
+        },
+        yaxis: {
+          ...COMMON_LAYOUT_CONFIG.yaxis,
+          range: [-2, maxY * 1.25],
+        },
       },
-      yaxis: {
-        ...COMMON_LAYOUT_CONFIG.yaxis,
-        range: [-2, maxY * 1.25],
-      },
-    };
+      { responsive: true, displayModeBar: false },
+    );
+  }, [currentData, effectiveMfPath, bandColorMap]);
 
-    Plotly.react(containerRef.current, traces, layout, {
-      responsive: true,
-      displayModeBar: false,
-    });
-  }, [selectedMfPath, currentData]);
-
+  // return nothing if no datasets loaded.
   if (!datasets?.length) return null;
 
   return (
@@ -203,9 +175,7 @@ export default function DhvaPlot({ datasets, bandColorMap }) {
       <div
         style={{
           display: "flex",
-          alignItems: "center",
           justifyContent: "space-between",
-          marginBottom: "px",
         }}
       >
         {/* Chart title */}
@@ -215,12 +185,10 @@ export default function DhvaPlot({ datasets, bandColorMap }) {
         <div style={{ display: "flex", gap: "25px" }}>
           {/* Fermi shift dropdown */}
           <div>
-            <label htmlFor="fermiShiftSelect" style={{ marginRight: "6px" }}>
-              Fermi energy shift:
-            </label>
+            <label htmlFor="fermiShiftSelect">Fermi energy shift:</label>{" "}
             <select
               id="fermiShiftSelect"
-              value={selectedFermiShift}
+              value={selectedFermiShift ?? datasets[0].fermiShift}
               onChange={(e) => {
                 setSelectedFermiShift(Number(e.target.value));
                 setSelectedMfPath(null);
@@ -237,12 +205,10 @@ export default function DhvaPlot({ datasets, bandColorMap }) {
           {/* MF path dropdown */}
           {mfPaths.length > 0 && (
             <div>
-              <label htmlFor="mfPathSelect" style={{ marginRight: "6px" }}>
-                MF path:
-              </label>
+              <label htmlFor="mfPathSelect">MF path:</label>{" "}
               <select
                 id="mfPathSelect"
-                value={selectedMfPath}
+                value={effectiveMfPath}
                 onChange={(e) => setSelectedMfPath(e.target.value)}
               >
                 {mfPaths.map((path) => {
