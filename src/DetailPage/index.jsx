@@ -149,24 +149,28 @@ function DetailPage() {
   // While loading, show spinner
   if (coreData === null) {
     return (
-      <MaterialsCloudHeader
-        activeSection={"discover"}
-        breadcrumbsPath={[
-          { name: "Discover", link: "https://www.materialscloud.org/discover" },
-          {
-            name: "Materials Cloud Three-Dimensional Structure Database",
-            link: `${import.meta.env.BASE_URL}`,
-          },
-          { name: `${params.id}/${params.method}`, link: null },
-        ]}
-      >
+      <>
+        <MaterialsCloudHeader
+          activeSection={"discover"}
+          breadcrumbsPath={[
+            {
+              name: "Discover",
+              link: "https://www.materialscloud.org/discover",
+            },
+            {
+              name: "Materials Cloud Three-Dimensional Structure Database",
+              link: `${import.meta.env.BASE_URL}`,
+            },
+            { name: `${params.id}/${params.method}`, link: null },
+          ]}
+        />
         <Container fluid="xxl">
           <TitleAndLogo />
           <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
             <McloudSpinner />
           </div>
         </Container>
-      </MaterialsCloudHeader>
+      </>
     );
   }
 
