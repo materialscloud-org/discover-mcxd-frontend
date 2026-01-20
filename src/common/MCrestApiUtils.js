@@ -2,12 +2,12 @@
 // MC REST API UTILITIES
 
 // By default, use development API URLS
-let mcRestApiUrl = "https://api.dev.materialscloud.org/";
+let mcRestApiUrl = "https://mcxd-api.dev.materialscloud.org/";
 let exploreBaseUrl = "https://www.materialscloud.dev/explore/";
 
 // Use production backend if specified
 if (import.meta.env.VITE_PRODUCTION_BACKEND === "true") {
-  mcRestApiUrl = "https://api.materialscloud.org/";
+  mcRestApiUrl = "https://mcxd-api.materialscloud.org/";
   exploreBaseUrl = "https://www.materialscloud.org/explore/";
 }
 
@@ -16,7 +16,7 @@ export const MC_REST_API_URL = `${mcRestApiUrl}mc3d`;
 const EXPLORE_BASE_URL = exploreBaseUrl;
 
 // if fetching fails we use this as an emergency.
-const MC_REST_API_FALLBACK_URL = "https://api.dev.materialscloud.org/mc3d";
+const MC_REST_API_FALLBACK_URL = "https://mcxd-api.dev.materialscloud.org/mc3d";
 
 export const EXPLORE_URLS = {
   "pbe-v1": `${EXPLORE_BASE_URL}/mc3d-pbe-v1`,
