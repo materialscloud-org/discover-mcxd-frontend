@@ -19,7 +19,7 @@ import { loadDhva } from "../../common/MCrestApiUtils";
 const fermiMethod = "pbesol-v1";
 
 const S3_ROOT_URL =
-  "https://rgw.cscs.ch/matcloud:mc-discover-mcxd-public/mc3d/pbesol-v1_fermisurf";
+  "https://rgw.cscs.ch/matcloud:mc-discover-mcxd-public/mc3d/pbesol-v1_fermisurf/dev";
 
 export default function ElectronicStructureSection({ params }) {
   const { id, method } = params;
