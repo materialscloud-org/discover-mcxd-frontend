@@ -1,0 +1,23 @@
+.description {
+  padding: 20px 40px;
+}
+
+/* overload boostrap tab style */
+.nav-tabs .nav-link {
+  border-top: 1px solid #ddd !important;
+  border-left: 1px solid #ddd !important;
+  border-right: 1px solid #ddd !important;
+  /* color: #0000cd; */
+  color: #3366cc;
+}
+.nav-tabs .nav-link:hover {
+  background-color: rgb(245, 245, 245);
+  color: black;
+}
+
+.nav-tabs .nav-link.active {
+  border-top: 1px solid #999 !important;
+  border-left: 1px solid #999 !important;
+  border-right: 1px solid #999 !important;
+  /* border-bottom: 1px solid #999 !important; */
+}

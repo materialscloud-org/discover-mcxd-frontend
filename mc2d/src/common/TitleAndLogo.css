@@ -1,0 +1,31 @@
+.title-and-logo {
+  /* width: 950px; */
+  /* text-align: left; */
+  /* font-size: 24px; */
+  border-bottom: 1px solid grey;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.title-and-doi {
+  text-align: left;
+}
+
+.title-span {
+  font-size: 24px;
+}
+
+.mc2d-logo {
+  height: 70px;
+  float: right;
+  vertical-align: middle;
+  padding: 2px;
+}
+
+.doi-container {
+  margin-left: 4px;
+  display: flex;
+  gap: 8px;
+}

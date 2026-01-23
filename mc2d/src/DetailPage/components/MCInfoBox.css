@@ -1,0 +1,11 @@
+.mc-info-container {
+  overflow-y: scroll;
+  /* max-height: 450px; */
+  min-width: 200px;
+  background: #f8f8f8;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 100%;
+  padding: 10px 15px;
+}
