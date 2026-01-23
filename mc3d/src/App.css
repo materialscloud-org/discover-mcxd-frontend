@@ -1,0 +1,15 @@
+.App {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bs-overrides a {
+  color: #3366cc;
+  text-decoration: none;
+}
+
+.bs-overrides a:hover {
+  color: #1a0dab;
+  text-decoration: underline;
+}
