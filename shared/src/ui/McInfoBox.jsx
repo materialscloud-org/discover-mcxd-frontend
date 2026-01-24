@@ -1,6 +1,6 @@
-import "./MCInfoBox.css";
+import "./McInfoBox.css";
 
-export const MCInfoBox = ({ children, style = null }) => {
+export const McInfoBox = ({ children, style = null }) => {
   return (
     <div style={style}>
       <div className="mc-info-container subsection-shadow overflow-auto rounded">

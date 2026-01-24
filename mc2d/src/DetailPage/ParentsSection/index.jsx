@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import { McloudSpinner } from "mc-react-library";
 
-import { MCInfoBox } from "../components/MCInfoBox";
+import { McInfoBox } from "@mcxd/shared";
 
 import { Container, Row, Col } from "react-bootstrap";
 
@@ -30,7 +30,7 @@ import { formatAiidaProp, formatSourceLink } from "../utils";
 
 function ParentInfoBox({ parentInfo, symmetryInfo }) {
   return (
-    <MCInfoBox style={{ height: "450px" }}>
+    <McInfoBox style={{ height: "450px" }}>
       <div>
         <b>General info</b>
         <ul className="no-bullets">
@@ -76,7 +76,7 @@ function ParentInfoBox({ parentInfo, symmetryInfo }) {
           </li>
         </ul>
       </div>
-    </MCInfoBox>
+    </McInfoBox>
   );
 }
 

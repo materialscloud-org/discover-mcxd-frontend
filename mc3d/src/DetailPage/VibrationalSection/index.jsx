@@ -12,7 +12,7 @@ import { WarningBoxOtherMethod } from "../../common/WarningBox";
 import prettifyLabels from "./prettifyPVlabels";
 import { McloudSpinner } from "mc-react-library";
 
-import { MCInfoBox } from "../../common/MCInfoBox";
+import { McInfoBox } from "@mcxd/shared";
 import { TwoWideInfoBox } from "../../common/TwoWideInfoBox";
 
 import formatIfExists from "../../common/resultFormatter";

@@ -14,7 +14,7 @@ import {
   getSymmetryInfo,
 } from "mc-react-library";
 
-import { MCInfoBox } from "../components/MCInfoBox";
+import { McInfoBox } from "@mcxd/shared";
 
 import { AIIDA_REST_API_URL, EXPLORE_URL } from "../../common/restApiUtils";
 
@@ -89,7 +89,7 @@ function GeneralInfoBox({
   );
 
   return (
-    <MCInfoBox style={{ height: "460px" }}>
+    <McInfoBox style={{ height: "460px" }}>
       <div>
         <b>General info</b> ({anchorDefinitions})
         <ul className="no-bullets">
@@ -148,7 +148,7 @@ function GeneralInfoBox({
           </ul>
         </ul>
       </div>
-    </MCInfoBox>
+    </McInfoBox>
   );
 }
 

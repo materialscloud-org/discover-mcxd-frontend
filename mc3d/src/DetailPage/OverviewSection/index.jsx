@@ -14,7 +14,7 @@ import {
 } from "mc-react-library";
 
 import { format_aiida_prop } from "../../common/utils";
-import { MCInfoBox } from "../../common/MCInfoBox";
+import { McInfoBox } from "@mcxd/shared";
 
 import SourceInfo from "./SourceInfo";
 
@@ -22,7 +22,7 @@ import { AIIDA_API_URLS, EXPLORE_URLS } from "../../common/aiidaRestApiUtils";
 
 function GeneralInfoBox({ details, metadata, methodLabel }) {
   return (
-    <MCInfoBox style={{ height: "450px" }}>
+    <McInfoBox style={{ height: "450px" }}>
       <div>
         <b>Info</b>
         <ul className="no-bullets">
@@ -94,7 +94,7 @@ function GeneralInfoBox({ details, metadata, methodLabel }) {
           </li>
         </ul>
       </div>
-    </MCInfoBox>
+    </McInfoBox>
   );
 }
 

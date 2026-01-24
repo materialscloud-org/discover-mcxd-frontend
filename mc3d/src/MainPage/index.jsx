@@ -2,24 +2,17 @@ import { useEffect, useState, useRef } from "react";
 
 import "./index.css";
 
+import { Container, Tab, Tabs } from "react-bootstrap";
 import MaterialsCloudHeader from "mc-react-header";
-
 import MaterialSelector from "mc-react-ptable-materials-grid";
 
 import TitleAndLogo from "../common/TitleAndLogo";
-
-import { Container, Tab, Tabs } from "react-bootstrap";
-
 import { aboutText } from "./about";
 import { restapiText } from "./restapi";
-
 import { loadDataMc3d } from "./loadDataMc3d";
-
 import { DownloadButton } from "./DownloadButton";
-
 import { MethodSelectionBox } from "./MethodSelectionBox";
 import { loadGeneralInfo } from "../common/MCrestApiUtils";
-
 import { CitationsList } from "../common/CitationsList.jsx";
 
 import {

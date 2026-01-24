@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Container, Row } from "react-bootstrap";
-import { MCTable } from "../../common/MCTable";
+import { McTable } from "@mcxd/shared";
 
 const S3_ROOT_URL =
   "https://rgw.cscs.ch/matcloud:mc-public/mc3d_similarity_info";
@@ -72,7 +72,7 @@ export default function SimilaritySection({ params }) {
         </p>
 
         {sims.length > 0 ? (
-          <MCTable
+          <McTable
             headerRow={header}
             contents={contents}
             style={{ maxHeight: "332px" }}

@@ -1,0 +1,20 @@
+{
+  "name": "discover-mcxd",
+  "private": true,
+  "workspaces": [
+    "shared",
+    "mc2d",
+    "mc3d"
+  ],
+  "scripts": {
+    "dev:mc2d": "npm run dev --workspace=mc2d",
+    "dev:mc3d": "npm run dev --workspace=mc3d",
+    "build:mc2d": "npm run build:be-prod --workspace=mc2d",
+    "build:mc3d": "npm run build:be-prod --workspace=mc3d",
+    "preview:mc2d": "npm run preview --workspace=mc2d",
+    "preview:mc3d": "npm run preview --workspace=mc3d"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

@@ -4,8 +4,8 @@ import { ExploreButton, StructDownloadButton } from "mc-react-library";
 
 import { Container, Row, Col } from "react-bootstrap";
 
-import { MCInfoBox } from "../components/MCInfoBox";
-import { MCTable } from "../components/MCTable";
+import { McInfoBox } from "@mcxd/shared";
+import { McTable } from "@mcxd/shared";
 
 import { AIIDA_REST_API_URL, EXPLORE_URL } from "../../common/restApiUtils";
 
@@ -21,7 +21,7 @@ const StructureSection = ({ params, loadedData }) => {
           <Col className="flex-column">
             <div style={{ marginBottom: "10px" }}>
               <div className="subsection-title">General</div>
-              <MCInfoBox title="General">
+              <McInfoBox title="General">
                 <ul className="no-bullets">
                   <li>
                     Explore provenance{" "}
@@ -38,11 +38,11 @@ const StructureSection = ({ params, loadedData }) => {
                     />
                   </li>
                 </ul>
-              </MCInfoBox>
+              </McInfoBox>
             </div>
             <div>
               <div className="subsection-title">Cell</div>
-              <MCTable
+              <McTable
                 headerRow={["", "x [Å]", "y [Å]", "z [Å]"]}
                 contents={structureInfo.aiidaAttributes.cell.map((v, i) => [
                   <span>
@@ -58,7 +58,7 @@ const StructureSection = ({ params, loadedData }) => {
           <Col className="flex-column">
             <div>
               <div className="subsection-title">Atomic positions</div>
-              <MCTable
+              <McTable
                 headerRow={["Kind label", "x [Å]", "y [Å]", "z [Å]"]}
                 contents={structureInfo.aiidaAttributes.sites.map((s) => [
                   s.kind_name,

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import { McloudSpinner } from "mc-react-library";
 
-import { MCInfoBox } from "../components/MCInfoBox";
+import { McInfoBox } from "@mcxd/shared";
 
 import { Container, Row, Col } from "react-bootstrap";
 

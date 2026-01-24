@@ -1,7 +1,7 @@
 import init, { analyze_cell } from "@spglib/moyo-wasm";
 import wasmUrl from "@spglib/moyo-wasm/moyo_wasm_bg.wasm?url"; // need this ?url to ensure wasm not html.
 
-import { MCInfoBox } from "../../common/MCInfoBox";
+import { McInfoBox } from "@mcxd/shared";
 
 import { Row, Col, Container } from "react-bootstrap";
 
@@ -13,7 +13,7 @@ import { matrix, getPrimToConvMatrix } from "mc-react-library";
 
 import { mat3, vec3 } from "gl-matrix";
 
-import { MCTable } from "../../common/MCTable";
+import { McTable } from "@mcxd/shared";
 
 let wasmReady = false;
 async function analyzeCrystal(lattice, positions, numbers) {
@@ -136,7 +136,7 @@ export default function SpgLibInfoBox({ structureInfo }) {
               <div className="subsection-title">
                 Symmetry results from spglib
               </div>
-              <MCInfoBox title="General">
+              <McInfoBox title="General">
                 <ul className="no-bullets">
                   <li>Space group number: {spgLibResults.number}</li>
                   <li>Hall number: {spgLibResults.hall_number}</li>
@@ -147,10 +147,10 @@ export default function SpgLibInfoBox({ structureInfo }) {
                   </li>
                   <li>Pearson symbol: {spgLibResults.pearson_symbol}</li>
                 </ul>
-              </MCInfoBox>
+              </McInfoBox>
             </Col>
             <Col>
-              <MCTable
+              <McTable
                 headerRow={["Kind label", "Wyckoff", "Site Sym"]}
                 contents={spgLibResults.wyckoffs.map((w, i) => [
                   spgLibResults.prim_std_cell.numbers[i],
@@ -196,7 +196,7 @@ export default function SpgLibInfoBox({ structureInfo }) {
                   />
                 </div>
               </div>
-              <MCTable
+              <McTable
                 headerRow={["Kind label", "X", "Y", "Z"]}
                 contents={positionTableRows}
                 style={{ maxHeight: "332px" }}
@@ -235,7 +235,7 @@ export default function SpgLibInfoBox({ structureInfo }) {
                   />
                 </div>
               </div>
-              <MCTable
+              <McTable
                 headerRow={["Kind label", "X", "Y", "Z"]}
                 contents={cartFracTableRows}
                 style={{ maxHeight: "332px" }}

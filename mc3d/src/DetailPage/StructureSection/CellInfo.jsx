@@ -4,7 +4,7 @@ import { ToggleSwitch } from "mc-react-library";
 
 import { matrix, getPrimToConvMatrix } from "mc-react-library";
 
-import { MCTable } from "../../common/MCTable";
+import { McTable } from "@mcxd/shared";
 
 function bundleLatticeData({ baseMatrix, transform_matrix = null }) {
   // function to bundle the lattice data to make
@@ -105,7 +105,7 @@ export const CellInfoBox = ({ structureInfo, spacegroup_symbol = "P1" }) => {
       >
         {latticeInfoState ? (
           <div>
-            <MCTable //Matrix Render
+            <McTable //Matrix Render
               headerRow={["", "x [Å]", "y [Å]", "z [Å]"]}
               contents={current.matrix.map((v, i) => [
                 <span key={`v${i}`}>
@@ -125,11 +125,11 @@ export const CellInfoBox = ({ structureInfo, spacegroup_symbol = "P1" }) => {
               gap: "0.25rem",
             }}
           >
-            <MCTable // lengths render
+            <McTable // lengths render
               headerRow={["", "a", "b", "c"]}
               contents={[["Lengths [Å]", ...current.lengths]]}
             />
-            <MCTable // angles render
+            <McTable // angles render
               headerRow={["", "α", "β", "γ"]}
               contents={[["Angles [°]", ...current.angles]]}
             />

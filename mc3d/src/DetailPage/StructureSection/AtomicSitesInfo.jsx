@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import { matrix, ToggleSwitch } from "mc-react-library";
 
-import { MCTable } from "../../common/MCTable";
+import { McTable } from "@mcxd/shared";
 
 function cartToFrac(positions, cell) {
   const invCell = matrix.invertMatrix(cell);
@@ -74,7 +74,7 @@ export const AtomicSitesInfoBox = ({ structureInfo }) => {
         </div>
       </div>
 
-      <MCTable
+      <McTable
         headerRow={atomsModeState ? headerFractional : headerCartesian}
         contents={atomsModeState ? fractionalData : cartesianData}
         style={{ maxHeight: "332px" }}

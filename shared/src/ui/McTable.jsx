@@ -1,6 +1,6 @@
 import Table from "react-bootstrap/Table";
 
-import "./MCTable.css";
+import "./McTable.css";
 
 function formatIfFloat(value, precision) {
   if (typeof value === "number" && !isNaN(value)) {
@@ -9,7 +9,7 @@ function formatIfFloat(value, precision) {
   return value;
 }
 
-export const MCTable = ({
+export const McTable = ({
   headerRow,
   contents,
   floatPrecision = 4,

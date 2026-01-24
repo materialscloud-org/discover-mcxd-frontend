@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import { McloudSpinner } from "mc-react-library";
 
-import { MCInfoBox } from "../components/MCInfoBox";
+import { McInfoBox } from "@mcxd/shared";
 
 import { Container, Row, Col } from "react-bootstrap";
 
@@ -35,7 +35,7 @@ function ElectronicInfoBox({ electronicData, metadata }) {
   }
 
   return (
-    <MCInfoBox style={{ height: "200px" }}>
+    <McInfoBox style={{ height: "200px" }}>
       <div>
         <b>General info</b>
         <ul className="no-bullets">
@@ -55,7 +55,7 @@ function ElectronicInfoBox({ electronicData, metadata }) {
           </li>
         </ul>
       </div>
-    </MCInfoBox>
+    </McInfoBox>
   );
 }
 

@@ -3,8 +3,8 @@
 // Define all functions for api calls here.
 
 // By default, use development API URLS
-let aiidaRestBaseUrl = "https://aiida.dev.materialscloud.org";
-let exploreBaseUrl = "https://www.materialscloud.dev/explore/";
+let aiidaRestBaseUrl = "https://aiida.materialscloud.org";
+let exploreBaseUrl = "https://develop.mc-frontend.pages.dev/explore/";
 
 // Use production backend if specified
 if (import.meta.env.VITE_PRODUCTION_BACKEND === "true") {

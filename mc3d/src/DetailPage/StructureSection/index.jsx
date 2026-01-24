@@ -5,7 +5,7 @@ import { AtomicSitesInfoBox } from "./AtomicSitesInfo";
 
 import { Container, Row, Col } from "react-bootstrap";
 
-import { MCInfoBox } from "../../common/MCInfoBox";
+import { McInfoBox } from "@mcxd/shared";
 
 import { AIIDA_API_URLS, EXPLORE_URLS } from "../../common/aiidaRestApiUtils";
 import { format_aiida_prop } from "../../common/utils";
@@ -25,7 +25,7 @@ const StructureSection = ({ params, loadedData }) => {
           <Col className="flex-column">
             <div style={{ marginBottom: "10px" }}>
               <div className="subsection-title">General</div>
-              <MCInfoBox title="General">
+              <McInfoBox title="General">
                 <ul className="no-bullets">
                   <li style={{ marginTop: "-5px", marginBottom: "-4px" }}>
                     Download structure
@@ -51,7 +51,7 @@ const StructureSection = ({ params, loadedData }) => {
                     )}
                   </li>
                 </ul>
-              </MCInfoBox>
+              </McInfoBox>
             </div>
             <CellInfoBox
               structureInfo={structureInfo}
