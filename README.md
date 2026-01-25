@@ -20,9 +20,9 @@ npm run dev:mc2d
 npm run build:mc3d
 npm run build:mc2d
 
-# Build for development (dev backend)
-npm run build:be-dev:mc3d
-npm run build:be-dev:mc2d
+# Build for Cloudflare (picks prod/dev backend based on branch)
+npm run build:cf:mc3d
+npm run build:cf:mc2d
 
 # Preview the built distribution
 npm run preview:mc3d
@@ -40,6 +40,6 @@ Cloudflare is used to automatically deploy:
   - https://develop.discover-mc3d.pages.dev
   - https://develop.discover-mc2d.pages.dev
 
-And any other branch (e.g. `branch_name/1`) will be deployed under (note that symbols like `_` and `/` get replaced by `-`):
+And any other branch will be deployed as (note that symbols like `_` and `/` get replaced by `-`):
 
-- `https://branch-name-1.discover-mcxd.pages.dev`
+- e.g. `branch_name/1` -> `https://branch-name-1.discover-mcxd.pages.dev`
