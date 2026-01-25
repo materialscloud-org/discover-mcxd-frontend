@@ -46,16 +46,17 @@ const MainPage = ({ tab }) => {
   };
 
   return (
-    <MaterialsCloudHeader
-      activeSection={"discover"}
-      breadcrumbsPath={[
-        { name: "Discover", link: "https://www.materialscloud.org/discover" },
-        {
-          name: "Materials Cloud Two-Dimensional Structure Database",
-          link: null,
-        },
-      ]}
-    >
+    <>
+      <MaterialsCloudHeader
+        activeSection={"discover"}
+        breadcrumbsPath={[
+          { name: "Discover", link: "https://www.materialscloud.org/discover" },
+          {
+            name: "Materials Cloud Two-Dimensional Structure Database",
+            link: null,
+          },
+        ]}
+      />
       <Container fluid="xxl">
         <TitleAndLogo />
         <div className="description">
@@ -93,7 +94,7 @@ const MainPage = ({ tab }) => {
           </Tab>
         </Tabs>
       </Container>
-    </MaterialsCloudHeader>
+    </>
   );
 };
 
