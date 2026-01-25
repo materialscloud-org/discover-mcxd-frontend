@@ -31,21 +31,6 @@ export function prettifyLabels(label) {
   return label;
 }
 
-// Compute the band energy shift so Fermi level aligns to 0
-export function computeBandShift(electronicData) {
-  if (
-    !electronicData?.bands_uuid ||
-    electronicData?.fermi_energy?.value == null ||
-    electronicData?.band_gap?.value == null
-  ) {
-    return null;
-  }
-
-  const fermi = Math.max(electronicData.fermi_energy.value); // handles spin-polarized
-  const gap = electronicData.band_gap.value;
-  return -fermi - gap / 2;
-}
-
 // Shifts all band values by a given amount
 export function shiftBands(bandsData, shift) {
   bandsData.paths.forEach((path) => {

@@ -1,10 +1,7 @@
 import { useState, useEffect } from "react";
 import { loadAiidaBands, loadXY } from "../../common/aiidaRestApiUtils";
 
-import {
-  normalizeBandsData,
-  prepareSuperConBand,
-} from "../../common/BandStructure/utils";
+import { normalizeBandsData, prepareSuperConBand } from "@mcxd/shared";
 
 function safePrepareBands(bands, fermi, configName) {
   if (!bands || typeof fermi !== "number") return null;

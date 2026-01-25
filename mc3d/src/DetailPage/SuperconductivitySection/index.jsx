@@ -16,14 +16,14 @@ import SuperconInfoBox from "./InfoBoxes";
 import GapFunction from "./GapFunction";
 import { getA2FTraces } from "./getA2FTraces";
 
-import BandStructure from "../../common/BandStructure/BandStructure";
-
-import { WarningBox, WarningBoxOtherMethod } from "../../common/WarningBox";
-
+// import BandStructure from "../../common/BandStructure/BandStructure";
+import { BandStructure } from "@mcxd/shared";
 import {
   SUPERCON_BANDS_LAYOUT_CONFIG,
   SUPERCON_PHONON_A2F_LAYOUT_CONFIG,
-} from "../../common/BandStructure/configs";
+} from "@mcxd/shared";
+
+import { WarningBox, WarningBoxOtherMethod } from "../../common/WarningBox";
 
 // Main component
 export default function SuperConductivitySection({

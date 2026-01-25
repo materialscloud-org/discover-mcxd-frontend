@@ -1,34 +1,30 @@
 import React, { useState, useEffect } from "react";
-
-import { McloudSpinner } from "mc-react-library";
-
-import { McInfoBox } from "@mcxd/shared";
-
+import { McloudSpinner, ExploreButton } from "mc-react-library";
 import { Container, Row, Col } from "react-bootstrap";
-
-import BandsVisualizer from "mc-react-bands";
-
-import { ExploreButton } from "mc-react-library";
-
-import { loadAiidaBands, loadPhononVis } from "../../common/restApiUtils";
-
-import { AIIDA_REST_API_URL, EXPLORE_URL } from "../../common/restApiUtils";
-
 import PhononVisualizer from "mc-react-phonon-visualizer";
+
+import {
+  BandStructure,
+  COMMON_LAYOUT_CONFIG,
+  SUPERCON_BANDS_LAYOUT_CONFIG,
+} from "@mcxd/shared";
+import {
+  loadAiidaBands,
+  loadPhononVis,
+  EXPLORE_URL,
+} from "../../common/restApiUtils";
 
 const VibrationalSection = (props) => {
   const [bandsData, setBandsData] = useState(null);
   const [loadingBands, setLoadingBands] = useState(true);
   const [phononVisData, setPhononVisData] = useState(null);
 
-  let vibrationalData = props.loadedData.details.vibrational;
-  console.log("vibrationalData", vibrationalData);
-
-  let bandsUuid = vibrationalData.phonon_bands_uuid;
+  const vibrationalData = props.loadedData.details.vibrational;
+  const bandsUuid = vibrationalData.phonon_bands_uuid;
 
   useEffect(() => {
-    setBandsData(null);
     if (bandsUuid) {
+      setLoadingBands(true);
       loadAiidaBands(bandsUuid).then((bands) => {
         setBandsData(bands);
         setLoadingBands(false);
@@ -39,53 +35,23 @@ const VibrationalSection = (props) => {
 
     loadPhononVis(props.params.id).then((data) => {
       setPhononVisData(data);
-      console.log("Phonon visualizer data", data);
     });
-  }, []);
+  }, [bandsUuid, props.params.id]);
 
-  let bandsAvailable = bandsData != null;
-  let bandsJsx = "";
-  if (bandsAvailable) {
-    bandsJsx = (
-      <Row>
-        <Col className="flex-column">
-          <div className="subsection-title">
-            Phonon band structure{" "}
-            <ExploreButton explore_url={EXPLORE_URL} uuid={bandsUuid} />
-          </div>
-          <BandsVisualizer
-            bandsDataList={[bandsData]}
-            // energyRange={[-5.0, 5.0]}
-            bandsColorInfo={["#3560A0"]}
-            formatSettings={{
-              bandsYlabel: "Phonon bands (THz)",
-            }}
-          />
-        </Col>
-        <Col className="flex-column"></Col>
-      </Row>
-    );
-  }
-
-  let phononVisAvailable = phononVisData != null;
-  let phononVisJsx = "";
-  if (phononVisAvailable) {
-    // NOTE: The PhononVisualizer plotly clicking doesn't seem to work
-    // inside bootstrap <Container>! Keep it outside.
-    phononVisJsx = (
-      <div>
-        <div style={{ margin: "30px 0px 5px 12px" }}>
-          <div className="subsection-title">
-            Interactive phonon visualizer{" "}
-            <ExploreButton explore_url={EXPLORE_URL} uuid={bandsUuid} />
-          </div>
+  // Handle Phonon Visualizer JSX
+  const phononVisJsx = phononVisData && (
+    <div>
+      <div style={{ margin: "30px 0px 5px 12px" }}>
+        <div className="subsection-title">
+          Interactive phonon visualizer{" "}
+          <ExploreButton explore_url={EXPLORE_URL} uuid={bandsUuid} />
         </div>
-        <PhononVisualizer
-          props={{ title: "Phonon visualizer", ...phononVisData }}
-        />
       </div>
-    );
-  }
+      <PhononVisualizer
+        props={{ title: "Phonon visualizer", ...phononVisData }}
+      />
+    </div>
+  );
 
   return (
     <div>
@@ -95,10 +61,40 @@ const VibrationalSection = (props) => {
           <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
             <McloudSpinner />
           </div>
-        ) : !bandsAvailable ? (
+        ) : !bandsData ? (
           <span>Vibrational properties not available for this structure.</span>
         ) : (
-          <>{bandsJsx}</>
+          <Row>
+            <Col className="flex-column" sm={6}>
+              <div className="subsection-title">
+                Phonon band structure{" "}
+                <ExploreButton explore_url={EXPLORE_URL} uuid={bandsUuid} />
+              </div>
+              <BandStructure
+                bandsDataArray={[
+                  {
+                    bandsData: bandsData,
+                    traceFormat: {
+                      hovertemplate: "Energy: %{y:.4f} Thz<extra></extra>",
+                    },
+                  },
+                ]}
+                loading={loadingBands}
+                minYval={0}
+                layoutOverrides={{
+                  ...COMMON_LAYOUT_CONFIG,
+                  yaxis: {
+                    ...COMMON_LAYOUT_CONFIG?.yaxis,
+                    title: {
+                      ...COMMON_LAYOUT_CONFIG?.yaxis?.title,
+                      text: "Energy [THz]",
+                    },
+                  },
+                  showlegend: false,
+                }}
+              />
+            </Col>
+          </Row>
         )}
       </Container>
       {phononVisJsx}
