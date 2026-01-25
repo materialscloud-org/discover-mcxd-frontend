@@ -177,17 +177,15 @@ export default function SuperConductivitySection({
                 loadingIconScale={7}
                 minYval={0}
                 maxYval={supercon.highest_phonon_frequency + 4}
-                dosDataArray={[
-                  {
-                    dosData: { x: [0], y: [0] }, // fake dosData.
-                    traceFormat: {
-                      name: "",
-                      legend: "legend2", // draw legend on axisTwo.
-                      showlegend: false,
-                      opacity: 0,
-                    },
+                dosDataArray={{
+                  dosData: { x: [0], y: [0] }, // empty data to render
+                  traceFormat: {
+                    name: "",
+                    legend: "legend2", // draw legend on axisTwo.
+                    showlegend: false,
+                    opacity: 0,
                   },
-                ]}
+                }}
                 layoutOverrides={SUPERCON_PHONON_A2F_LAYOUT_CONFIG}
                 // draw traces on fake dos.
                 customTraces={getA2FTraces({

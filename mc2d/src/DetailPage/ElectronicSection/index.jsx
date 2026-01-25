@@ -105,19 +105,12 @@ const ElectronicSection = (props) => {
                   />
                 </div>
                 <BandStructure
-                  bandsDataArray={
-                    bandsData
-                      ? [
-                          {
-                            bandsData: bandsData,
-                            traceFormat: {
-                              hovertemplate:
-                                "Energy: %{y:.4f} eV<extra></extra>",
-                            },
-                          },
-                        ]
-                      : null
-                  }
+                  bandsDataArray={{
+                    ...bandsData,
+                    traceFormat: {
+                      hovertemplate: "Energy: %{y:.4f} eV<extra></extra>",
+                    },
+                  }}
                   loading={loadingBands}
                   minYval={-6.0}
                   maxYval={6.0}

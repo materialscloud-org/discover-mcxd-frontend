@@ -8,5 +8,8 @@
   "peerDependencies": {
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
+  },
+  "dependencies": {
+    "bands-visualiser": "^0.0.3"
   }
 }

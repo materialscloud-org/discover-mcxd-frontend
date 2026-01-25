@@ -71,14 +71,12 @@ const VibrationalSection = (props) => {
                 <ExploreButton explore_url={EXPLORE_URL} uuid={bandsUuid} />
               </div>
               <BandStructure
-                bandsDataArray={[
-                  {
-                    bandsData: bandsData,
-                    traceFormat: {
-                      hovertemplate: "Energy: %{y:.4f} Thz<extra></extra>",
-                    },
+                bandsDataArray={{
+                  ...bandsData,
+                  traceFormat: {
+                    hovertemplate: "Energy: %{y:.4f} Thz<extra></extra>",
                   },
-                ]}
+                }}
                 loading={loadingBands}
                 minYval={0}
                 layoutOverrides={{
