@@ -11,8 +11,8 @@ export const WarningBox = ({ children }) => {
 };
 
 export const WarningBoxOtherMethod = ({ method, id }) => {
-  // Build the hash-router URL to this method
-  const methodUrl = `#/details/${id}/${method}`;
+  // Build the router URL to this method
+  const methodUrl = `/details/${id}/${method}`;
 
   return (
     <div
