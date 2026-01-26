@@ -2,7 +2,7 @@ import { useEffect, useRef, useMemo } from "react";
 import { BandsVisualiser } from "bands-visualiser";
 import { McloudSpinner } from "mc-react-library";
 
-export default function BandStructure({
+export function BandStructure({
   bandsDataArray,
   loading = false,
   loadingIconScale = 15,

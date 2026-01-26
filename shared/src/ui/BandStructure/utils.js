@@ -1,4 +1,4 @@
-import { traceConfigs } from "./configs";
+import { SuperConTraceConfigs } from "./configs";
 
 export function prettifyLabels(label) {
   const greekMapping = {
@@ -29,21 +29,6 @@ export function prettifyLabels(label) {
   label = label.replace(/_(.)/g, (match, p1) => ssMapping[p1] || match);
 
   return label;
-}
-
-// Compute the band energy shift so Fermi level aligns to 0
-export function computeBandShift(electronicData) {
-  if (
-    !electronicData?.bands_uuid ||
-    electronicData?.fermi_energy?.value == null ||
-    electronicData?.band_gap?.value == null
-  ) {
-    return null;
-  }
-
-  const fermi = Math.max(electronicData.fermi_energy.value); // handles spin-polarized
-  const gap = electronicData.band_gap.value;
-  return -fermi - gap / 2;
 }
 
 // Shifts all band values by a given amount
@@ -109,51 +94,28 @@ export function normalizeBandsData(bandsObjects) {
 export function prepareSuperConBand(
   bandObject,
   shiftVal = 0,
-  config = "unknownEntry",
+  configKey = "unknown",
 ) {
-  // shift bandobject to fermiLevel
   shiftBands(bandObject, shiftVal);
 
-  let traceFormat = traceConfigs[config];
+  const cfg = SuperConTraceConfigs[configKey] ?? SuperConTraceConfigs.unknown;
 
-  let bandsDataArrayObj = {
+  return {
     bandsData: bandObject,
     traceFormat: {
-      label: `${traceFormat.label}`,
-      name: traceFormat.label,
-
-      hovertemplate: `<b>${traceFormat.label}</b>: %{y:.3f} ${traceFormat.units}<br><extra></extra>`,
-      mode: traceFormat.mode,
-      // marker: traceFormat.marker,
-      line: {
-        color: traceFormat.colors[0],
-        dash: traceFormat.dash,
-        width: traceFormat.width,
-        opacity: traceFormat.opacity,
-      },
+      label: cfg.label,
+      name: cfg.label,
+      hovertemplate: `<b>${cfg.label}</b>: %{y:.3f} ${cfg.units}<br><extra></extra>`,
+      ...cfg.trace,
     },
   };
-  // hide phonon from the plot without breaking other trace formatting...
-  if (config == "phononEPW") {
-    bandsDataArrayObj = {
-      bandsData: bandObject,
-      traceFormat: {
-        label: `${traceFormat.label}`,
-        name: traceFormat.label,
+}
 
-        hovertemplate: `<b>${traceFormat.label}</b>: %{y:.3f} ${traceFormat.units}<br><extra></extra>`,
-        mode: traceFormat.mode,
-        // marker: traceFormat.marker,
-        line: {
-          color: traceFormat.colors[0],
-          dash: traceFormat.dash,
-          width: traceFormat.width,
-          opacity: traceFormat.opacity,
-        },
-        showlegend: false,
-      },
-    };
-  }
-
-  return bandsDataArrayObj;
+export function buildTraceFormat(cfg) {
+  return {
+    label: cfg.label,
+    name: cfg.label,
+    hovertemplate: `<b>${cfg.label}</b>: %{y:.3f} ${cfg.units}<br><extra></extra>`,
+    ...cfg.trace,
+  };
 }

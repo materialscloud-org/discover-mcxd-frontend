@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
 
-import { McloudSpinner } from "mc-react-library";
+import { McloudSpinner, ExploreButton } from "mc-react-library";
 
-import { McInfoBox } from "@mcxd/shared";
+import { splitBandsData } from "@mcxd/shared";
+
+import { McInfoBox, buildTraceFormat } from "@mcxd/shared";
 
 import { Container, Row, Col } from "react-bootstrap";
-
-import BandsVisualizer from "mc-react-bands";
-
-import { ExploreButton } from "mc-react-library";
 
 import { loadAiidaBands } from "../../common/restApiUtils";
 
@@ -16,6 +14,11 @@ import { AIIDA_REST_API_URL, EXPLORE_URL } from "../../common/restApiUtils";
 
 import * as math from "mathjs";
 
+import {
+  BandStructure,
+  COMMON_LAYOUT_CONFIG,
+  standardTraceConfigs,
+} from "@mcxd/shared";
 import { formatAiidaProp } from "../utils";
 
 function shiftBands(bandsData, shift) {
@@ -63,83 +66,87 @@ const ElectronicSection = (props) => {
   const [bandsData, setBandsData] = useState(null);
   const [loadingBands, setLoadingBands] = useState(true);
 
-  let electronicData = props.loadedData.details.electronic;
-  console.log("electronicData", electronicData);
+  const electronicData = props.loadedData.details.electronic;
 
-  // check if we can display bands
-  let bandsAvailable = true;
-  if (
-    electronicData.bands_uuid == null ||
-    electronicData.fermi_energy.value == null ||
-    electronicData.band_gap.value == null
-  ) {
-    bandsAvailable = false;
-  }
-
-  let bandShift = 0.0;
-  if (bandsAvailable) {
-    // Shifting the bands such that Fermi energy is 0:
-    // It looks like the fermi energy currently gives us the top of the conduction band
-    // instead of the middle of the band gap. Therefore, shift additionally by half the gap.
-    // Note: for spin-polarized calculations, there are 2 Fermi energies. Taking the maximum
-    // here seems to work best to align 0 to the middle of the gap (although not stricly correct).
-    bandShift = -math.max(electronicData.fermi_energy.value);
-    bandShift -= electronicData.band_gap.value / 2;
-  }
+  const bandsAvailable = !!(
+    electronicData.bands_uuid &&
+    electronicData.fermi_energy.value != null &&
+    electronicData.band_gap.value != null
+  );
 
   useEffect(() => {
-    setBandsData(null);
-    if (bandsAvailable) {
-      loadAiidaBands(electronicData.bands_uuid).then((bands) => {
-        shiftBands(bands, bandShift);
-        setBandsData(bands);
-        setLoadingBands(false);
-      });
-    } else {
+    if (!bandsAvailable) {
       setLoadingBands(false);
+      return;
     }
-  }, []);
 
-  let bandsJsx = "";
-  if (!bandsAvailable) {
-    bandsJsx = (
-      <span>Electronic bands are not available for this material.</span>
-    );
-  } else if (loadingBands) {
-    bandsJsx = (
-      <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
-        <McloudSpinner />
-      </div>
-    );
-  } else {
-    bandsJsx = (
-      <>
-        <div className="subsection-title">
-          Electronic band structure{" "}
-          <ExploreButton
-            explore_url={EXPLORE_URL}
-            uuid={electronicData.bands_uuid}
-          />
-        </div>
-        <BandsVisualizer
-          bandsDataList={[bandsData]}
-          energyRange={[-6.0, 6.0]}
-          bandsColorInfo={["#3560A0", "red"]}
-          formatSettings={{
-            bandsYlabel: "Electronic bands (eV)",
-          }}
-        />
-      </>
-    );
-  }
+    setLoadingBands(true);
+
+    loadAiidaBands(electronicData.bands_uuid).then((bands) => {
+      let bandShift = -math.max(electronicData.fermi_energy.value);
+      bandShift -= electronicData.band_gap.value / 2;
+
+      shiftBands(bands, bandShift);
+
+      let finalBands = [];
+
+      if (bands.paths[0].two_band_types) {
+        const [up, down] = splitBandsData(bands, 2);
+
+        finalBands.push(
+          {
+            bandsData: up,
+            traceFormat: buildTraceFormat(standardTraceConfigs.spinUp),
+          },
+          {
+            bandsData: down,
+            traceFormat: buildTraceFormat(standardTraceConfigs.spinDown),
+          },
+        );
+      } else {
+        finalBands.push({
+          bandsData: bands,
+          traceFormat: buildTraceFormat(standardTraceConfigs.nonSpinPolarised),
+        });
+      }
+
+      setBandsData(finalBands);
+      setLoadingBands(false);
+    });
+  }, [electronicData.bands_uuid]);
+
+  console.log(bandsData);
 
   return (
     <div>
       <div className="section-heading">Electronic properties</div>
       <Container fluid className="section-container">
         <Row>
-          <Col className="flex-column">{bandsJsx}</Col>
-          <Col className="flex-column">
+          <Col className="flex-column" sm={12} md={6}>
+            {!bandsAvailable ? (
+              <span>Electronic bands are not available for this material.</span>
+            ) : (
+              <>
+                <div className="subsection-title">
+                  Electronic band structure{" "}
+                  <ExploreButton
+                    explore_url={EXPLORE_URL}
+                    uuid={electronicData.bands_uuid}
+                  />
+                </div>
+                <BandStructure
+                  bandsDataArray={[bandsData]}
+                  loading={loadingBands}
+                  minYval={-6.0}
+                  maxYval={6.0}
+                  layoutOverrides={{
+                    ...COMMON_LAYOUT_CONFIG,
+                  }}
+                />
+              </>
+            )}
+          </Col>
+          <Col className="flex-column" sm={12} md={6}>
             <div style={{ marginTop: "35px" }}>
               <ElectronicInfoBox
                 electronicData={electronicData}

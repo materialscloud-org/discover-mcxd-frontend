@@ -1,38 +1,103 @@
-// configurations for use in the prepSuperconbands
-// some of these are hacks and will be removed
-// when a new release of the bandsvisualiser is done
-export const traceConfigs = {
-  electronicEPW: {
-    label: "EPW",
-    colors: ["#d62728"],
-    dash: "4px",
-    width: 1.75,
-    opacity: 1,
+// trace configurations for bandStructures.
+export const standardTraceConfigs = {
+  spinUp: {
+    label: "Spin Up",
     units: "eV",
-  },
-  electronicQE: {
-    label: "QE",
-    colors: ["#6baed6"],
-    dash: "solid",
-    width: 2.25,
-    opacity: 0.95,
-    units: "eV",
-  },
-  phononEPW: {
-    label: "EPW",
-    colors: ["#d62728"],
-    dash: "solid",
-    width: 1.75,
-    opacity: 1,
-    units: "eV",
-    showlegend: false,
+    trace: {
+      mode: "lines",
+      line: {
+        color: "#6baed6",
+        dash: "solid",
+        width: 2.25,
+        opacity: 0.95,
+      },
+    },
   },
 
-  unknownEntry: {
-    label: "Unknown Data 1",
-    colors: ["#2ca02c", "#98df8a"],
-    dash: "dot",
+  spinDown: {
+    label: "Spin Down",
     units: "eV",
+    trace: {
+      mode: "lines",
+      line: {
+        color: "#d62728",
+        width: 1.75,
+        dash: "4px",
+        opacity: 0.95,
+      },
+    },
+  },
+
+  nonSpinPolarised: {
+    label: "Band Structure",
+    units: "eV",
+    trace: {
+      mode: "lines",
+      line: {
+        color: "#6baed6",
+        width: 1.75,
+        opacity: 1,
+      },
+    },
+  },
+};
+
+export const SuperConTraceConfigs = {
+  electronicEPW: {
+    label: "EPW",
+    units: "eV",
+    trace: {
+      mode: "lines",
+      line: {
+        color: "#d62728",
+        dash: "4px",
+        width: 1.75,
+        opacity: 1,
+      },
+    },
+  },
+
+  electronicQE: {
+    label: "QE",
+    units: "eV",
+    trace: {
+      mode: "lines",
+      line: {
+        color: "#6baed6",
+        dash: "solid",
+        width: 2.25,
+        opacity: 0.95,
+      },
+    },
+  },
+
+  phononEPW: {
+    label: "EPW",
+    units: "eV",
+    trace: {
+      mode: "lines",
+      showlegend: false,
+      line: {
+        color: "#d62728",
+        dash: "solid",
+        width: 1.75,
+        opacity: 1,
+      },
+    },
+  },
+
+  unknown: {
+    label: "Unknown Data",
+    units: "eV",
+    trace: {
+      mode: "lines",
+      line: {
+        color: "#2ca02c",
+        dash: "dot",
+        width: 1.5,
+        opacity: 1,
+      },
+    },
   },
 };
 
