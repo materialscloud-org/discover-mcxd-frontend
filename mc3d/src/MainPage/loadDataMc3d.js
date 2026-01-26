@@ -1,4 +1,5 @@
 import { loadIndex, loadMetadata } from "../common/MCrestApiUtils";
+import { generatePath } from "react-router-dom";
 
 import {
   spaceGroupSymbols,
@@ -163,7 +164,7 @@ function formatRows(indexData, metadata, method) {
   indexData.forEach((entry) => {
     // console.log(entry);
     let id = `${entry["id"]}/${method}`;
-    let href = `${import.meta.env.BASE_URL}#/details/${id}`;
+    let href = generatePath("/details/:id", { id: id });
 
     let row = {};
     Object.entries(entry).map(([key, value]) => {
