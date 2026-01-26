@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const order = ["pbesol-v2", "pbesol-v1", "pbe-v1"];
 
 // simple component that takes methods and currentMethods and returns clickable buttons and some text string
@@ -25,18 +27,20 @@ export default function MethodologyButtons({
       <div className="d-inline-flex flex-wrap gap-1 align-items-center">
         {sortedKeys.map((key) => {
           const url = `/details/${id}/${key}`;
+          const isCurrent = key === currentMethod;
 
           return (
-            <a
+            <Link
               key={key}
-              href={url}
-              rel="noopener noreferrer"
+              to={url}
+              onClick={isCurrent ? (e) => e.preventDefault() : undefined}
               className={`btn btn-sm rounded-lg px-1 ${
-                key === currentMethod ? "btn-secondary disabled" : "btn-primary"
+                isCurrent ? "btn-secondary disabled" : "btn-primary"
               }`}
+              aria-disabled={isCurrent}
             >
               {key}
-            </a>
+            </Link>
           );
         })}
       </div>
