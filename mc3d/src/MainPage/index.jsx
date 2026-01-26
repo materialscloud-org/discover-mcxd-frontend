@@ -1,5 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 
+import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+
 import "./index.css";
 
 import { Container, Tab, Tabs } from "react-bootstrap";
@@ -25,9 +28,30 @@ import {
 const DEFAULT_METHOD = "pbesol-v2";
 const sessionDataCache = {};
 
+const tabRoutes = {
+  use: "/",
+  about: "/about",
+  restapi: "/restapi",
+};
+
 // MC3D Landing page React component.
-function MainPage() {
-  const urlParams = new URLSearchParams(window.location.search);
+function MainPage({ tab }) {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState(tab || "use");
+
+  useEffect(() => {
+    const pathTab =
+      location.pathname === "/" ? "use" : location.pathname.slice(1);
+    setActiveTab(pathTab);
+  }, [location]);
+
+  const handleTabSelect = (selectedTab) => {
+    setActiveTab(selectedTab);
+    navigate(tabRoutes[selectedTab]);
+  };
+
+  const urlParams = new URLSearchParams(location.search);
 
   const [genInfo, setGenInfo] = useState(null);
   const [columns, setColumns] = useState([]);
@@ -71,22 +95,18 @@ function MainPage() {
     const selected = event.target.value;
     const url = new URL(window.location);
 
-    if (selected === "superconductivity") {
-      // Preset
-      url.searchParams.set("preset", selected);
-      url.searchParams.delete("method");
-    } else if (selected === "phonons") {
-      // Preset
+    if (selected === "superconductivity" || selected === "phonons") {
       url.searchParams.set("preset", selected);
       url.searchParams.delete("method");
     } else {
-      // Normal DB
       url.searchParams.set("method", selected);
       url.searchParams.delete("preset");
     }
 
-    window.history.pushState({}, "", url.toString());
-    setRows([]); // clear table
+    navigate(`${location.pathname}?${url.searchParams.toString()}`, {
+      replace: true,
+    });
+    setRows([]);
   };
 
   return (
@@ -120,7 +140,12 @@ function MainPage() {
           </div>
         </div>
 
-        <Tabs defaultActiveKey="use">
+        <Tabs
+          className="main-tabs"
+          activeKey={activeTab}
+          onSelect={handleTabSelect}
+        >
+          {" "}
           <Tab eventKey="use" title="Use">
             <MethodSelectionBox
               genInfo={genInfo}
@@ -147,7 +172,7 @@ function MainPage() {
           <Tab eventKey="about" title="About">
             {aboutText}
           </Tab>
-          <Tab eventKey="rest" title="REST API">
+          <Tab eventKey="restapi" title="REST API">
             {restapiText}
           </Tab>
         </Tabs>

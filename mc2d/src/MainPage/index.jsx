@@ -10,7 +10,7 @@ import MaterialSelector from "mc-react-ptable-materials-grid";
 
 import TitleAndLogo from "../common/TitleAndLogo";
 
-import { Container, Tab, Tabs, Form } from "react-bootstrap";
+import { Container, Tab, Tabs } from "react-bootstrap";
 
 import { aboutText } from "./about";
 import { restapiText } from "./restapiText";
