@@ -14,6 +14,22 @@ import {
   EXPLORE_URL,
 } from "../../common/restApiUtils";
 
+import { buildTraceFormat } from "@mcxd/shared";
+
+const phononTraceConfig = {
+  label: "Phonons",
+  units: "THz",
+  trace: {
+    mode: "lines",
+    line: {
+      color: "#6baed6",
+      dash: "solid",
+      width: 2.25,
+      opacity: 0.95,
+    },
+  },
+};
+
 const VibrationalSection = (props) => {
   const [bandsData, setBandsData] = useState(null);
   const [loadingBands, setLoadingBands] = useState(true);
@@ -73,9 +89,7 @@ const VibrationalSection = (props) => {
               <BandStructure
                 bandsDataArray={{
                   ...bandsData,
-                  traceFormat: {
-                    hovertemplate: "Energy: %{y:.4f} Thz<extra></extra>",
-                  },
+                  traceFormat: buildTraceFormat(phononTraceConfig),
                 }}
                 loading={loadingBands}
                 minYval={0}

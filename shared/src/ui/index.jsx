@@ -4,7 +4,8 @@ export { McInfoBox } from "./McInfoBox.jsx";
 
 export { BandStructure } from "./BandStructure/BandStructure.jsx";
 export {
-  traceConfigs,
+  standardTraceConfigs,
+  SuperConTraceConfigs,
   COMMON_LAYOUT_CONFIG,
   SUPERCON_BANDS_LAYOUT_CONFIG,
   SUPERCON_PHONON_A2F_LAYOUT_CONFIG,
@@ -13,4 +14,7 @@ export {
 export {
   prepareSuperConBand,
   normalizeBandsData,
+  buildTraceFormat,
 } from "./BandStructure/utils.js";
+
+export { BandsVisualiser, splitBandsData } from "bands-visualiser";

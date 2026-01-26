@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 
 import { McloudSpinner, ExploreButton } from "mc-react-library";
 
-import { McInfoBox } from "@mcxd/shared";
+import { splitBandsData } from "@mcxd/shared";
+
+import { McInfoBox, buildTraceFormat } from "@mcxd/shared";
 
 import { Container, Row, Col } from "react-bootstrap";
-
-import BandsVisualizer from "mc-react-bands";
 
 import { loadAiidaBands } from "../../common/restApiUtils";
 
@@ -14,7 +14,11 @@ import { AIIDA_REST_API_URL, EXPLORE_URL } from "../../common/restApiUtils";
 
 import * as math from "mathjs";
 
-import { BandStructure, COMMON_LAYOUT_CONFIG } from "@mcxd/shared";
+import {
+  BandStructure,
+  COMMON_LAYOUT_CONFIG,
+  standardTraceConfigs,
+} from "@mcxd/shared";
 import { formatAiidaProp } from "../utils";
 
 function shiftBands(bandsData, shift) {
@@ -71,21 +75,47 @@ const ElectronicSection = (props) => {
   );
 
   useEffect(() => {
-    if (bandsAvailable) {
-      setLoadingBands(true);
-      loadAiidaBands(electronicData.bands_uuid).then((bands) => {
-        // Calculate shift
-        let bandShift = -math.max(electronicData.fermi_energy.value);
-        bandShift -= electronicData.band_gap.value / 2;
-
-        shiftBands(bands, bandShift);
-        setBandsData(bands);
-        setLoadingBands(false);
-      });
-    } else {
+    if (!bandsAvailable) {
       setLoadingBands(false);
+      return;
     }
+
+    setLoadingBands(true);
+
+    loadAiidaBands(electronicData.bands_uuid).then((bands) => {
+      let bandShift = -math.max(electronicData.fermi_energy.value);
+      bandShift -= electronicData.band_gap.value / 2;
+
+      shiftBands(bands, bandShift);
+
+      let finalBands = [];
+
+      if (bands.paths[0].two_band_types) {
+        const [up, down] = splitBandsData(bands, 2);
+
+        finalBands.push(
+          {
+            bandsData: up,
+            traceFormat: buildTraceFormat(standardTraceConfigs.spinUp),
+          },
+          {
+            bandsData: down,
+            traceFormat: buildTraceFormat(standardTraceConfigs.spinDown),
+          },
+        );
+      } else {
+        finalBands.push({
+          bandsData: bands,
+          traceFormat: buildTraceFormat(standardTraceConfigs.nonSpinPolarised),
+        });
+      }
+
+      setBandsData(finalBands);
+      setLoadingBands(false);
+    });
   }, [electronicData.bands_uuid]);
+
+  console.log(bandsData);
 
   return (
     <div>
@@ -105,18 +135,12 @@ const ElectronicSection = (props) => {
                   />
                 </div>
                 <BandStructure
-                  bandsDataArray={{
-                    ...bandsData,
-                    traceFormat: {
-                      hovertemplate: "Energy: %{y:.4f} eV<extra></extra>",
-                    },
-                  }}
+                  bandsDataArray={[bandsData]}
                   loading={loadingBands}
                   minYval={-6.0}
                   maxYval={6.0}
                   layoutOverrides={{
                     ...COMMON_LAYOUT_CONFIG,
-                    showlegend: false,
                   }}
                 />
               </>
