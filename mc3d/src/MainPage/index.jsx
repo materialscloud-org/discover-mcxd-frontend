@@ -47,7 +47,6 @@ function MainPage({ tab }) {
   }, [location]);
 
   const handleTabSelect = (selectedTab) => {
-    setActiveTab(selectedTab);
     navigate(tabRoutes[selectedTab]);
   };
 

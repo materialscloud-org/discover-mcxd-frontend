@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 import "./index.css";
 
@@ -20,12 +21,21 @@ import { loadIndexMc2d } from "./loadIndexMc2d";
 import { DownloadButton } from "./DownloadButton.jsx";
 import { CitationsList } from "../common/CitationsList.jsx";
 
+const tabRoutes = { use: "/", about: "/about", restapi: "/restapi" };
+
 const MainPage = ({ tab }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState(tab || "use");
 
   const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
+
+  useEffect(() => {
+    const pathTab =
+      location.pathname === "/" ? "use" : location.pathname.slice(1);
+    setActiveTab(pathTab);
+  }, [location]);
 
   useEffect(() => {
     loadIndexMc2d().then((loadedData) => {
@@ -37,12 +47,7 @@ const MainPage = ({ tab }) => {
   const materialSelectorRef = useRef(null);
 
   const handleTabSelect = (selectedTab) => {
-    setActiveTab(selectedTab);
-    if (selectedTab == "use") {
-      navigate(`/`);
-    } else {
-      navigate(`/${selectedTab}`);
-    }
+    navigate(tabRoutes[selectedTab]);
   };
 
   return (
