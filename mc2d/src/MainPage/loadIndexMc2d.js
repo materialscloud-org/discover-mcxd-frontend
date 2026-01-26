@@ -162,7 +162,8 @@ function formatRows(indexData, metadata) {
 
   indexData.forEach((entry) => {
     // console.log(entry);
-    let href = `${import.meta.env.BASE_URL}#/details/${entry["id"]}`;
+
+    let href = `${import.meta.env.BASE_URL}/details/${entry["id"]}`;
 
     let row = {};
     Object.entries(entry).map(([key, value]) => {
