@@ -2,6 +2,8 @@ import { useState, useEffect, lazy, Suspense } from "react";
 
 import "./index.css";
 
+import { SEO } from "../SEO";
+
 import { useParams, useNavigate } from "react-router-dom";
 
 import MaterialsCloudHeader from "mc-react-header";
@@ -188,6 +190,11 @@ function DetailPage() {
 
   return (
     <>
+      <SEO
+        formula={coreData.details.general.formula}
+        id={params.id}
+        description={`View computational crystal structure data for ${coreData.details.general.formula}.`}
+      />
       <MaterialsCloudHeader
         activeSection={"discover"}
         breadcrumbsPath={[
