@@ -49,7 +49,7 @@ export default function SimilaritySection({ params }) {
   // convert comparisons → table rows
   const contents = sims.map((comp) => {
     const methodString = comp.method.replace(/^mc3d-/, "");
-    const url = `#/details/${comp.mc3d_id}/${methodString}`;
+    const url = `/details/${comp.mc3d_id}/${methodString}`;
     const label = `${comp.mc3d_id}/${methodString}`;
 
     return [

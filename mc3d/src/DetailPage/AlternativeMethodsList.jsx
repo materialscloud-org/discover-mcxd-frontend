@@ -24,7 +24,7 @@ export default function MethodologyButtons({
 
       <div className="d-inline-flex flex-wrap gap-1 align-items-center">
         {sortedKeys.map((key) => {
-          const url = `#/details/${id}/${key}`;
+          const url = `/details/${id}/${key}`;
 
           return (
             <a

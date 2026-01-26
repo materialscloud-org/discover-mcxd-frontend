@@ -1,6 +1,6 @@
 import "./App.css";
 
-import { Routes, Route, HashRouter } from "react-router-dom";
+import { Routes, Route, BrowserRouter } from "react-router-dom";
 import { Suspense, lazy } from "react";
 
 import MainPage from "./MainPage";
@@ -13,7 +13,7 @@ const ContributionsPage = lazy(() => import("./ContributionsPage"));
 
 function App() {
   return (
-    <HashRouter>
+    <BrowserRouter>
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/details/:id/:method" element={<DetailPage />} />
@@ -26,7 +26,7 @@ function App() {
           }
         />
       </Routes>
-    </HashRouter>
+    </BrowserRouter>
   );
 }
 
