@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export const WarningBox = ({ children }) => {
   return (
     <div
@@ -22,9 +24,9 @@ export const WarningBoxOtherMethod = ({ method, id }) => {
     >
       Warning: This section has been calculated starting from the structure in
       the{" "}
-      <a style={{ color: "black" }} href={methodUrl}>
+      <Link style={{ color: "black" }} to={methodUrl}>
         {method}
-      </a>{" "}
+      </Link>{" "}
       sub-database instead of the currently selected one.
     </div>
   );
