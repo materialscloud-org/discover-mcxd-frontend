@@ -16,6 +16,8 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<MainPage />} />
+        <Route path="/about" element={<MainPage tab="about" />} />
+        <Route path="/restapi" element={<MainPage tab="restapi" />} />
         <Route path="/details/:id/:method" element={<DetailPage />} />
         <Route
           path="/contributions"

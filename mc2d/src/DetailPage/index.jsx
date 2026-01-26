@@ -79,17 +79,18 @@ function DetailPage() {
   }
 
   return (
-    <MaterialsCloudHeader
-      activeSection={"discover"}
-      breadcrumbsPath={[
-        { name: "Discover", link: "https://www.materialscloud.org/discover" },
-        {
-          name: "Materials Cloud Two-Dimensional Structure Database",
-          link: `${import.meta.env.BASE_URL}`,
-        },
-        { name: params.id, link: null },
-      ]}
-    >
+    <>
+      <MaterialsCloudHeader
+        activeSection={"discover"}
+        breadcrumbsPath={[
+          { name: "Discover", link: "https://www.materialscloud.org/discover" },
+          {
+            name: "Materials Cloud Two-Dimensional Structure Database",
+            link: `${import.meta.env.BASE_URL}`,
+          },
+          { name: params.id, link: null },
+        ]}
+      />
       <Container fluid="xxl">
         <TitleAndLogo />
         {loading ? (
@@ -110,7 +111,7 @@ function DetailPage() {
           </>
         )}
       </Container>
-    </MaterialsCloudHeader>
+    </>
   );
 }
 

@@ -17,6 +17,8 @@ import { TwoWideInfoBox } from "../../common/TwoWideInfoBox";
 
 import formatIfExists from "../../common/resultFormatter";
 
+import { Link } from "react-router-dom";
+
 export default function VibrationalSection({ params, loadedData, phononData }) {
   // if data doesnt exist dont render.
   if (!phononData || !phononData?.scDetails?.phonons) return null;
@@ -187,9 +189,9 @@ export default function VibrationalSection({ params, loadedData, phononData }) {
           characterize promising superconducting materials. This frontend
           section shows phonon vibrational modes. For further details regarding
           the methodology see the{" "}
-          <a href="./contributions" target="_blank" rel="noopener noreferrer">
+          <Link to="/contributions" target="_blank" rel="noopener noreferrer">
             extended dataset documentation
-          </a>
+          </Link>
           .
         </div>
         <Row>
