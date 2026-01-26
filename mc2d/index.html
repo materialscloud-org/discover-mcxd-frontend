@@ -25,6 +25,14 @@
       header.appendChild(plausible);
     </script>
     <!-- end Plausible analytics -->
+
+    <script>
+      // to maintain backwards compatibility with routes we drop #/ and convert it to
+      if (window.location.hash && window.location.hash.startsWith("#/")) {
+        const path = window.location.hash.slice(1);
+        window.history.replaceState(null, "", path);
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
