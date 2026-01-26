@@ -1,6 +1,7 @@
 import { loadIndex, loadMetadata } from "../common/restApiUtils";
 
 import { countNumberOfAtoms, countNumberOfElements } from "../common/utils";
+import { generatePath } from "react-router-dom";
 
 import { getSymmetryInfo } from "mc-react-library";
 
@@ -162,8 +163,8 @@ function formatRows(indexData, metadata) {
 
   indexData.forEach((entry) => {
     // console.log(entry);
-
-    let href = `${import.meta.env.BASE_URL}/details/${entry["id"]}`;
+    let id = `${entry["id"]}`;
+    let href = generatePath("/details/:id", { id: id });
 
     let row = {};
     Object.entries(entry).map(([key, value]) => {
