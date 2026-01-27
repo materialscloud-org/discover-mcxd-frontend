@@ -10,8 +10,9 @@ import {
   fetchA2F,
 } from "./fetchLogic";
 
-import { CitationsList } from "../../common/CitationsList";
-import { DoiBadge, ExploreButton } from "mc-react-library";
+import { CitationBanner } from "@mcxd/shared";
+
+import { ExploreButton } from "mc-react-library";
 import { EXPLORE_URLS } from "../../common/aiidaRestApiUtils";
 
 import SuperconInfoBox from "./InfoBoxes";
@@ -83,8 +84,10 @@ export default function SuperConductivitySection({
               alignItems: "center",
             }}
           >
-            <CitationsList citationLabels={["MBercxSupercon25"]} />
-            <DoiBadge doi_id="9w-az" label="Data DOI" />
+            <CitationBanner
+              citationKeys={["MBercxSupercon25"]}
+              doiIndices={[0, 1]}
+            />
           </div>
         </div>
         {params.method !== method && (

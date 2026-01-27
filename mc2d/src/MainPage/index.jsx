@@ -19,7 +19,8 @@ import { restapiText } from "./restapiText";
 import { loadIndexMc2d } from "./loadIndexMc2d";
 
 import { DownloadButton } from "./DownloadButton.jsx";
-import { CitationsList } from "../common/CitationsList.jsx";
+
+import { CitationBanner } from "@mcxd/shared";
 
 const tabRoutes = { use: "/", about: "/about", restapi: "/restapi" };
 
@@ -71,7 +72,7 @@ const MainPage = ({ tab }) => {
           relaxed 2D materials and their various properties. For more details,
           please see the related publications:
           <div style={{ margin: "10px" }}>
-            <CitationsList citationLabels={["Mounet18", "Campi23"]} />
+            <CitationBanner citationKeys={["Mounet18", "Campi23"]} />
           </div>
         </div>
         <Tabs

@@ -12,7 +12,7 @@ import { Container, Row, Col } from "react-bootstrap";
 
 import { getSymmetryInfo } from "mc-react-library";
 
-import { CitationsList } from "../common/CitationsList";
+import { CitationBanner } from "@mcxd/shared";
 
 import {
   loadMetadata,
@@ -100,8 +100,8 @@ function DetailPage() {
         ) : (
           <>
             <div className="detail-page-heading">{title}</div>
-            <CitationsList
-              citationLabels={loadedData.details.general.citations}
+            <CitationBanner
+              citationKeys={loadedData.details.general.citations}
             />
             <OverviewSection params={params} loadedData={loadedData} />
             <StructureSection params={params} loadedData={loadedData} />

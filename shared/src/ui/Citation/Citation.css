@@ -1,0 +1,59 @@
+.citationbox-container {
+  border: 2px solid #d6d6d6;
+  border-radius: 15px;
+  padding: 15px;
+  margin: 15px;
+  background-color: rgb(250, 250, 250);
+}
+
+/* Title line */
+.citationbox-title {
+  line-height: 1.3;
+}
+
+/* Authors / journal line */
+.citationbox-authors {
+  margin-left: 5px;
+}
+
+/* Extra sections */
+.citationbox-extras {
+  margin-top: 5px;
+  margin-left: 20px;
+}
+
+/* Inline DOI badge that wraps with text */
+.citationbox-inline-badge {
+  display: inline-flex;
+  vertical-align: baseline;
+  margin-left: 6px;
+}
+
+.citationtext-list {
+  margin-left: 4px;
+}
+
+.citationtext-item {
+  padding: 1px 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Badge behaves like text */
+.citationtext-inline-badge {
+  display: inline-flex;
+  vertical-align: baseline;
+  margin-left: 6px;
+}
+
+.citation-a {
+  color: black;
+  vertical-align: text-bottom;
+  text-decoration: none;
+}
+
+.citation-a:hover {
+  color: #1a0dab;
+  text-decoration: underline;
+}

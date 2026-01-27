@@ -16,7 +16,8 @@ import { loadDataMc3d } from "./loadDataMc3d";
 import { DownloadButton } from "./DownloadButton";
 import { MethodSelectionBox } from "./MethodSelectionBox";
 import { loadGeneralInfo } from "../common/MCrestApiUtils";
-import { CitationsList } from "../common/CitationsList.jsx";
+
+import { CitationBanner } from "@mcxd/shared";
 
 import {
   updateColumnsFromUrl,
@@ -135,7 +136,7 @@ function MainPage({ tab }) {
           MPDS, COD and ICSD databases. For more details, please see the related
           publication:
           <div style={{ margin: "10px" }}>
-            <CitationsList citationLabels={["HuberMc3d25"]} />
+            <CitationBanner citationKeys={["HuberMc3d25"]} />
           </div>
         </div>
 

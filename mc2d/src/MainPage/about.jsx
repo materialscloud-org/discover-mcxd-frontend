@@ -1,5 +1,6 @@
 import { HashLink } from "react-router-hash-link";
-import CitationBox from "./components/CitationBox";
+
+import { CitationBox } from "@mcxd/shared";
 
 import { MathJaxContext, MathJax } from "better-react-mathjax";
 
@@ -367,45 +368,8 @@ export const aboutText = (
     <div className="about-text-container">
       <div className="about-h">How to cite</div>
       <p>If you use this tool or data, please cite the following works:</p>
-      <CitationBox
-        title={
-          <span>
-            Two-dimensional materials from high-throughput computational
-            exfoliation of experimentally known compounds
-          </span>
-        }
-        authors={
-          <span>
-            N. Mounet, M. Gibertini, P. Schwaller, D. Campi, A. Merkys, A.
-            Marrazzo, T. Sohier, I. E. Castelli, A. Cepellotti, G. Pizzi & N.
-            Marzari
-          </span>
-        }
-        journal="Nat. Nanotech. 13, 246-252"
-        doi="10.1038/s41565-017-0035-5"
-        year="2018"
-        data={
-          <span>
-            N. Mounet et al., Materials Cloud Archive 2020.158, doi:{" "}
-            <a
-              href="https://doi.org/10.24435/materialscloud:az-b2"
-              target="_blank"
-            >
-              10.24435/materialscloud:az-b2
-            </a>{" "}
-            (2020)
-          </span>
-        }
-        arxiv={
-          <span>
-            N. Mounet et al., arXiv:1611.05234, doi:{" "}
-            <a href="https://doi.org/10.48550/arXiv.1611.05234" target="_blank">
-              10.48550/arXiv.1611.05234
-            </a>{" "}
-            (2016)
-          </span>
-        }
-      />
+      <CitationBox citationKey={"Mounet18"} />
+      <CitationBox citationKey={"Campi23"} />
       <CitationBox
         title={<span>Expansion of the Materials Cloud 2D Database</span>}
         authors={

@@ -37,10 +37,12 @@ import SuperconductivitySection from "./SuperconductivitySection";
 
 import SimilaritySection from "./SimilaritySection";
 
+import ElectronicStructureSection from "./ElectronicStructureSection";
+
 // if fetching fails we use this.
 import MissingDataWarning from "./MissingDataWarning";
-import { CitationsList } from "../common/CitationsList";
-import ElectronicStructureSection from "./ElectronicStructureSection";
+
+import { CitationBanner } from "@mcxd/shared";
 
 // contributed sections
 // import RelatedSection from "./RelatedSection";
@@ -208,7 +210,7 @@ function DetailPage() {
         <div className="detail-page-heading">{title}</div>
 
         {/* Place this somewhere nice */}
-        {/* <CitationsList citationLabels={["HuberMc3d25"]} /> */}
+        {/* <CitationBanner citationKeys={["HuberMc3d25"]} /> */}
 
         <div style={{ paddingLeft: "12px" }}>
           <AlternativeMethodsList

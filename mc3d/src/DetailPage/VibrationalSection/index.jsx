@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { Row, Col, Container } from "react-bootstrap";
-import { DoiBadge } from "mc-react-library";
 
-import { CitationsList } from "../../common/CitationsList";
+import { CitationBanner } from "@mcxd/shared";
 import PhononVisualizer from "mc-react-phonon-visualizer";
 
 import { loadSuperConPhononVis } from "../../common/MCrestApiUtils";
@@ -173,8 +172,10 @@ export default function VibrationalSection({ params, loadedData, phononData }) {
             alignItems: "center",
           }}
         >
-          <CitationsList citationLabels={["MBercxSupercon25"]} />
-          <DoiBadge doi_id="9w-az" label="Data DOI" />
+          <CitationBanner
+            citationKeys={["MBercxSupercon25"]}
+            doiIndices={[0, 1]}
+          />
         </div>
       </div>
 
