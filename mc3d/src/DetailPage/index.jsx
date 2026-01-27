@@ -232,7 +232,7 @@ function DetailPage() {
         <ProvenanceSection params={params} loadedData={coreData} />
         <XrdSection params={params} loadedData={coreData} />
 
-        {/* <ElectronicStructureSection params={params} /> */}
+        <ElectronicStructureSection params={params} />
 
         <VibrationalSection
           params={params}
