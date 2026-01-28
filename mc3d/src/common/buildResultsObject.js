@@ -1,7 +1,7 @@
 export default function buildResultsObject(methods, currentMethod) {
   if (!methods || !currentMethod) return {};
 
-  // Best method hierarchy
+  // Best method hierarchy - TODO need to globalise this.
   const methodHierarchy = [currentMethod, "pbesol-v2", "pbesol-v1", "pbe-v1"];
 
   // Entry hierarchy (controls output order)

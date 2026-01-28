@@ -6,6 +6,7 @@ import { Suspense, lazy } from "react";
 import MainPage from "./MainPage";
 import DetailPage from "./DetailPage";
 import LoadingPage from "./LoadingPage";
+import RedirectToBestMethod from "./RedirectToBestPage";
 // import ContributionsPage from "./ContributionsPage";
 
 // Lazy load Contributions to avoid prebundling Markdown js libraries.
@@ -18,6 +19,8 @@ function App() {
         <Route path="/" element={<MainPage />} />
         <Route path="/about" element={<MainPage tab="about" />} />
         <Route path="/restapi" element={<MainPage tab="restapi" />} />
+        <Route path="/details/:id" element={<RedirectToBestMethod />} />
+
         <Route path="/details/:id/:method" element={<DetailPage />} />
         <Route
           path="/contributions"
