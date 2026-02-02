@@ -10,6 +10,7 @@
     "react-dom": "^18.0.0"
   },
   "dependencies": {
-    "bands-visualiser": "^0.0.3"
+    "bands-visualiser": "^0.0.3",
+    "plotly.js-basic-dist-min": "^3.3.1"
   }
 }

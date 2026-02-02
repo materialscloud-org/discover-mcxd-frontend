@@ -9,6 +9,7 @@ export { CITATION_MAPPING } from "./Citation/citationMapping.js";
 
 export {
   standardTraceConfigs,
+  topologyTraceConfigs,
   SuperConTraceConfigs,
   COMMON_LAYOUT_CONFIG,
   SUPERCON_BANDS_LAYOUT_CONFIG,

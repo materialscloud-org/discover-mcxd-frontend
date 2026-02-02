@@ -19,6 +19,8 @@ import {
   loadDetails,
   loadAiidaAttributes,
   loadAiidaCif,
+  loadDatasetIndex,
+  loadTopologyDetails,
 } from "../common/restApiUtils";
 
 import "./index.css";
@@ -30,6 +32,8 @@ import VibrationalSection from "./VibrationalSection";
 import ParentsSection from "./ParentsSection";
 import StructureSection from "./StructureSection";
 
+import TopologySection from "./TopologySection";
+
 function formatTitle(formulaStr, id) {
   return (
     <span>
@@ -39,6 +43,8 @@ function formatTitle(formulaStr, id) {
 }
 
 async function fetchCompoundData(id) {
+  let datasetIndex = await loadDatasetIndex(id);
+
   let metadata = await loadMetadata(id);
   let details = await loadDetails(id);
 
@@ -49,11 +55,19 @@ async function fetchCompoundData(id) {
   let aiidaAttributes = await loadAiidaAttributes(structureUuid);
   let structureCif = await loadAiidaCif(structureUuid);
 
+  // fetch and bundle topology metadata.
+  let topologyInfo = {};
+  if (datasetIndex?.index?.["pbe-v1"]?.includes("2dtopo_base")) {
+    topologyInfo = await loadTopologyDetails(id);
+  }
+
   return {
     metadata: metadata,
     details: details,
     symmetryInfo: symmetryInfo,
     structureInfo: { aiidaAttributes: aiidaAttributes, cif: structureCif },
+    datasetIndex: datasetIndex,
+    topologyInfo: topologyInfo,
   };
 }
 
@@ -70,7 +84,7 @@ function DetailPage() {
       console.log("Loaded general data", loadedData);
       setLoadedData(loadedData);
     });
-  }, [params.id]); // <- call when route params change
+  }, [params.id]);
 
   let title = null;
   let loading = loadedData == null;
@@ -107,6 +121,13 @@ function DetailPage() {
             <StructureSection params={params} loadedData={loadedData} />
             <ElectronicSection params={params} loadedData={loadedData} />
             <VibrationalSection params={params} loadedData={loadedData} />
+
+            {/* Topology only if in dataset-index */}
+            {loadedData?.topologyInfo &&
+              Object.keys(loadedData.topologyInfo).length > 0 && (
+                <TopologySection params={params} loadedData={loadedData} />
+              )}
+
             <ParentsSection params={params} loadedData={loadedData} />
           </>
         )}
