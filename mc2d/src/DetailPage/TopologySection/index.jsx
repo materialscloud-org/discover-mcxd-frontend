@@ -16,6 +16,8 @@ import {
 } from "@mcxd/shared";
 import { formatAiidaProp } from "../utils";
 
+import { CitationBanner } from "@mcxd/shared";
+
 import { buildTraceFormat } from "@mcxd/shared";
 
 import { HWCCPlot } from "./hwccPlot";
@@ -104,9 +106,29 @@ const TopologySection = ({ params, loadedData }) => {
 
   return (
     <div>
-      <div className="section-heading">Topological Insulators</div>
-
       <Container fluid className="section-container">
+        <div
+          style={{
+            margin: "10px 0px",
+            padding: "20px 0px 10px",
+            borderBottom: "1px solid #c4c4c4",
+          }}
+        >
+          <div style={{ fontSize: "24px" }}>Topological insulators</div>
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "2px",
+              alignItems: "center",
+            }}
+          >
+            <CitationBanner
+              citationKeys={["Marrazzo2019", "Grassano2023"]}
+              doiIndices={[0, 1]}
+            />
+          </div>
+        </div>
         <Row>
           <Col className="flex-column">
             <WarningBox>
@@ -137,8 +159,22 @@ const TopologySection = ({ params, loadedData }) => {
           </Col>
           <Row>
             <Col className="flex-column">
-              <div className="subsection-title">
-                Spin orbit and no Spin-orbit band structure
+              <div className="subsection-title">Electronic band structure</div>
+              <div className="mb-3 ms-2">
+                Calculated with Spin-orbit coupling{" "}
+                {topologyData.soc_bandstructure_uuid && (
+                  <ExploreButton
+                    explore_url={TOPOLOGICAL_EXPLORE_URL}
+                    uuid={topologyData.nosoc_bandstructure_uuid}
+                  />
+                )}{" "}
+                and without{" "}
+                {topologyData.nosoc_bandstructure_uuid && (
+                  <ExploreButton
+                    explore_url={TOPOLOGICAL_EXPLORE_URL}
+                    uuid={topologyData.nosoc_bandstructure_uuid}
+                  />
+                )}
               </div>
               <BandStructure
                 bandsDataArray={bandsData}
@@ -152,6 +188,9 @@ const TopologySection = ({ params, loadedData }) => {
             </Col>
             <Col className="flex-column">
               <div className="subsection-title">HWCC tracking plot</div>
+              <div className="mb-3 ms-2">
+                For calculation of non-trivial topological invariance
+              </div>
               <HWCCPlot hwcc={loadedData?.topologyInfo.hwcc} />
             </Col>
           </Row>
