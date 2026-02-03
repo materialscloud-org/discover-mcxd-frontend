@@ -23,10 +23,7 @@ import { buildTraceFormat } from "@mcxd/shared";
 import { HWCCPlot } from "./hwccPlot";
 
 import {
-  AIIDA_REST_API_URL,
-  TOPOLOGICAL_AIIDA_REST_API_URL,
   TOPOLOGICAL_EXPLORE_URL,
-  EXPLORE_URL,
   loadTopoBands,
 } from "../../common/restApiUtils";
 
@@ -76,17 +73,17 @@ const TopologySection = ({ params, loadedData }) => {
           loadTopoBands(topologyData.nosoc_bandstructure_uuid),
         ]);
 
-        shiftBands(socBands, -topologyData.fermi_without_SOC);
+        shiftBands(socBands, -topologyData.fermi_with_SOC);
         shiftBands(nosocBands, -topologyData.fermi_without_SOC);
 
         const finalBands = [
           {
-            bandsData: socBands,
-            traceFormat: buildTraceFormat(topologyTraceConfigs.soc),
-          },
-          {
             bandsData: nosocBands,
             traceFormat: buildTraceFormat(topologyTraceConfigs.nosoc),
+          },
+          {
+            bandsData: socBands,
+            traceFormat: buildTraceFormat(topologyTraceConfigs.soc),
           },
         ];
 

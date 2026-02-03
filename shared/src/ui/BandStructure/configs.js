@@ -49,24 +49,23 @@ export const topologyTraceConfigs = {
     trace: {
       mode: "lines",
       line: {
-        color: "#d62728",
-        dash: "4px",
-        width: 1.75,
-        opacity: 1,
+        color: "#6baed6",
+        dash: "solid",
+        width: 2.25,
+        opacity: 0.95,
       },
     },
   },
-
   soc: {
     label: "SOC",
     units: "eV",
     trace: {
       mode: "lines",
       line: {
-        color: "#6baed6",
-        dash: "solid",
-        width: 2.25,
-        opacity: 0.95,
+        color: "#d62728",
+        dash: "4px",
+        width: 1.75,
+        opacity: 1,
       },
     },
   },

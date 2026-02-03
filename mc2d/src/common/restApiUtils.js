@@ -3,7 +3,7 @@
 // Define all functions for api calls here.
 
 // By default, use development API URLS
-let mcRestApiUrl = "http://localhost:8001/";
+let mcRestApiUrl = "https://mcxd-api.dev.materialscloud.org/";
 let aiidaRestBaseUrl = "https://aiida.materialscloud.org";
 let exploreBaseUrl = "https://develop.mc-frontend.pages.dev/explore/";
 
@@ -22,8 +22,6 @@ export const TOPOLOGICAL_AIIDA_REST_API_URL = `${aiidaRestBaseUrl}/2dtopo/api/v4
 
 export const EXPLORE_URL = `${exploreBaseUrl}mc2d`;
 export const TOPOLOGICAL_EXPLORE_URL = `${exploreBaseUrl}2dtopo`;
-
-const MC_REST_API_FALLBACK_URL = "http://localhost:8001";
 
 // method for fetching with a fallback url.
 async function fetchWithFallback(primaryUrl, fallbackUrl, timeout = 3500) {
