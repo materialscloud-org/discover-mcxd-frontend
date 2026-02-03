@@ -163,7 +163,7 @@ export const COMMON_LAYOUT_CONFIG = {
     borderwidth: 1,
   },
 
-  margin: { l: 65, r: 10, t: 10, b: 50 },
+  margin: { l: 65, r: 10, t: 2, b: 50 },
 
   shapes: [
     {

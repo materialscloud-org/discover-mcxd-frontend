@@ -1,71 +1,96 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import Plotly from "plotly.js-basic-dist-min";
 import { COMMON_LAYOUT_CONFIG } from "@mcxd/shared";
 
 export function HWCCPlot({ hwcc }) {
   const plotRef = useRef(null);
 
-  useEffect(() => {
-    if (!hwcc || !plotRef.current) return;
+  const traces = useMemo(() => {
+    if (!hwcc) return [];
 
     const { k, gaps, wcc } = hwcc;
 
-    const traces = [];
-    traces.push({
-      type: "scatter",
-      mode: "markers",
-      x: k.flatMap((ki, i) => (wcc[i] ?? []).map(() => ki)),
-      y: k.flatMap((_, i) => wcc[i] ?? []),
-      marker: {
-        size: 4,
-        color: "#3e3e3e",
-      },
-      hoverinfo: "skip",
-      name: "HWCC evolution",
-    });
+    const x = [];
+    const y = [];
 
-    // Gap points (red)
-    traces.push({
-      type: "scatter",
-      mode: "markers",
-      x: k,
-      y: gaps,
-      marker: {
-        size: 8,
-        color: "#de0000",
-      },
-      hoverinfo: "skip",
-      name: "Largest gap",
-    });
+    const estimatedTraces = k.length * wcc[0].length;
+    const step = 1 + Math.floor(estimatedTraces / 7500);
 
-    const layout = {
+    console.log(step);
+
+    // Deduplicate per k
+    for (let i = 0; i < k.length; i += step) {
+      const ki = k[i];
+      const wcci = wcc[i];
+      if (!Array.isArray(wcci)) continue;
+
+      const seenY = new Set();
+      for (let j = 0; j < wcci.length; j++) {
+        const v = wcci[j];
+        if (seenY.has(v)) continue;
+        seenY.add(v);
+        x.push(ki);
+        y.push(v);
+      }
+    }
+
+    return [
+      {
+        type: "scatter", // WebGL for large datasets
+        mode: "markers",
+        x,
+        y,
+        marker: { size: 3, color: "#3e3e3e", opacity: 0.7 },
+        hoverinfo: "skip",
+        name: "HWCC evolution",
+      },
+      {
+        type: "scatter",
+        mode: "markers",
+        x: k,
+        y: gaps,
+        marker: { size: 8, color: "#de0000" },
+        hoverinfo: "skip",
+        name: "Largest gap",
+      },
+    ];
+  }, [hwcc]);
+
+  // Memoize layout to avoid object churn
+  const layout = useMemo(
+    () => ({
       ...COMMON_LAYOUT_CONFIG,
       xaxis: {
         ...COMMON_LAYOUT_CONFIG.xaxis,
         zeroline: false,
-
         range: [-0.02, 1.02],
         tickvals: [0, 1],
         ticktext: ["0", "π/a"],
         tickfont: { size: 14, color: "#333" },
-
         title: { text: "k", font: { size: 16 }, standoff: 0 },
       },
       yaxis: {
         range: [-0.02, 1.02],
         zeroline: false,
-
         title: { text: "WCC x̄", font: { size: 16 }, standoff: 0 },
         tickfont: { size: 14, color: "#333" },
       },
-    };
+    }),
+    [],
+  );
 
-    Plotly.react(plotRef.current, traces, layout);
+  useEffect(() => {
+    if (!plotRef.current || !traces.length) return;
 
-    return () => {
-      Plotly.purge(plotRef.current);
-    };
-  }, [hwcc]);
+    const plotElement = plotRef.current;
 
-  return <div ref={plotRef} style={{ width: "100%", height: "450px" }} />;
+    // Use react for efficient updates
+    Plotly.react(plotElement, traces, layout, {});
+
+    return () => Plotly.purge(plotElement);
+  }, [traces, layout]);
+
+  console.log(traces);
+
+  return <div ref={plotRef} style={{ width: "100%", height: "365px" }} />;
 }

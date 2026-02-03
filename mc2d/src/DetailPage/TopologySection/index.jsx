@@ -158,7 +158,7 @@ const TopologySection = ({ params, loadedData }) => {
             </div>
           </Col>
           <Row>
-            <Col className="flex-column">
+            <Col md={6}>
               <div className="subsection-title">Electronic band structure</div>
               <div className="mb-3 ms-2">
                 Calculated with Spin-orbit coupling{" "}
@@ -179,19 +179,34 @@ const TopologySection = ({ params, loadedData }) => {
               <BandStructure
                 bandsDataArray={bandsData}
                 loading={loadingBands}
-                minYval={-1.5}
-                maxYval={1.5}
+                minYval={-1.55}
+                maxYval={1.55}
                 layoutOverrides={{
                   ...COMMON_LAYOUT_CONFIG,
                 }}
               />
             </Col>
-            <Col className="flex-column">
-              <div className="subsection-title">HWCC tracking plot</div>
-              <div className="mb-3 ms-2">
-                For calculation of non-trivial topological invariance
-              </div>
-              <HWCCPlot hwcc={loadedData?.topologyInfo.hwcc} />
+            <Col md={6}>
+              <div className="subsection-title">Topological Information</div>
+              <McInfoBox title="General">
+                <ul className="no-bullets">
+                  {loadedData?.topologyInfo?.inversion_strength && (
+                    <li>{`Topological inversion strength: ${loadedData?.topologyInfo.inversion_strength} meV `}</li>
+                  )}
+                  <li>{`Spin-orbit coupling band gap: ${loadedData?.topologyInfo.soc_band_gap} meV `}</li>
+                </ul>
+              </McInfoBox>
+
+              {loadedData?.topologyInfo?.hwcc &&
+                Object.keys(loadedData.topologyInfo.hwcc).length > 0 && (
+                  <>
+                    {" "}
+                    <div className="subsection-title mt-2">
+                      HWCC tracking plot
+                    </div>
+                    <HWCCPlot hwcc={loadedData.topologyInfo.hwcc} />
+                  </>
+                )}
             </Col>
           </Row>
         </Row>
