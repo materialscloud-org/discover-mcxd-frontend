@@ -51,7 +51,7 @@ function ContributionsPage() {
         breadcrumbsPath={[
           { name: "Discover", link: "https://www.materialscloud.org/discover" },
           {
-            name: "Materials Cloud Three-Dimensional Structure Database",
+            name: "Materials Cloud Two-Dimensional Structure Database",
             link: `${import.meta.env.BASE_URL}`,
           },
           { name: `Extended dataset documentation`, link: null },
@@ -119,6 +119,28 @@ function ContributionsPage() {
                         />
                       );
                     },
+
+                    img: ({ node, ...props }) => (
+                      <figure
+                        style={{ textAlign: "center", margin: "2.5em 0" }}
+                      >
+                        <img
+                          {...props}
+                          style={{
+                            maxHeight: "500px",
+                            width: "auto",
+                            display: "inline-block",
+                          }}
+                        />
+                        {props.alt && (
+                          <figcaption
+                            style={{ fontSize: "0.9em", marginTop: "0.10em" }}
+                          >
+                            {props.alt}
+                          </figcaption>
+                        )}
+                      </figure>
+                    ),
                   }}
                 >
                   {md}
