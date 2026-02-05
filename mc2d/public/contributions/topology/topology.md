@@ -1,6 +1,6 @@
 ## Topological Insulator calculations
 
-The set of calculations related to topological insulators is derived from two seperate but complementary publications. The work by Marazzo et al.,[^1] identified 13 monolayer candidate QSHI materials. The work by Grassano et al.,[^2] identified four more and seven direct-gap metals metals.
+The set of calculations related to topological insulators is derived from two seperate but complementary publications. The work by Marrazzo et al.,[^1] identified 13 monolayer candidate QSHI materials. The work by Grassano et al.,[^2] identified four more and seven direct-gap metals.
 
 ### Motivation
 
@@ -10,13 +10,13 @@ Besides fundamental scientific interest, numerous technological applications of 
 
 _The following details relate to the publication - Marrazzo et al., ACS Nano 19, 8431-8440 (2019), Full details of the source methodology as well as further discussion are available in the publication.[^1]_
 
-Using the Materials cloud Two-Dimensional Structure Database, candidate QSHIs were identfied through a multistep funneling process. Firstly, lanthanide-containing elements were filtered, as standard DFT performs poorly in describing their electronic strucuture. This yields 1471 structures, all of which are relaxed using the PBE functional assuming a non-magnetic ground state. Band structures are then calculated along high-symmetry lines using DFT and the PBE functional with Spin-orbit coupling, allowing identification of band insulators. $\mathbb{Z}_2$ invariant was computed by tracking the evolution of hermaphrodite Wannier charge centers (HWCC). For materials that satisfy this constraint, phonon dispersions were calculated to identify structures with poor mechanical stability (i.e., those exhibiting imaginary phonon modes).
+Using MC2D, candidate QSHIs were identfied through a multistep funneling process. Firstly, lanthanide-containing elements were filtered, as standard DFT performs poorly in describing their electronic strucuture. This yields 1471 structures, all of which are relaxed using the PBE functional assuming a non-magnetic ground state. Band structures are then calculated along high-symmetry lines using DFT and the PBE functional with Spin-orbit coupling, allowing identification of band insulators. $\mathbb{Z}_2$ invariant was computed by tracking the evolution of hermaphrodite Wannier charge centers (HWCC). For materials that satisfy this constraint, phonon dispersions were calculated to identify structures with poor mechanical stability (i.e., those exhibiting imaginary phonon modes).
 
 Additionally, materials identified as metallic but possessing a direct gap along high-symmetry paths, were subjected to hydrostatic strain (±1%, ±2%, ±3%) to determine whether such materials become insulators. This step aims to identify materials that may be tunable to become QSHIs, via substrate choice, for example. Within the publication these QSHIs are then recalculated with $G_{0}W_{0}$, a significantly more accurate, albeit computationally expensive, method.
 
 Inversion strength (IS) is defined differently for the two types of QSHIs, for Bernevig–Hughes–Zhang (BHZ)-type QSHIs[^3] the IS is defined as the difference between the lowest unoccupied and highest occupied band at the high-symmetry point where band inversion occurs. Whereas for Kane–Mele QSHIs, where a single Dirac cone is gapped by Kane–Mele spin–orbit coupling at the K point[^4], the inversion strength is the band gap at that K point.
 
-![Schematic representation of the screening process for the Marazzo publication](/contributions/topology_marazzo.jpeg)
+![Schematic representation of the screening process for the Marazzo publication](/contributions/topology/topology_marazzo.jpeg)
 
 _The following details relate to the complementary publication - Grassano et al., Phys. Rev. Mater. 7, 094202 (2023). Full details of the source methodology as well as further discussion are available in the publication[^2]_
 
@@ -30,7 +30,7 @@ $$
 
 For materials without inversion symmetry, direct and indirect band gaps are calculated. Then the Z2pack software is used to investigate HWCC evolution across half the Brillouin zone over a progressively denser k-point grid. Finally, selected candidates are assessed for mechanical stability via phonon calculations.
 
-![Schematic representation of the screening process for the Grassano publication](/contributions/topology_grassano.png)
+![Schematic representation of the screening process for the Grassano publication](/contributions/topology/topology_grassano.png)
 
 _For both publications, the AiiDA workflow manager was used to assist with automation and provenance tracking._
 
