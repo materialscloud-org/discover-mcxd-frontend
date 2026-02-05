@@ -61,7 +61,7 @@ function ContributionsPage() {
           },
           {
             name: "Extended dataset documentation",
-            link: `${import.meta.env.BASE_URL}/contributions`,
+            link: `${import.meta.env.BASE_URL}contributions`,
           },
           { name: title, link: null },
         ]}

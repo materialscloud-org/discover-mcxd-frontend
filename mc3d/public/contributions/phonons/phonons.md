@@ -1,4 +1,4 @@
-# Phonon calculations
+## Phonon calculations
 
 ### Motivation
 
