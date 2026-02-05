@@ -16,8 +16,6 @@ export function HWCCPlot({ hwcc }) {
     const estimatedTraces = k.length * wcc[0].length;
     const step = 1 + Math.floor(estimatedTraces / 7500);
 
-    console.log(step);
-
     // Deduplicate per k
     for (let i = 0; i < k.length; i += step) {
       const ki = k[i];
@@ -36,7 +34,7 @@ export function HWCCPlot({ hwcc }) {
 
     return [
       {
-        type: "scatter", // WebGL for large datasets
+        type: "scatter",
         mode: "markers",
         x,
         y,
@@ -56,7 +54,6 @@ export function HWCCPlot({ hwcc }) {
     ];
   }, [hwcc]);
 
-  // Memoize layout to avoid object churn
   const layout = useMemo(
     () => ({
       ...COMMON_LAYOUT_CONFIG,
@@ -84,7 +81,6 @@ export function HWCCPlot({ hwcc }) {
 
     const plotElement = plotRef.current;
 
-    // Use react for efficient updates
     Plotly.react(plotElement, traces, layout, {});
 
     return () => Plotly.purge(plotElement);

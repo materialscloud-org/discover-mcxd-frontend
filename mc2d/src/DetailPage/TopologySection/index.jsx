@@ -139,8 +139,8 @@ const TopologySection = ({ params, loadedData }) => {
             </WarningBox>
             <div style={{ padding: "10px 10px", textAlign: "justify" }}>
               This dataset provides results from a high-throughput search for
-              topological insulating two-dimensional materials.. This requires
-              high-accuracy Spin-orbit coupling DFT calculations. This frontend
+              topological insulating two-dimensional materials. This requires
+              high-accuracy spin-orbit coupling DFT calculations. This frontend
               section contains the final band structure and the corrosponding
               calculated band gaps. For further details regarding the
               methodology see the{" "}
@@ -158,7 +158,7 @@ const TopologySection = ({ params, loadedData }) => {
             <Col md={6}>
               <div className="subsection-title">Electronic band structure</div>
               <div className="mb-3 ms-2">
-                Calculated with Spin-orbit coupling{" "}
+                Calculated with spin-orbit coupling{" "}
                 {topologyData.soc_bandstructure_uuid && (
                   <ExploreButton
                     explore_url={TOPOLOGICAL_EXPLORE_URL}
@@ -184,13 +184,13 @@ const TopologySection = ({ params, loadedData }) => {
               />
             </Col>
             <Col md={6}>
-              <div className="subsection-title">Topological Information</div>
+              <div className="subsection-title">Topological information</div>
               <McInfoBox title="General">
                 <ul className="no-bullets">
                   {loadedData?.topologyInfo?.inversion_strength && (
                     <li>{`Topological inversion strength: ${loadedData?.topologyInfo.inversion_strength} meV `}</li>
                   )}
-                  <li>{`Spin-orbit coupling band gap: ${loadedData?.topologyInfo.soc_band_gap} meV `}</li>
+                  <li>{`spin-orbit coupling band gap: ${loadedData?.topologyInfo.soc_band_gap} meV `}</li>
                 </ul>
               </McInfoBox>
 
