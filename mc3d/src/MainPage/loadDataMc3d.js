@@ -6,7 +6,7 @@ import {
   bravaisLatticeFromSpgn,
 } from "../common/symmetryUtils";
 
-import { countNumberOfAtoms, countNumberOfElements } from "../common/utils";
+import { countNumberOfAtoms, countNumberOfElements } from "@mcxd/shared";
 
 // Order the columns and define which ones to show by default
 // refer to the label/field of the column

@@ -1,3 +1,5 @@
+export { TitleAndLogo } from "./TitleAndLogo/TitleAndLogo.jsx";
+
 export { ExampleButton } from "./ExampleButton.jsx";
 export { McTable } from "./McTable.jsx";
 export { McInfoBox } from "./McInfoBox.jsx";
@@ -22,3 +24,5 @@ export {
 } from "./BandStructure/utils.js";
 
 export { BandsVisualiser, splitBandsData } from "bands-visualiser";
+
+export { formatTitle } from "./utils.jsx";

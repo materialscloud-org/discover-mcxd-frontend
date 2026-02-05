@@ -8,9 +8,10 @@ import MaterialsCloudHeader from "mc-react-header";
 
 import { McloudSpinner } from "mc-react-library";
 
-import TitleAndLogo from "../common/TitleAndLogo";
+import Mc3dLogo from "../assets/mc3d.png";
+import { TitleAndLogo } from "@mcxd/shared";
 
-import { formatTitle } from "../common/utils";
+import { formatTitle } from "@mcxd/shared";
 
 import { Container } from "react-bootstrap";
 
@@ -167,7 +168,13 @@ function DetailPage() {
           ]}
         />
         <Container fluid="xxl">
-          <TitleAndLogo />
+          <TitleAndLogo
+            titleString={
+              "Materials Cloud Three-Dimensional Structure Database (MC3D)"
+            }
+            imgSrc={Mc3dLogo}
+            doiIds={["rw-t0"]}
+          />
           <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
             <McloudSpinner />
           </div>
@@ -205,8 +212,13 @@ function DetailPage() {
         ]}
       />
       <Container fluid="xxl">
-        <TitleAndLogo />
-
+        <TitleAndLogo
+          titleString={
+            "Materials Cloud Three-Dimensional Structure Database (MC3D)"
+          }
+          imgSrc={Mc3dLogo}
+          doiIds={["rw-t0"]}
+        />
         <div className="detail-page-heading">{title}</div>
 
         {/* Place this somewhere nice */}
