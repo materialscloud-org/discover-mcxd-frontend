@@ -10,7 +10,7 @@ import { McloudSpinner } from "mc-react-library";
 
 import TitleAndLogo from "../common/TitleAndLogo";
 
-import { formatTitle } from "../common/utils";
+import { formatTitle } from "@mcxd/shared";
 
 import { Container } from "react-bootstrap";
 

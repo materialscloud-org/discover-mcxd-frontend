@@ -22,3 +22,5 @@ export {
 } from "./BandStructure/utils.js";
 
 export { BandsVisualiser, splitBandsData } from "bands-visualiser";
+
+export { formatTitle } from "./utils.jsx";

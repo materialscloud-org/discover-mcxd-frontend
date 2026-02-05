@@ -18,14 +18,6 @@ export function countNumberOfElements(formula) {
   return formula.split(/(?=[A-Z])/).length;
 }
 
-export function formatTitle(formulaStr, id, method) {
-  return (
-    <span>
-      {formatChemicalFormula(formulaStr)} ({id}/{method})
-    </span>
-  );
-}
-
 export function format_aiida_prop(
   property,
   metadata,

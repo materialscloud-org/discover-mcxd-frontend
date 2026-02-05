@@ -8,6 +8,8 @@ import MaterialsCloudHeader from "mc-react-header";
 
 import { formatChemicalFormula } from "mc-react-library";
 
+import { formatTitle } from "@mcxd/shared";
+
 import { Container, Row, Col } from "react-bootstrap";
 
 import { getSymmetryInfo } from "mc-react-library";
@@ -29,14 +31,6 @@ import ElectronicSection from "./ElectronicSection";
 import VibrationalSection from "./VibrationalSection";
 import ParentsSection from "./ParentsSection";
 import StructureSection from "./StructureSection";
-
-function formatTitle(formulaStr, id) {
-  return (
-    <span>
-      {formatChemicalFormula(formulaStr)} ({id})
-    </span>
-  );
-}
 
 async function fetchCompoundData(id) {
   let metadata = await loadMetadata(id);
