@@ -1,48 +1,53 @@
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
-// standard markdown.
+// Markdown & plugins
 import ReactMarkdown from "react-markdown";
-// for math support.
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
-import "katex/dist/katex.min.css";
-
-// for footnote support
 import remarkGfm from "remark-gfm";
 import remarkFootnotes from "remark-footnotes";
 
+import "katex/dist/katex.min.css";
 import "./index.css";
 
 import { Container } from "react-bootstrap";
-
-import TitleAndLogo from "../common/TitleAndLogo";
-
-import MaterialsCloudHeader from "mc-react-header";
-
-const markdownEntries = ["preface.md", "topology.md"];
-
 import { McloudSpinner } from "mc-react-library";
 
-// TODO - maybe switch this to being a many contributions page?
+import TitleAndLogo from "../common/TitleAndLogo";
+import MaterialsCloudHeader from "mc-react-header";
+
 function ContributionsPage() {
-  const [markdowns, setMarkdowns] = useState([]);
+  const { page } = useParams(); // URL param
+  const [markdown, setMarkdown] = useState(null);
+  const [metadata, setMetadata] = useState(null);
 
   useEffect(() => {
-    Promise.all(
-      markdownEntries.map((file) =>
-        // fetch from public since these files are small
-        fetch(`./contributions/${file}`).then((res) => {
-          if (!res.ok) throw new Error(`Failed to fetch ${file}`);
-          return res.text();
-        }),
-      ),
-    )
-      .then((contents) => setMarkdowns(contents))
-      .catch((error) => {
-        console.error(error);
-        setMarkdowns([]);
-      });
-  }, []);
+    if (!page) return;
+
+    setMarkdown(null);
+    setMetadata(null);
+
+    // Load JSON metadata for this contribution
+    fetch("/contributions/contributions.json")
+      .then((res) => (res.ok ? res.json() : Promise.reject()))
+      .then((data) => {
+        const entry = data.find((c) => c.slug === page);
+        setMetadata(entry || { title: page });
+      })
+      .catch(() => setMetadata({ title: page }));
+
+    // Load markdown from its nested folder
+    fetch(`/contributions/${page}/${page}.md`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Markdown not found");
+        return res.text();
+      })
+      .then(setMarkdown)
+      .catch(() => setMarkdown("NOT_FOUND"));
+  }, [page]);
+
+  const title = metadata?.title || page;
 
   return (
     <>
@@ -51,81 +56,93 @@ function ContributionsPage() {
         breadcrumbsPath={[
           { name: "Discover", link: "https://www.materialscloud.org/discover" },
           {
-            name: "Materials Cloud Three-Dimensional Structure Database",
+            name: "Materials Cloud Two-Dimensional Structure Database",
             link: `${import.meta.env.BASE_URL}`,
           },
-          { name: `Extended dataset documentation`, link: null },
+          {
+            name: "Extended dataset documentation",
+            link: `${import.meta.env.BASE_URL}/contributions`,
+          },
+          { name: title, link: null },
         ]}
       />
+
       <Container fluid="xxl">
         <TitleAndLogo />
-        {markdowns.length === 0 ? (
+
+        {markdown === null ? (
           <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
             <McloudSpinner />
           </div>
+        ) : markdown === "NOT_FOUND" ? (
+          <h3>Page not found</h3>
         ) : (
-          markdowns.map((md, i) => {
-            const containerId = `markdown-entry-${i}`; // unique ID per file
-            return (
-              <div key={i} className="markdown-entry" id={containerId}>
-                <ReactMarkdown
-                  remarkPlugins={[remarkMath, remarkGfm, remarkFootnotes]}
-                  rehypePlugins={[rehypeKatex]}
-                  components={{
-                    a: ({ ...props }) => {
-                      const href = props.href || "";
-                      const isHashLink = href.startsWith("#");
+          <div className="markdown-entry">
+            <ReactMarkdown
+              remarkPlugins={[remarkMath, remarkGfm, remarkFootnotes]}
+              rehypePlugins={[rehypeKatex]}
+              components={{
+                a: ({ ...props }) => {
+                  const href = props.href || "";
+                  const isHashLink = href.startsWith("#");
 
-                      if (isHashLink) {
-                        return (
-                          <a
-                            {...props}
-                            onClick={(e) => {
-                              e.preventDefault();
+                  if (isHashLink) {
+                    return (
+                      <a
+                        {...props}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          const container =
+                            e.currentTarget.closest(".markdown-entry");
+                          const el = container?.querySelector(href);
 
-                              // scope to container if needed
-                              const container =
-                                e.currentTarget.closest(".markdown-entry");
-                              const el = container?.querySelector(href);
+                          if (el) {
+                            const yOffset = -80; // header offset
+                            const y =
+                              el.getBoundingClientRect().top +
+                              window.pageYOffset +
+                              yOffset;
+                            window.scrollTo({ top: y, behavior: "smooth" });
 
-                              if (el) {
-                                const yOffset = -80; // adjust for fixed header
-                                const y =
-                                  el.getBoundingClientRect().top +
-                                  window.pageYOffset +
-                                  yOffset;
-                                window.scrollTo({
-                                  top: y,
-                                  behavior: "smooth",
-                                });
+                            el.classList.add("footnote-flash");
+                            setTimeout(
+                              () => el.classList.remove("footnote-flash"),
+                              2000,
+                            );
+                          }
+                        }}
+                      />
+                    );
+                  }
 
-                                // Add flash class
-                                el.classList.add("footnote-flash");
-                                setTimeout(() => {
-                                  el.classList.remove("footnote-flash");
-                                }, 2000); // duration matches CSS animation
-                              }
-                            }}
-                          />
-                        );
-                      }
-
-                      // external links
-                      return (
-                        <a
-                          {...props}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        />
-                      );
-                    },
-                  }}
-                >
-                  {md}
-                </ReactMarkdown>
-              </div>
-            );
-          })
+                  return (
+                    <a {...props} target="_blank" rel="noopener noreferrer" />
+                  );
+                },
+                img: ({ node, ...props }) => (
+                  <figure style={{ textAlign: "center", margin: "2.5em 0" }}>
+                    <img
+                      {...props}
+                      style={{
+                        maxHeight: "500px",
+                        width: "auto",
+                        display: "inline-block",
+                      }}
+                    />
+                    {props.alt && (
+                      <figcaption
+                        style={{ fontSize: "0.9em", marginTop: "0.10em" }}
+                      >
+                        {props.alt}
+                      </figcaption>
+                    )}
+                  </figure>
+                ),
+              }}
+            >
+              {markdown}
+            </ReactMarkdown>
+          </div>
         )}
       </Container>
     </>

@@ -11,6 +11,7 @@ import RedirectToBestMethod from "./RedirectToBestPage";
 
 // Lazy load Contributions to avoid prebundling Markdown js libraries.
 const ContributionsPage = lazy(() => import("./ContributionsPage"));
+const ContributionsIndexPage = lazy(() => import("./ContributionsIndexPage"));
 
 function App() {
   return (
@@ -23,7 +24,15 @@ function App() {
 
         <Route path="/details/:id/:method" element={<DetailPage />} />
         <Route
-          path="/contributions"
+          path="/contributions/"
+          element={
+            <Suspense fallback={<LoadingPage />}>
+              <ContributionsIndexPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/contributions/:page"
           element={
             <Suspense fallback={<LoadingPage />}>
               <ContributionsPage />

@@ -1,45 +1,41 @@
 /* pad each entry */
 .markdown-entry {
-  padding-top: 0.25rem;
+  padding-top: 0.05rem;
   padding-left: 0.25rem;
   padding-right: 1rem;
-  padding-bottom: 2rem;
-  box-sizing: border-box;
+  padding-bottom: 0.25rem;
 }
 /* eq .detail-page-heading */
 .markdown-entry h1 {
-  padding-top: 1rem;
+  font-size: 26px;
+  font-weight: 300;
   padding-bottom: 0.25rem;
-  font-size: 30px;
-  font-weight: 400;
+  border-bottom: 1px solid #c4c4c4;
 }
 
 /* eq .section-heading  */
 .markdown-entry h2 {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 400;
-  margin: 10px 0px;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #c4c4c4;
+  padding: 1rem 0.5rem;
 }
 
 /* .subsection-title  */
 .markdown-entry h3 {
   font-weight: bold;
   font-size: 16px;
-  padding-left: 1rem;
+  padding-left: 0.75rem;
 }
 
 .markdown-entry p {
-  padding-left: 1rem;
-  padding-top: 0.25rem;
+  padding-left: 1.25rem;
+  text-align: justify;
 }
 
 .footnotes {
   margin-top: 0rem;
   padding-left: 1rem;
-  font-size: 0.85rem; /* 14px */
+  font-size: 0.85rem;
   color: #555;
 }
 

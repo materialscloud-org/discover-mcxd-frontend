@@ -1,0 +1,12 @@
+[
+  {
+    "slug": "phonons",
+    "title": "Phonon calculations",
+    "description": "Phonon screening for potential superconductor materials"
+  },
+  {
+    "slug": "superconductivity",
+    "title": "Superconductivity dataset",
+    "description": "... write something here."
+  }
+]
