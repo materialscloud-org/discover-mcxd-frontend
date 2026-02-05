@@ -145,11 +145,11 @@ const TopologySection = ({ params, loadedData }) => {
               calculated band gaps. For further details regarding the
               methodology see the{" "}
               <Link
-                to="/contributions"
+                to="/contributions/topology"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                extended dataset documentation
+                contributed details for this section
               </Link>
               .
             </div>

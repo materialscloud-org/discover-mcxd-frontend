@@ -15,11 +15,9 @@
 
 /* eq .section-heading  */
 .markdown-entry h2 {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 400;
-  padding-left: 0.5rem;
-
-  margin: 10px 0px;
+  padding: 1rem 0.5rem;
 }
 
 /* .subsection-title  */
