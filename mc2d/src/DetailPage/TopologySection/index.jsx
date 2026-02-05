@@ -162,7 +162,7 @@ const TopologySection = ({ params, loadedData }) => {
                 {topologyData.soc_bandstructure_uuid && (
                   <ExploreButton
                     explore_url={TOPOLOGICAL_EXPLORE_URL}
-                    uuid={topologyData.nosoc_bandstructure_uuid}
+                    uuid={topologyData.soc_bandstructure_uuid}
                   />
                 )}{" "}
                 and without{" "}
