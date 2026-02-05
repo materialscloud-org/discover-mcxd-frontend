@@ -1,26 +1,12 @@
 import "./TitleAndLogo.css";
 
-import Mc3dLogo from "./mc3d.png";
-
 import { DoiBadge } from "mc-react-library";
 
 export function TitleAndLogo({
-  mcxd,
-  // titleString = "Materials Cloud X-Dimensional Structure Database (MCXD)",
-  // imgSrc = null,
-  // doiIds = null,
+  titleString = "Materials Cloud X-Dimensional Structure Database (MCXD)",
+  imgSrc = null,
+  doiIds = null,
 }) {
-  let titleString = "Materials Cloud X-Dimensional Structure Database (MCXD)";
-  let imgSrc = null;
-  let doiIds = null;
-  if (mcxd === "mc3d") {
-    titleString = "Materials Cloud Three-Dimensional Structure Database (MC3D)";
-    imgSrc = Mc3dLogo;
-    doiIds = ["rw-t0"];
-  }
-
-  console.log(doiIds);
-
   return (
     <div className="title-and-logo">
       <div className="title-and-doi">

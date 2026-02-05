@@ -168,7 +168,13 @@ function DetailPage() {
           ]}
         />
         <Container fluid="xxl">
-          <TitleAndLogo mcxd={"mc3d"} />
+          <TitleAndLogo
+            titleString={
+              "Materials Cloud Three-Dimensional Structure Database (MC3D)"
+            }
+            imgSrc={Mc3dLogo}
+            doiIds={["rw-t0"]}
+          />
           <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
             <McloudSpinner />
           </div>
@@ -206,7 +212,13 @@ function DetailPage() {
         ]}
       />
       <Container fluid="xxl">
-        <TitleAndLogo mcxd={"mc3d"} />
+        <TitleAndLogo
+          titleString={
+            "Materials Cloud Three-Dimensional Structure Database (MC3D)"
+          }
+          imgSrc={Mc3dLogo}
+          doiIds={["rw-t0"]}
+        />
         <div className="detail-page-heading">{title}</div>
 
         {/* Place this somewhere nice */}

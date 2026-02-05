@@ -1,5 +1,7 @@
 import { Container, Button } from "react-bootstrap";
-import TitleAndLogo from "../common/TitleAndLogo";
+
+import Mc3dLogo from "../assets/mc3d.png";
+import { TitleAndLogo } from "@mcxd/shared";
 import MaterialsCloudHeader from "mc-react-header";
 
 // full page error component to handle when data is missing.
@@ -18,7 +20,13 @@ export default function MissingDataWarning({ params, navigate }) {
         ]}
       />
       <Container fluid="xxl">
-        <TitleAndLogo />
+        <TitleAndLogo
+          titleString={
+            "Materials Cloud Three-Dimensional Structure Database (MC3D)"
+          }
+          imgSrc={Mc3dLogo}
+          doiIds={["rw-t0"]}
+        />{" "}
         <div
           style={{
             textAlign: "center",
