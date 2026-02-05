@@ -9,7 +9,9 @@ import { Container, Tab, Tabs } from "react-bootstrap";
 import MaterialsCloudHeader from "mc-react-header";
 import MaterialSelector from "mc-react-ptable-materials-grid";
 
-import TitleAndLogo from "../common/TitleAndLogo";
+import Mc3dLogo from "../assets/mc3d.png";
+
+import { TitleAndLogo } from "@mcxd/shared";
 import { aboutText } from "./about";
 import { restapiText } from "./restapi";
 import { loadDataMc3d } from "./loadDataMc3d";
@@ -126,7 +128,13 @@ function MainPage({ tab }) {
         ]}
       />
       <Container fluid="xxl">
-        <TitleAndLogo />
+        <TitleAndLogo
+          titleString={
+            "Materials Cloud Three-Dimensional Structure Database (MC3D)"
+          }
+          imgSrc={Mc3dLogo}
+          doiIds={["rw-t0"]}
+        />
         <div className="description">
           The Materials Cloud Three-Dimensional Structure Database is a curated
           dataset of unique, stoichiometric, experimentally known inorganic
