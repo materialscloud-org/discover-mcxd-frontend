@@ -8,7 +8,7 @@ The Materials Cloud three-dimensional database (MC3D) provides a vast catalog of
 
 ## supercond-QE database
 
-This dataset builds upon the base dataset (PBEsol-v1) to provide a high-throughput computation of lattice dynamics in experimentally known inorganic stoichiometric compounds. Full details on the source methodology are available in the publication[^1]. Full details are available in the publication[^1].
+This dataset builds upon the base dataset (PBEsol-v1) to provide a high-throughput computation of lattice dynamics in experimentally known inorganic stoichiometric compounds. Full details on the source methodology are available in the publication[^1].
 
 The dynamical matrices were calculated for 4533 non-magnetic metals, utilizing a direct and progressively finer sampling of $\mathbf{q}$-points distances.
 
