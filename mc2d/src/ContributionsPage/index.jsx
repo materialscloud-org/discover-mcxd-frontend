@@ -11,9 +11,8 @@ import remarkFootnotes from "remark-footnotes";
 import "katex/dist/katex.min.css";
 import "./index.css";
 
-import { McloudSpinner } from "mc-react-library";
-
 import PageLayout from "../Layout";
+import { McloudSpinner } from "mc-react-library";
 
 function ContributionsPage() {
   const { page } = useParams(); // URL param

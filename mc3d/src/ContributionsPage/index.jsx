@@ -11,10 +11,8 @@ import remarkFootnotes from "remark-footnotes";
 import "katex/dist/katex.min.css";
 import "./index.css";
 
-import PageLayout from "../Layout"
-
-
-const markdownEntries = ["preface.md", "phonon.md", "superconductivity.md"];
+import PageLayout from "../Layout";
+import { McloudSpinner } from "mc-react-library";
 
 function ContributionsPage() {
   const { page } = useParams(); // URL param
@@ -49,23 +47,30 @@ function ContributionsPage() {
   const title = metadata?.title || page;
 
   return (
-    <PageLayout>
-        {markdownEntries.length === 0 ? (
-          <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
-            <McloudSpinner />
-          </div>
-        ) : (
-          markdownEntries.map((md, i) => {
-            const containerId = `markdown-entry-${i}`; // unique ID per file
-            return (
-              <div key={i} className="markdown-entry" id={containerId}>
-                <ReactMarkdown
-                  remarkPlugins={[remarkMath, remarkGfm, remarkFootnotes]}
-                  rehypePlugins={[rehypeKatex]}
-                  components={{
-                    a: ({ ...props }) => {
-                      const href = props.href || "";
-                      const isHashLink = href.startsWith("#");
+    <PageLayout
+      breadcrumbs={[
+        {
+          name: "Extended dataset documentation",
+          link: `${import.meta.env.BASE_URL}contributions`,
+        },
+        { name: title, link: null },
+      ]}
+    >
+      {markdown === null ? (
+        <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
+          <McloudSpinner />
+        </div>
+      ) : markdown === "NOT_FOUND" ? (
+        <h3>Page not found</h3>
+      ) : (
+        <div className="markdown-entry">
+          <ReactMarkdown
+            remarkPlugins={[remarkMath, remarkGfm, remarkFootnotes]}
+            rehypePlugins={[rehypeKatex]}
+            components={{
+              a: ({ ...props }) => {
+                const href = props.href || "";
+                const isHashLink = href.startsWith("#");
 
                 if (isHashLink) {
                   return (
