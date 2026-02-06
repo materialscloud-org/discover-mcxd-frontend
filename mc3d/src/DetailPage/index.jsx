@@ -4,16 +4,9 @@ import "./index.css";
 
 import { useParams, useNavigate } from "react-router-dom";
 
-import MaterialsCloudHeader from "mc-react-header";
-
 import { McloudSpinner } from "mc-react-library";
 
-import Mc3dLogo from "../assets/mc3d.png";
-import { TitleAndLogo } from "@mcxd/shared";
-
 import { formatTitle } from "@mcxd/shared";
-
-import { Container } from "react-bootstrap";
 
 import {
   loadMetadata,
@@ -44,6 +37,7 @@ import ElectronicStructureSection from "./ElectronicStructureSection";
 import MissingDataWarning from "./MissingDataWarning";
 
 import { CitationBanner } from "@mcxd/shared";
+import PageLayout from "../Layout";
 
 // contributed sections
 // import RelatedSection from "./RelatedSection";
@@ -152,40 +146,12 @@ function DetailPage() {
   // While loading, show spinner
   if (coreData === null) {
     return (
-      <>
-        <MaterialsCloudHeader
-          activeSection={"discover"}
-          breadcrumbsPath={[
-            {
-              name: "Discover",
-              link: "https://www.materialscloud.org/discover",
-            },
-            {
-              name: "Materials Cloud Three-Dimensional Structure Database",
-              link: `${import.meta.env.BASE_URL}`,
-            },
-            { name: `${params.id}/${params.method}`, link: null },
-          ]}
-        />
-        <Container fluid="xxl">
-          <TitleAndLogo
-            titleString={
-              "Materials Cloud Three-Dimensional Structure Database (MC3D)"
-            }
-            imgSrc={Mc3dLogo}
-            doiIds={["rw-t0"]}
-          />
-          <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
-            <McloudSpinner />
-          </div>
-        </Container>
-      </>
+      <PageLayout>
+        <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
+          <McloudSpinner />
+        </div>
+      </PageLayout>
     );
-  }
-
-  // if Data is missing we show the Error.
-  if (coreData?.missingStructureWarning) {
-    return <MissingDataWarning params={params} navigate={navigate} />;
   }
 
   // Otherwise proceed as normal.
@@ -196,70 +162,47 @@ function DetailPage() {
   );
 
   return (
-    <>
-      <MaterialsCloudHeader
-        activeSection={"discover"}
-        breadcrumbsPath={[
-          {
-            name: "Discover",
-            link: "https://www.materialscloud.org/discover",
-          },
-          {
-            name: "Materials Cloud Three-Dimensional Structure Database",
-            link: `${import.meta.env.BASE_URL}`,
-          },
-          { name: `${params.id}/${params.method}`, link: null },
-        ]}
+    <PageLayout>
+      <div className="detail-page-heading">{title}</div>
+
+      {/* Place this somewhere nice */}
+      {/* <CitationBanner citationKeys={["HuberMc3d25"]} /> */}
+
+      <div style={{ paddingLeft: "12px" }}>
+        <AlternativeMethodsList
+          id={params.id}
+          methods={datasetIndex}
+          currentMethod={params.method}
+        />
+      </div>
+
+      <OverviewSection
+        params={params}
+        loadedData={coreData}
+        headerStyle={{
+          margin: "0px 0px 10px 0px",
+          padding: "0px 0px 10px 0px",
+        }}
       />
-      <Container fluid="xxl">
-        <TitleAndLogo
-          titleString={
-            "Materials Cloud Three-Dimensional Structure Database (MC3D)"
-          }
-          imgSrc={Mc3dLogo}
-          doiIds={["rw-t0"]}
-        />
-        <div className="detail-page-heading">{title}</div>
+      <StructureSection params={params} loadedData={coreData} />
+      <ProvenanceSection params={params} loadedData={coreData} />
+      <XrdSection params={params} loadedData={coreData} />
 
-        {/* Place this somewhere nice */}
-        {/* <CitationBanner citationKeys={["HuberMc3d25"]} /> */}
+      {/* <ElectronicStructureSection params={params} /> */}
 
-        <div style={{ paddingLeft: "12px" }}>
-          <AlternativeMethodsList
-            id={params.id}
-            methods={datasetIndex}
-            currentMethod={params.method}
-          />
-        </div>
+      <VibrationalSection
+        params={params}
+        loadedData={coreData}
+        phononData={superconPhononData}
+      />
 
-        <OverviewSection
-          params={params}
-          loadedData={coreData}
-          headerStyle={{
-            margin: "0px 0px 10px 0px",
-            padding: "0px 0px 10px 0px",
-          }}
-        />
-        <StructureSection params={params} loadedData={coreData} />
-        <ProvenanceSection params={params} loadedData={coreData} />
-        <XrdSection params={params} loadedData={coreData} />
-
-        {/* <ElectronicStructureSection params={params} /> */}
-
-        <VibrationalSection
-          params={params}
-          loadedData={coreData}
-          phononData={superconPhononData}
-        />
-
-        <SuperconductivitySection
-          params={params}
-          loadedData={coreData}
-          superconData={superconSCData}
-        />
-        {/* <SimilaritySection params={params} /> */}
-      </Container>
-    </>
+      <SuperconductivitySection
+        params={params}
+        loadedData={coreData}
+        superconData={superconSCData}
+      />
+      {/* <SimilaritySection params={params} /> */}
+    </PageLayout>
   );
 }
 
