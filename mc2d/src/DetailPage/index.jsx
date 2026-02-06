@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 
-import TitleAndLogo from "../common/TitleAndLogo";
+import Mc2dLogo from "../assets/mc2d.png";
+import { TitleAndLogo } from "@mcxd/shared";
 
 import { useParams, useNavigate } from "react-router-dom";
 
 import MaterialsCloudHeader from "mc-react-header";
 
-import { formatChemicalFormula } from "mc-react-library";
+import { formatTitle } from "@mcxd/shared";
 
 import { Container, Row, Col } from "react-bootstrap";
 
@@ -33,14 +34,6 @@ import ParentsSection from "./ParentsSection";
 import StructureSection from "./StructureSection";
 
 import TopologySection from "./TopologySection";
-
-function formatTitle(formulaStr, id) {
-  return (
-    <span>
-      {formatChemicalFormula(formulaStr)} ({id})
-    </span>
-  );
-}
 
 async function fetchCompoundData(id) {
   let datasetIndex = await loadDatasetIndex(id);
@@ -106,7 +99,13 @@ function DetailPage() {
         ]}
       />
       <Container fluid="xxl">
-        <TitleAndLogo />
+        <TitleAndLogo
+          titleString={
+            "Materials Cloud Two-Dimensional Structure Database (MC2D)"
+          }
+          imgSrc={Mc2dLogo}
+          doiIds={["az-b2", "36-nd"]}
+        />
         {loading ? (
           <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
             <McloudSpinner />

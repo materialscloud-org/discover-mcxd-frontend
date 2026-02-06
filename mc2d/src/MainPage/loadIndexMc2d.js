@@ -1,6 +1,6 @@
 import { loadIndex, loadMetadata } from "../common/restApiUtils";
 
-import { countNumberOfAtoms, countNumberOfElements } from "../common/utils";
+import { countNumberOfAtoms, countNumberOfElements } from "@mcxd/shared";
 import { generatePath } from "react-router-dom";
 
 import { getSymmetryInfo } from "mc-react-library";

@@ -12,10 +12,15 @@ import "katex/dist/katex.min.css";
 import "./index.css";
 
 import { Container } from "react-bootstrap";
+
+import Mc3dLogo from "../assets/mc3d.png";
+import { TitleAndLogo } from "@mcxd/shared";
+
+import MaterialsCloudHeader from "mc-react-header";
+
 import { McloudSpinner } from "mc-react-library";
 
-import TitleAndLogo from "../common/TitleAndLogo";
-import MaterialsCloudHeader from "mc-react-header";
+const markdownEntries = ["preface.md", "phonon.md", "superconductivity.md"];
 
 function ContributionsPage() {
   const { page } = useParams(); // URL param
@@ -68,9 +73,14 @@ function ContributionsPage() {
       />
 
       <Container fluid="xxl">
-        <TitleAndLogo />
-
-        {markdown === null ? (
+        <TitleAndLogo
+          titleString={
+            "Materials Cloud Three-Dimensional Structure Database (MC3D)"
+          }
+          imgSrc={Mc3dLogo}
+          doiIds={["rw-t0"]}
+        />
+        {markdowns.length === 0 ? (
           <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
             <McloudSpinner />
           </div>

@@ -9,7 +9,8 @@ import MaterialsCloudHeader from "mc-react-header";
 
 import MaterialSelector from "mc-react-ptable-materials-grid";
 
-import TitleAndLogo from "../common/TitleAndLogo";
+import Mc2dLogo from "../assets/mc2d.png";
+import { TitleAndLogo } from "@mcxd/shared";
 
 import { Container, Tab, Tabs } from "react-bootstrap";
 
@@ -64,7 +65,13 @@ const MainPage = ({ tab }) => {
         ]}
       />
       <Container fluid="xxl">
-        <TitleAndLogo />
+        <TitleAndLogo
+          titleString={
+            "Materials Cloud Two-Dimensional Structure Database (MC2D)"
+          }
+          imgSrc={Mc2dLogo}
+          doiIds={["az-b2", "36-nd"]}
+        />
         <div className="description">
           Materials Cloud Two-Dimensional Structure Database is a curated set of
           2D materials obtained by screening most known 3D crystal structures by

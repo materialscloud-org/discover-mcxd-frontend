@@ -5,11 +5,9 @@ import { useLocation } from "react-router-dom";
 
 import "./index.css";
 
-import { Container, Tab, Tabs } from "react-bootstrap";
-import MaterialsCloudHeader from "mc-react-header";
+import { Tab, Tabs } from "react-bootstrap";
 import MaterialSelector from "mc-react-ptable-materials-grid";
 
-import TitleAndLogo from "../common/TitleAndLogo";
 import { aboutText } from "./about";
 import { restapiText } from "./restapi";
 import { loadDataMc3d } from "./loadDataMc3d";
@@ -34,6 +32,8 @@ const tabRoutes = {
   about: "/about",
   restapi: "/restapi",
 };
+
+import PageLayout from "../Layout";
 
 // MC3D Landing page React component.
 function MainPage({ tab }) {
@@ -110,74 +110,57 @@ function MainPage({ tab }) {
   };
 
   return (
-    <>
-      <MaterialsCloudHeader
-        className="header"
-        activeSection={"discover"}
-        breadcrumbsPath={[
-          {
-            name: "Discover",
-            link: "https://www.materialscloud.org/discover",
-          },
-          {
-            name: "Materials Cloud Three-Dimensional Structure Database",
-            link: null,
-          },
-        ]}
-      />
-      <Container fluid="xxl">
-        <TitleAndLogo />
-        <div className="description">
-          The Materials Cloud Three-Dimensional Structure Database is a curated
-          dataset of unique, stoichiometric, experimentally known inorganic
-          compounds, and of their calculated properties. Structures have been
-          obtained with fully-relaxed density-functional theory calculations,
-          starting from experimental ones imported, cleaned and parsed from the
-          MPDS, COD and ICSD databases. For more details, please see the related
-          publication:
-          <div style={{ margin: "10px" }}>
-            <CitationBanner citationKeys={["HuberMc3d25"]} />
-          </div>
+    <PageLayout>
+      <div className="description">
+        The Materials Cloud Three-Dimensional Structure Database is a curated
+        dataset of unique, stoichiometric, experimentally known inorganic
+        compounds, and of their calculated properties. Structures have been
+        obtained with fully-relaxed density-functional theory calculations,
+        starting from experimental ones imported, cleaned and parsed from the
+        MPDS, COD and ICSD databases. For more details, please see the related
+        publication:
+        <div style={{ margin: "10px" }}>
+          <CitationBanner citationKeys={["HuberMc3d25"]} />
         </div>
+      </div>
 
-        <Tabs
-          className="main-tabs"
-          activeKey={activeTab}
-          onSelect={handleTabSelect}
-        >
-          {" "}
-          <Tab eventKey="use" title="Use">
-            <MethodSelectionBox
-              genInfo={genInfo}
-              method={method}
-              selectedDisplay={preset || null} // display "preset value" if preset active
-              handleMethodChange={handleMethodChange}
-            />
-            {/* <div className="description">
+      <Tabs
+        className="main-tabs"
+        activeKey={activeTab}
+        onSelect={handleTabSelect}
+      >
+        {" "}
+        <Tab eventKey="use" title="Use">
+          <MethodSelectionBox
+            genInfo={genInfo}
+            method={method}
+            selectedDisplay={preset || null} // display "preset value" if preset active
+            handleMethodChange={handleMethodChange}
+          />
+          {/* <div className="description">
               Search for materials in the selected subdatabase by filtering
               based on the periodic table and the columns of the table below:
             </div> */}
-            <MaterialSelector
-              ref={materialSelectorRef}
-              columns={columns}
-              rows={rows}
-              columnFilters={columnFilters}
-            />
-            <DownloadButton
-              materialSelectorRef={materialSelectorRef}
-              disabled={rows.length == 0}
-              methodLabel={method}
-            />
-          </Tab>
-          <Tab eventKey="about" title="About">
-            {aboutText}
-          </Tab>
-          <Tab eventKey="restapi" title="REST API">
-            {restapiText}
-          </Tab>
-        </Tabs>
-      </Container>
-    </>
+          <MaterialSelector
+            ref={materialSelectorRef}
+            columns={columns}
+            rows={rows}
+            columnFilters={columnFilters}
+          />
+          <DownloadButton
+            materialSelectorRef={materialSelectorRef}
+            disabled={rows.length == 0}
+            methodLabel={method}
+          />
+        </Tab>
+        <Tab eventKey="about" title="About">
+          {aboutText}
+        </Tab>
+        <Tab eventKey="restapi" title="REST API">
+          {restapiText}
+        </Tab>
+      </Tabs>
+    </PageLayout>
   );
 }
 

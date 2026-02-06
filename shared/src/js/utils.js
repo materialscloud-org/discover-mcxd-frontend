@@ -11,7 +11,5 @@ export function countNumberOfAtoms(formula) {
 }
 
 export function countNumberOfElements(formula) {
-  // just count the number of capital letters
-  let matches = formula.match(/[A-Z]/g);
-  return matches ? matches.length : 0;
+  return formula.split(/(?=[A-Z])/).length;
 }
