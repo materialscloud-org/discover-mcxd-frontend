@@ -1,15 +1,10 @@
 import React, { useState, useEffect } from "react";
 
-import Mc2dLogo from "../assets/mc2d.png";
-import { TitleAndLogo } from "@mcxd/shared";
+import PageLayout from "../Layout";
 
 import { useParams, useNavigate } from "react-router-dom";
 
-import MaterialsCloudHeader from "mc-react-header";
-
 import { formatTitle } from "@mcxd/shared";
-
-import { Container, Row, Col } from "react-bootstrap";
 
 import { getSymmetryInfo } from "mc-react-library";
 
@@ -86,52 +81,23 @@ function DetailPage() {
   }
 
   return (
-    <>
-      <MaterialsCloudHeader
-        activeSection={"discover"}
-        breadcrumbsPath={[
-          { name: "Discover", link: "https://www.materialscloud.org/discover" },
-          {
-            name: "Materials Cloud Two-Dimensional Structure Database",
-            link: `${import.meta.env.BASE_URL}`,
-          },
-          { name: params.id, link: null },
-        ]}
-      />
-      <Container fluid="xxl">
-        <TitleAndLogo
-          titleString={
-            "Materials Cloud Two-Dimensional Structure Database (MC2D)"
-          }
-          imgSrc={Mc2dLogo}
-          doiIds={["az-b2", "36-nd"]}
-        />
-        {loading ? (
-          <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
-            <McloudSpinner />
-          </div>
-        ) : (
-          <>
-            <div className="detail-page-heading">{title}</div>
-            <CitationBanner
-              citationKeys={loadedData.details.general.citations}
-            />
-            <OverviewSection params={params} loadedData={loadedData} />
-            <StructureSection params={params} loadedData={loadedData} />
-            <ElectronicSection params={params} loadedData={loadedData} />
-            <VibrationalSection params={params} loadedData={loadedData} />
-
-            {/* Topology only if in dataset-index */}
-            {loadedData?.topologyInfo &&
-              Object.keys(loadedData.topologyInfo).length > 0 && (
-                <TopologySection params={params} loadedData={loadedData} />
-              )}
-
-            <ParentsSection params={params} loadedData={loadedData} />
-          </>
-        )}
-      </Container>
-    </>
+    <PageLayout breadcrumbs={[{ name: params.id, link: null }]}>
+      {loading ? (
+        <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
+          <McloudSpinner />
+        </div>
+      ) : (
+        <>
+          <div className="detail-page-heading">{title}</div>
+          <CitationBanner citationKeys={loadedData.details.general.citations} />
+          <OverviewSection params={params} loadedData={loadedData} />
+          <StructureSection params={params} loadedData={loadedData} />
+          <ElectronicSection params={params} loadedData={loadedData} />
+          <VibrationalSection params={params} loadedData={loadedData} />
+          <ParentsSection params={params} loadedData={loadedData} />
+        </>
+      )}
+    </PageLayout>
   );
 }
 
