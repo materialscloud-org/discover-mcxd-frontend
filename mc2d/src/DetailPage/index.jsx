@@ -28,6 +28,8 @@ import VibrationalSection from "./VibrationalSection";
 import ParentsSection from "./ParentsSection";
 import StructureSection from "./StructureSection";
 
+import TopologySection from "./TopologySection";
+
 async function fetchCompoundData(id) {
   let datasetIndex = await loadDatasetIndex(id);
 
@@ -92,6 +94,13 @@ function DetailPage() {
           <StructureSection params={params} loadedData={loadedData} />
           <ElectronicSection params={params} loadedData={loadedData} />
           <VibrationalSection params={params} loadedData={loadedData} />
+
+          {/* Topology only if in dataset-index */}
+          {loadedData?.topologyInfo &&
+            Object.keys(loadedData.topologyInfo).length > 0 && (
+              <TopologySection params={params} loadedData={loadedData} />
+            )}
+
           <ParentsSection params={params} loadedData={loadedData} />
         </>
       )}
