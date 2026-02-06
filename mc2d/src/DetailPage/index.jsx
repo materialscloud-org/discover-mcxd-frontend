@@ -28,8 +28,6 @@ import VibrationalSection from "./VibrationalSection";
 import ParentsSection from "./ParentsSection";
 import StructureSection from "./StructureSection";
 
-import TopologySection from "./TopologySection";
-
 async function fetchCompoundData(id) {
   let datasetIndex = await loadDatasetIndex(id);
 

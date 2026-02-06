@@ -11,8 +11,8 @@ import remarkFootnotes from "remark-footnotes";
 import "katex/dist/katex.min.css";
 import "./index.css";
 
-import { McloudSpinner } from "mc-react-library";
-import PageLayout from "../Layout";
+import PageLayout from "../Layout"
+
 
 const markdownEntries = ["preface.md", "phonon.md", "superconductivity.md"];
 
@@ -49,30 +49,23 @@ function ContributionsPage() {
   const title = metadata?.title || page;
 
   return (
-    <PageLayout
-      breadcrumbs={[
-        {
-          name: "Extended dataset documentation",
-          link: `${import.meta.env.BASE_URL}contributions`,
-        },
-        { name: title, link: null },
-      ]}
-    >
-      {markdownEntries.length === 0 ? (
-        <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
-          <McloudSpinner />
-        </div>
-      ) : markdown === "NOT_FOUND" ? (
-        <h3>Page not found</h3>
-      ) : (
-        <div className="markdown-entry">
-          <ReactMarkdown
-            remarkPlugins={[remarkMath, remarkGfm, remarkFootnotes]}
-            rehypePlugins={[rehypeKatex]}
-            components={{
-              a: ({ ...props }) => {
-                const href = props.href || "";
-                const isHashLink = href.startsWith("#");
+    <PageLayout>
+        {markdownEntries.length === 0 ? (
+          <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
+            <McloudSpinner />
+          </div>
+        ) : (
+          markdownEntries.map((md, i) => {
+            const containerId = `markdown-entry-${i}`; // unique ID per file
+            return (
+              <div key={i} className="markdown-entry" id={containerId}>
+                <ReactMarkdown
+                  remarkPlugins={[remarkMath, remarkGfm, remarkFootnotes]}
+                  rehypePlugins={[rehypeKatex]}
+                  components={{
+                    a: ({ ...props }) => {
+                      const href = props.href || "";
+                      const isHashLink = href.startsWith("#");
 
                 if (isHashLink) {
                   return (
