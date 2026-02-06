@@ -146,12 +146,19 @@ function DetailPage() {
   // While loading, show spinner
   if (coreData === null) {
     return (
-      <PageLayout>
+      <PageLayout
+        breadcrumbs={[{ name: `${params.id}/${params.method}`, link: null }]}
+      >
         <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
           <McloudSpinner />
         </div>
       </PageLayout>
     );
+  }
+
+  // if Data is missing we show the Error.
+  if (coreData?.missingStructureWarning) {
+    return <MissingDataWarning params={params} navigate={navigate} />;
   }
 
   // Otherwise proceed as normal.
@@ -162,7 +169,9 @@ function DetailPage() {
   );
 
   return (
-    <PageLayout>
+    <PageLayout
+      breadcrumbs={[{ name: `${params.id}/${params.method}`, link: null }]}
+    >
       <div className="detail-page-heading">{title}</div>
 
       {/* Place this somewhere nice */}

@@ -4,7 +4,7 @@ import MaterialsCloudHeader from "mc-react-header";
 
 import { TitleAndLogo } from "@mcxd/shared";
 
-import Mc3dLogo from "../assets/mc3d.png";
+import Mc2dLogo from "../assets/mc2d.png";
 
 export default function PageLayout({ children, breadcrumbs = [] }) {
   const defaultBreadcrumbs = [
@@ -13,7 +13,7 @@ export default function PageLayout({ children, breadcrumbs = [] }) {
       link: "https://www.materialscloud.org/discover",
     },
     {
-      name: "Materials Cloud Three-Dimensional Structure Database",
+      name: "Materials Cloud Two-Dimensional Structure Database",
       link: `${import.meta.env.BASE_URL}`,
     },
   ];
@@ -32,14 +32,12 @@ export default function PageLayout({ children, breadcrumbs = [] }) {
         activeSection="discover"
         breadcrumbsPath={mergedBreadcrumbs}
       />
-
       <Container fluid="xxl">
         <TitleAndLogo
-          titleString="Materials Cloud Three-Dimensional Structure Database (MC3D)"
-          imgSrc={Mc3dLogo}
-          doiIds={["rw-t0"]}
+          titleString="Materials Cloud Two-Dimensional Structure Database (MC2D)"
+          imgSrc={Mc2dLogo}
+          doiIds={["az-b2", "36-nd"]}
         />
-
         {children}
       </Container>
     </>
