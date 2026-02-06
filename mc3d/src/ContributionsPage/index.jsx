@@ -11,14 +11,8 @@ import remarkFootnotes from "remark-footnotes";
 import "katex/dist/katex.min.css";
 import "./index.css";
 
-import { Container } from "react-bootstrap";
-
-import Mc3dLogo from "../assets/mc3d.png";
-import { TitleAndLogo } from "@mcxd/shared";
-
-import MaterialsCloudHeader from "mc-react-header";
-
 import { McloudSpinner } from "mc-react-library";
+import PageLayout from "../Layout";
 
 const markdownEntries = ["preface.md", "phonon.md", "superconductivity.md"];
 
@@ -55,107 +49,90 @@ function ContributionsPage() {
   const title = metadata?.title || page;
 
   return (
-    <>
-      <MaterialsCloudHeader
-        activeSection={"discover"}
-        breadcrumbsPath={[
-          { name: "Discover", link: "https://www.materialscloud.org/discover" },
-          {
-            name: "Materials Cloud Two-Dimensional Structure Database",
-            link: `${import.meta.env.BASE_URL}`,
-          },
-          {
-            name: "Extended dataset documentation",
-            link: `${import.meta.env.BASE_URL}contributions`,
-          },
-          { name: title, link: null },
-        ]}
-      />
+    <PageLayout
+      breadcrumbs={[
+        {
+          name: "Extended dataset documentation",
+          link: `${import.meta.env.BASE_URL}contributions`,
+        },
+        { name: title, link: null },
+      ]}
+    >
+      {markdownEntries.length === 0 ? (
+        <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
+          <McloudSpinner />
+        </div>
+      ) : markdown === "NOT_FOUND" ? (
+        <h3>Page not found</h3>
+      ) : (
+        <div className="markdown-entry">
+          <ReactMarkdown
+            remarkPlugins={[remarkMath, remarkGfm, remarkFootnotes]}
+            rehypePlugins={[rehypeKatex]}
+            components={{
+              a: ({ ...props }) => {
+                const href = props.href || "";
+                const isHashLink = href.startsWith("#");
 
-      <Container fluid="xxl">
-        <TitleAndLogo
-          titleString={
-            "Materials Cloud Three-Dimensional Structure Database (MC3D)"
-          }
-          imgSrc={Mc3dLogo}
-          doiIds={["rw-t0"]}
-        />
-        {markdowns.length === 0 ? (
-          <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
-            <McloudSpinner />
-          </div>
-        ) : markdown === "NOT_FOUND" ? (
-          <h3>Page not found</h3>
-        ) : (
-          <div className="markdown-entry">
-            <ReactMarkdown
-              remarkPlugins={[remarkMath, remarkGfm, remarkFootnotes]}
-              rehypePlugins={[rehypeKatex]}
-              components={{
-                a: ({ ...props }) => {
-                  const href = props.href || "";
-                  const isHashLink = href.startsWith("#");
-
-                  if (isHashLink) {
-                    return (
-                      <a
-                        {...props}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          const container =
-                            e.currentTarget.closest(".markdown-entry");
-                          const el = container?.querySelector(href);
-
-                          if (el) {
-                            const yOffset = -80; // header offset
-                            const y =
-                              el.getBoundingClientRect().top +
-                              window.pageYOffset +
-                              yOffset;
-                            window.scrollTo({ top: y, behavior: "smooth" });
-
-                            el.classList.add("footnote-flash");
-                            setTimeout(
-                              () => el.classList.remove("footnote-flash"),
-                              2000,
-                            );
-                          }
-                        }}
-                      />
-                    );
-                  }
-
+                if (isHashLink) {
                   return (
-                    <a {...props} target="_blank" rel="noopener noreferrer" />
-                  );
-                },
-                img: ({ node, ...props }) => (
-                  <figure style={{ textAlign: "center", margin: "2.5em 0" }}>
-                    <img
+                    <a
                       {...props}
-                      style={{
-                        maxHeight: "500px",
-                        width: "auto",
-                        display: "inline-block",
+                      onClick={(e) => {
+                        e.preventDefault();
+                        const container =
+                          e.currentTarget.closest(".markdown-entry");
+                        const el = container?.querySelector(href);
+
+                        if (el) {
+                          const yOffset = -80; // header offset
+                          const y =
+                            el.getBoundingClientRect().top +
+                            window.pageYOffset +
+                            yOffset;
+                          window.scrollTo({ top: y, behavior: "smooth" });
+
+                          el.classList.add("footnote-flash");
+                          setTimeout(
+                            () => el.classList.remove("footnote-flash"),
+                            2000,
+                          );
+                        }
                       }}
                     />
-                    {props.alt && (
-                      <figcaption
-                        style={{ fontSize: "0.9em", marginTop: "0.10em" }}
-                      >
-                        {props.alt}
-                      </figcaption>
-                    )}
-                  </figure>
-                ),
-              }}
-            >
-              {markdown}
-            </ReactMarkdown>
-          </div>
-        )}
-      </Container>
-    </>
+                  );
+                }
+
+                return (
+                  <a {...props} target="_blank" rel="noopener noreferrer" />
+                );
+              },
+              img: ({ node, ...props }) => (
+                <figure style={{ textAlign: "center", margin: "2.5em 0" }}>
+                  <img
+                    {...props}
+                    style={{
+                      maxHeight: "500px",
+                      width: "auto",
+                      display: "inline-block",
+                    }}
+                  />
+                  {props.alt && (
+                    <figcaption
+                      style={{ fontSize: "0.9em", marginTop: "0.10em" }}
+                    >
+                      {props.alt}
+                    </figcaption>
+                  )}
+                </figure>
+              ),
+            }}
+          >
+            {markdown}
+          </ReactMarkdown>
+        </div>
+      )}
+    </PageLayout>
   );
 }
 
