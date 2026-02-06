@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 // Markdown & plugins
 import ReactMarkdown from "react-markdown";
@@ -16,6 +16,7 @@ import { McloudSpinner } from "mc-react-library";
 
 function ContributionsPage() {
   const { page } = useParams(); // URL param
+  const navigate = useNavigate(); // hook for programmatic navigation
   const [markdown, setMarkdown] = useState(null);
   const [metadata, setMetadata] = useState(null);
 
@@ -30,9 +31,16 @@ function ContributionsPage() {
       .then((res) => (res.ok ? res.json() : Promise.reject()))
       .then((data) => {
         const entry = data.find((c) => c.slug === page);
-        setMetadata(entry || { title: page });
+        if (!entry) {
+          // redirect if contribution doesn't exist
+          navigate("/contributions", { replace: true });
+          return;
+        }
+        setMetadata(entry);
       })
-      .catch(() => setMetadata({ title: page }));
+      .catch(() => {
+        navigate("/contributions", { replace: true });
+      });
 
     // Load markdown from its nested folder
     fetch(`/contributions/${page}/${page}.md`)
@@ -41,8 +49,10 @@ function ContributionsPage() {
         return res.text();
       })
       .then(setMarkdown)
-      .catch(() => setMarkdown("NOT_FOUND"));
-  }, [page]);
+      .catch(() => {
+        navigate("/contributions", { replace: true });
+      });
+  }, [page, navigate]);
 
   const title = metadata?.title || page;
 
@@ -60,8 +70,6 @@ function ContributionsPage() {
         <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
           <McloudSpinner />
         </div>
-      ) : markdown === "NOT_FOUND" ? (
-        <h3>Page not found</h3>
       ) : (
         <div className="markdown-entry">
           <ReactMarkdown
