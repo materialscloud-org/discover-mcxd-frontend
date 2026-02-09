@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import { ExploreButton, StructDownloadButton } from "mc-react-library";
 
+import { Tooltip, OverlayTrigger } from "react-bootstrap";
 import { Container, Row, Col } from "react-bootstrap";
+
+import { FaExclamationCircle } from "react-icons/fa";
 
 import { McInfoBox } from "@mcxd/shared";
 
@@ -14,7 +17,6 @@ import {
   standardTraceConfigs,
   topologyTraceConfigs,
 } from "@mcxd/shared";
-import { formatAiidaProp } from "../utils";
 
 import { CitationBanner } from "@mcxd/shared";
 
@@ -46,6 +48,35 @@ const WarningBox = ({ children }) => {
     >
       {children}
     </div>
+  );
+};
+
+const WarningLabel = ({ warning }) => {
+  const renderTooltip = (props) => (
+    <Tooltip id="warning-tooltip" {...props}>
+      {warning}
+    </Tooltip>
+  );
+
+  return (
+    <OverlayTrigger
+      placement="top"
+      overlay={renderTooltip}
+      delay={{ show: 200, hide: 200 }}
+    >
+      <span
+        style={{
+          cursor: "help",
+          color: "grey",
+          verticalAlign: "top",
+        }}
+      >
+        <FaExclamationCircle
+          size="1.25em"
+          style={{ marginBottom: "2px" }}
+        />{" "}
+      </span>
+    </OverlayTrigger>
   );
 };
 
@@ -100,6 +131,8 @@ const TopologySection = ({ params, loadedData }) => {
     topologyData?.soc_bandstructure_uuid,
     topologyData?.nosoc_bandstructure_uuid,
   ]);
+
+  console.log(topologyData);
 
   return (
     <div>
@@ -177,7 +210,7 @@ const TopologySection = ({ params, loadedData }) => {
                 bandsDataArray={bandsData}
                 loading={loadingBands}
                 minYval={-1.55}
-                maxYval={1.55}
+                maxYval={1.57}
                 layoutOverrides={{
                   ...COMMON_LAYOUT_CONFIG,
                 }}
@@ -190,7 +223,14 @@ const TopologySection = ({ params, loadedData }) => {
                   {loadedData?.topologyInfo?.inversion_strength && (
                     <li>{`Topological inversion strength: ${loadedData?.topologyInfo.inversion_strength} meV `}</li>
                   )}
-                  <li>{`spin-orbit coupling band gap: ${loadedData?.topologyInfo.soc_band_gap} meV `}</li>
+                  <li>
+                    {`Spin-orbit coupling band gap: ${loadedData?.topologyInfo.soc_band_gap} meV `}{" "}
+                    {loadedData?.topologyInfo?.strain_percent && (
+                      <WarningLabel
+                        warning={`This band gap is for ${loadedData.topologyInfo.strain_percent}% strain but the band structure shown is unstrained.`}
+                      />
+                    )}
+                  </li>
                 </ul>
               </McInfoBox>
 

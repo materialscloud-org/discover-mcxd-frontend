@@ -13,11 +13,8 @@ export function HWCCPlot({ hwcc }) {
     const x = [];
     const y = [];
 
-    const estimatedTraces = k.length * wcc[0].length;
-    const step = 1 + Math.floor(estimatedTraces / 7500);
-
     // Deduplicate per k
-    for (let i = 0; i < k.length; i += step) {
+    for (let i = 0; i < k.length; i++) {
       const ki = k[i];
       const wcci = wcc[i];
       if (!Array.isArray(wcci)) continue;
