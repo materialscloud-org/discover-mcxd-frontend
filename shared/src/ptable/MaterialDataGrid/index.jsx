@@ -245,6 +245,7 @@ const helpPopover = (
 );
 
 const MaterialDataGrid = forwardRef((props, ref) => {
+  MaterialDataGrid.displayName = "MaterialDataGrid";
   const [gridApi, setGridApi] = useState(null);
   const [numRows, setNumRows] = useState(null);
   const [anyColFilterActive, setAnyColFilterActive] = useState(null);
@@ -277,14 +278,15 @@ const MaterialDataGrid = forwardRef((props, ref) => {
     if (!gridApi || !props.columns?.length || !props.rows?.length) return;
 
     const { columnFilters } = props;
-    if (!columnFilters || Object.keys(columnFilters).length === 0) return;
 
     try {
-      // Apply only filters that match existing columns (optional safeguard)
+      // Apply only filters that match existing columns
       const colIds = new Set(props.columns.map((c) => c.field));
-      const validFilters = Object.fromEntries(
-        Object.entries(columnFilters).filter(([key]) => colIds.has(key))
-      );
+      const validFilters = columnFilters
+        ? Object.fromEntries(
+            Object.entries(columnFilters).filter(([key]) => colIds.has(key)),
+          )
+        : {};
 
       gridApi.setFilterModel(validFilters);
       gridApi.onFilterChanged();
@@ -323,7 +325,7 @@ const MaterialDataGrid = forwardRef((props, ref) => {
         let selectedElements = Object.keys(props.ptable_filter["elements"]);
         let len_match = node.data.elem_array.length === selectedElements.length;
         let incl = node.data.elem_array.every((e) =>
-          selectedElements.includes(e)
+          selectedElements.includes(e),
         );
         return len_match && incl;
       }
@@ -332,7 +334,7 @@ const MaterialDataGrid = forwardRef((props, ref) => {
         let include = [];
         let exclude = [];
         for (const [el, sel] of Object.entries(
-          props.ptable_filter["elements"]
+          props.ptable_filter["elements"],
         )) {
           if (sel === 1) include.push(el);
           if (sel === 2) exclude.push(el);

@@ -129,11 +129,11 @@ const MainPage = ({ tab }) => {
       >
         <Tab eventKey="use" title="Use">
           <div style={{ marginTop: "20px" }}></div>
-          {/* <MethodSelectionBox
+          <MethodSelectionBox
             method={method}
             selectedDisplay={preset || null} // display "preset value" if preset active
             handleMethodChange={handleMethodChange}
-          /> */}
+          />
           <MaterialSelector
             ref={materialSelectorRef}
             columns={columns}
