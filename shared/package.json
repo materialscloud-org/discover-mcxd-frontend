@@ -10,6 +10,9 @@
     "react-dom": "^18.0.0"
   },
   "dependencies": {
-    "bands-visualiser": "^0.0.3"
+    "ag-grid-community": "^32.1.0",
+    "ag-grid-react": "^32.1.0",
+    "bands-visualiser": "^0.0.3",
+    "react-bootstrap": "^2.10.10"
   }
 }

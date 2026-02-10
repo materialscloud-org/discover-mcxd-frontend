@@ -1,0 +1,85 @@
+.ag-theme-alpine {
+  --ag-grid-size: 5px;
+  --ag-list-item-height: 22px;
+  --ag-font-size: 12px;
+
+  --ag-header-column-separator-display: block;
+  --ag-header-column-separator-height: 70%;
+  --ag-header-column-separator-width: 1px;
+  --ag-header-column-separator-color: rgb(185, 185, 185);
+
+  --ag-cell-horizontal-padding: 12px;
+}
+
+/* override the 50px min height */
+.ag-center-cols-clipper,
+.ag-center-cols-container {
+  min-height: 300px !important;
+}
+
+.grid-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.grid-header-row-showing-text {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.grid-header-row-left-side {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.grid-header-row-right-side {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.aggrid-style-button {
+  padding: 10px;
+  background-color: #f8f8f8;
+  color: #000000;
+  font-family: var(--ag-font-family);
+  font-size: 12px;
+  font-weight: bold;
+  border: 1px solid #babfc7;
+  cursor: pointer;
+  margin-bottom: 3px;
+  margin-top: 2px;
+}
+
+.aggrid-style-button:hover {
+  background-color: #dbdbdb;
+}
+
+/* make the horizontal scrollbar appear at the top of the table */
+/* Apply to all browsers except Firefox */
+@supports not (-moz-appearance: none) {
+  .ag-root-wrapper .ag-root-wrapper-body .ag-root .ag-header {
+    order: 1;
+  }
+  .ag-root-wrapper .ag-root-wrapper-body .ag-root .ag-body-horizontal-scroll {
+    order: 2;
+  }
+  .ag-root-wrapper .ag-root-wrapper-body .ag-root .ag-floating-top {
+    order: 3;
+  }
+  .ag-root-wrapper .ag-root-wrapper-body .ag-root .ag-body {
+    order: 4;
+  }
+  .ag-root-wrapper .ag-root-wrapper-body .ag-root .ag-floating-bottom {
+    order: 5;
+  }
+  .ag-root-wrapper .ag-root-wrapper-body .ag-root .ag-overlay {
+    order: 6;
+  }
+}

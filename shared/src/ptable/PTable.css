@@ -1,0 +1,211 @@
+/* Variables */
+:root {
+  --element-box-size: 40px;
+  --selection-mode-font: 14px;
+}
+
+.ptable_outer {
+  width: 100%;
+  margin: 0 auto;
+  /*margin-top: -4vw;*/
+  /* max-width: 1700px; */
+  /* transform: scale(0.8); */
+  /* text-align: center; */
+  display: flex;
+  align-items: center;
+  /* justify-content: center; */
+}
+
+.ptable {
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(17, auto) 1fr;
+  grid-template-rows: repeat(10, auto) 1fr;
+}
+
+.pt_element {
+  height: var(--element-box-size);
+  width: var(--element-box-size);
+  margin: 1px;
+  /* margin-right: -2px; */
+  /* margin-bottom: -2px; */
+  user-select: none; /* don't select text upon clicking */
+  position: relative;
+  border: 1px solid #999;
+  border-radius: 2px;
+  /* cursor: pointer; */
+  /*cursor: default; /* don't charge cursor into a bar when hovering over text */
+  display: flex;
+  flex-direction: column; /* make main axis vertical */
+  justify-content: center; /* center items vertically, in this case */
+  align-items: center;
+}
+
+.pt_element-state0 {
+  background: rgb(168, 220, 250);
+}
+
+.pt_element-state1 {
+  /* background: rgb(122, 211, 126) !important; */
+  background: rgb(14, 197, 23) !important;
+  border: 1px solid black;
+  /* color: white; */
+}
+
+.pt_element-state2 {
+  background: rgb(245, 113, 113) !important;
+  border: 1px solid black;
+}
+
+.pt_element-state3 {
+  background: rgb(129, 137, 241);
+}
+
+.pt_element-disabled {
+  filter: contrast(20%) brightness(160%);
+  /* background: rgb(236, 236, 236); */
+  /* color: #999; */
+  pointer-events: none; /* no hover on disabled elements */
+}
+
+.pt_element.nondoc {
+  cursor: pointer;
+}
+
+.pt_element.nondoc:hover {
+  filter: brightness(85%);
+  transform: scale(1.2);
+  z-index: 10;
+}
+
+.elem_num {
+  font-size: calc(0.3 * var(--element-box-size));
+  /* font-size: 12px; */
+  line-height: 1;
+  /* border: 1px solid red; */
+}
+
+.elem_sym {
+  font-size: calc(0.5 * var(--element-box-size));
+  line-height: 1;
+  font-weight: 400; /* normal is 400 */
+  /* border: 1px solid blue; */
+}
+
+/* ----------------------------- */
+/* element locations in the grid */
+
+.pt_element-2 {
+  grid-column-start: 18;
+}
+
+.pt_element-5 {
+  grid-column-start: 13;
+}
+
+.pt_element-13 {
+  grid-column-start: 13;
+}
+
+/* Lanthanoids and Actonoids */
+
+.pt_element-57 {
+  grid-column-start: 3;
+}
+
+.pt_element-89 {
+  grid-column-start: 3;
+}
+
+.lanthanide {
+  margin-top: 14px;
+}
+
+/* push 72 and 104 forward to make a hole in the La & Ac spot */
+
+.pt_element-72 {
+  grid-column-start: 4;
+}
+
+.pt_element-104 {
+  grid-column-start: 4;
+}
+
+.doc-elements {
+  display: flex;
+}
+
+/* ----------------------------- */
+/* Selection mode */
+
+.selection_mode_outer {
+  position: relative;
+  grid-column: 5 / span 6;
+  grid-row: 1 / span 2;
+  /* width: calc(9 * var(--element-box-size) + 8);
+  height: calc(2 * var(--element-box-size) + 1); */
+  /* background: rgb(238, 3, 3); */
+  border: 1px solid #999;
+  border-radius: 3px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+  /* background: rgb(236, 236, 236); */
+  /* padding-left: 20px; */
+  font-size: var(--selection-mode-font);
+}
+
+.selection_mode_inner {
+  /* font-size: calc(0.4 * var(--element-box-size)); */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  /* margin-left: 20px; */
+}
+
+.selection_mode_control {
+  /* font-size: calc(0.4 * var(--element-box-size)); */
+  line-height: 1.5;
+  margin-left: 15px;
+}
+
+.selection_mode_control input {
+  margin-right: 4px;
+}
+/* ----------------------------- */
+
+@media screen and (max-width: 800px) {
+  :root {
+    --element-box-size: 4.5vw;
+    --selection-mode-font: min(max(2vw, 8px), 14px);
+  }
+}
+
+@media screen and (max-width: 650px) {
+  .elem_sym {
+    font-size: calc(0.6 * var(--element-box-size));
+  }
+  .elem_num {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .selection_mode_outer {
+    grid-column: 4 / span 8;
+    grid-row: 1 / span 3;
+  }
+}
+
+@media screen and (max-width: 350px) {
+  :root {
+    --element-box-size: 5vw;
+  }
+  .selection_mode_outer {
+    grid-column: 3 / span 10;
+  }
+  .pt_element {
+    margin: 0px;
+  }
+}
