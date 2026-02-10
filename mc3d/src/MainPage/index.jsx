@@ -6,7 +6,7 @@ import { useLocation } from "react-router-dom";
 import "./index.css";
 
 import { Tab, Tabs } from "react-bootstrap";
-import MaterialSelector from "mc-react-ptable-materials-grid";
+import { MaterialSelector } from "@mcxd/shared";
 
 import { aboutText } from "./about";
 import { restapiText } from "./restapi";
