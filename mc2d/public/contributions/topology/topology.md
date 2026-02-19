@@ -1,49 +1,23 @@
 ## Topological Insulator calculations
 
-The set of calculations related to topological insulators is derived from two seperate but complementary publications. The work by Marrazzo et al.,[^1] identified 13 monolayer candidate QSHI materials. The work by Grassano et al.,[^2] identified four more and seven direct-gap metals.
-
 ### Motivation
 
-Besides fundamental scientific interest, numerous technological applications of topological insulators have been proposed. Specifically, such insulators may feature one-dimensional topologically protected states at the edge of a QSHI (Quantum Spin Hall Insulator). Paving the way for the identification of low-dissipation nanowires, where elastic backscattering is forbidden by time-reversal (TR) symmetry and electron transport is spin-momentum locked. For such applications, a large band gap would be beneficial not only for increasing the operating temperature (limited by the intrinsic semiconducting behavior of the bulk) but also for decreasing the transverse localization length of the edge states. The latter could help reduce inelastic backscattering with the bulk and, more relevantly, to suppress hybridization effects between the two pairs of helical states at opposite edges of a ribbon, which would otherwise gap the edge spectrum.
+These screening studies aim at identifying robust two-dimensional quantum spin Hall insulators (QSHIs) among experimentally accessible exfoliable materials, motivated by the scarcity of large-gap, room-temperature candidates. The 2019 Nano Letters study[^1] performs a comprehensive high-throughput screening of 1825 monolayers derived from experimentally known layered compounds[^3], identifying 13 QSHI candidates and estimating a relative abundance of ~1% of Z₂ topological order among 2D exfoliated insulators. The 2023 PRM work provides a complementary screening on an additional subset of 783 exfoliable monolayers from the updated Materials Cloud 2D database (MC2D) in which 1252 monolayers were added to the initial 2D portfolio[^4], and reports 4 QSHIs and 7 direct-gap metals (DGMs) as promising candidates[^2].
 
 ### Methodology
 
-_The following details relate to the publication - Marrazzo et al., ACS Nano 19, 8431-8440 (2019), Full details of the source methodology as well as further discussion are available in the publication.[^1]_
+Methodologically, the 2019 study adopts a broad funnel approach: geometry optimization, SOC band structures, Z₂ evaluation via hybrid Wannier charge centers (Z2Pack), phonons (DFPT), magnetic screening, strain tests, and final validation with G₀W₀ for selected systems[^1]. In contrast, the 2023 work emphasizes computational efficiency and symmetry-based branching: parity analysis at the time-reversal invariant momenta (TRIM) for inversion-symmetric systems, Z2Pack only when needed, dense k-mesh validation of direct/indirect gaps, HSE06 cross-checks for selected cases. Relative to the underlying MC2D database—which catalogs exfoliable structures without topological classification—both studies add systematic Z₂ characterization, but the 2019 work prioritizes many-body validation and abundance statistics, while the 2023 study refines and complements the screening with an updated dataset and symmetry-aware computational protocol.
 
-Using MC2D, candidate QSHIs were identfied through a multistep funneling process. Firstly, lanthanide-containing elements were filtered, as standard DFT performs poorly in describing their electronic strucuture. This yields 1471 structures, all of which are relaxed using the PBE functional assuming a non-magnetic ground state. Band structures are then calculated along high-symmetry lines using DFT and the PBE functional with Spin-orbit coupling, allowing identification of band insulators. $\mathbb{Z}_2$ invariant was computed by tracking the evolution of hermaphrodite Wannier charge centers (HWCC). For materials that satisfy this constraint, phonon dispersions were calculated to identify structures with poor mechanical stability (i.e., those exhibiting imaginary phonon modes).
+A major methodological difference with respect to the baseline MC2D dataset is that both QSHI screenings were performed using norm-conserving, fully relativistic pseudopotentials, explicitly including spin–orbit coupling at the self-consistent level.
 
-Additionally, materials identified as metallic but possessing a direct gap along high-symmetry paths, were subjected to hydrostatic strain (±1%, ±2%, ±3%) to determine whether such materials become insulators. This step aims to identify materials that may be tunable to become QSHIs, via substrate choice, for example. Within the publication these QSHIs are then recalculated with $G_{0}W_{0}$, a significantly more accurate, albeit computationally expensive, method.
+### References
 
-Inversion strength (IS) is defined differently for the two types of QSHIs, for Bernevig–Hughes–Zhang (BHZ)-type QSHIs[^3] the IS is defined as the difference between the lowest unoccupied and highest occupied band at the high-symmetry point where band inversion occurs. Whereas for Kane–Mele QSHIs, where a single Dirac cone is gapped by Kane–Mele spin–orbit coupling at the K point[^4], the inversion strength is the band gap at that K point.
+[^1]: _If using work related to the first publication please cite:_ Antimo Marrazzo, Marco Gibertini, Davide Campi, Nicolas Mounet, Nicola Marzari; Relative Abundance of $\mathbb{Z}_2$ Topological Order in Exfoliable Two-Dimensional Insulators; Nano Letters 19, 12 (2019); https://doi.org/10.1021/acs.nanolett.9b02689
 
-![Schematic representation of the screening process for the Marazzo publication](/contributions/topology/topology_marazzo.jpeg)
+[^2]: _If using work related to the second publication be sure to cite:_ Davide Grassano, Davide Campi, Antimo Marrazzo, and Nicola Marzari; Complementary screening for quantum spin Hall insulators in two-dimensional exfoliable materials; Phys. Rev. Materials 7, 094202 (2023); https://doi.org/10.1103/PhysRevMaterials.7.094202
 
-_The following details relate to the complementary publication - Grassano et al., Phys. Rev. Mater. 7, 094202 (2023). Full details of the source methodology as well as further discussion are available in the publication[^2]_
+[^3]:
+    N. Mounet, M. Gibertini, P. Schwaller, D. Campi, A. Merkys, A. Marrazzo, T. Sohier, I. E. Castelli, A. Cepellotti, G. Pizzi and N. Marzari;
+    Two-dimensional materials from high-throughput computational exfoliation of experimentally known compounds; Nature Nanotechnology 13, 246 (2018); https://doi.org/10.1038/s41565-017-0035-5
 
-A further four $\mathbb{Z}_2$ topological insulators and seven direct-gap metals metals were identified as potential QSHIs in a similar fashion to the method described above, however with some key differences:
-
-For materials with inversion symmetry the formula given by Fu and Kane[^5] was used
-
-$$
-\nabla \cdot \mathbf{E} = \frac{\rho}{\epsilon_{0}}
-$$
-
-For materials without inversion symmetry, direct and indirect band gaps are calculated. Then the Z2pack software is used to investigate HWCC evolution across half the Brillouin zone over a progressively denser k-point grid. Finally, selected candidates are assessed for mechanical stability via phonon calculations.
-
-![Schematic representation of the screening process for the Grassano publication](/contributions/topology/topology_grassano.png)
-
-_For both publications, the AiiDA workflow manager was used to assist with automation and provenance tracking._
-
----
-
-### References and Further reading:
-
-[^1]: _If using work related to the first publication please cite:_ Antimo Marrazzo, Marco Gibertini, Davide Campi, Nicolas Mounet, Nicola Marzari. Relative Abundance of $\mathbb{Z}_2$ Topological Order in Exfoliable Two-Dimensional Insulators. acs.nanolett.9b02689 (2019). https://pubs.acs.org/doi/10.1021/acs.nanolett.9b02689
-
-[^2]: _If using work related to the second publication be sure to cite:_ Davide Grassano, Davide Campi, Antimo Marrazzo, and Nicola Marzari. Complementary screening for quantum spin Hall insulators in two-dimensional exfoliable materials. PhysRevMaterials.7.094202 (2023). https://journals.aps.org/prmaterials/abstract/10.1103/PhysRevMaterials.7.094202
-
-[^3]: _For details on the Bernevig-Hughes-Zhang QSHIs_: B. Andrei Bernevig, Taylor L. Hughes, and Shou-Cheng Zhang. Quantum Spin Hall Effect and Topological Phase Transition in HgTe Quantum Wells. 10.1126/science.1133734 (2006) https://www.science.org/doi/full/10.1126/science.1133734
-
-[^4]: _For foundation theory on QSHIs_: C. L. Kane and E. J. Mele. $\mathbb{Z}_2$ Topological Order and the Quantum Spin Hall Effect. PhysRevLett.95.146802 (2005) https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.95.146802
-
-[^5]: _For details on inversion symmetry:_ Liang Fu and C. L. Kane. Topological insulators with inversion symmetry. PhysRevB.76.045302 (2007) https://journals.aps.org/prb/abstract/10.1103/PhysRevB.76.045302
+[^4]: D. Campi, N. Mounet, M. Gibertini, G. Pizzi, N. Marzari; Expansion of the Materials Cloud 2D Database; ACS Nano 17, 11268-11278 (2023); https://pubs.acs.org/doi/full/10.1021/acsnano.2c11510
