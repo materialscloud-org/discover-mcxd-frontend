@@ -3,7 +3,7 @@
 
 // By default, use development API URLS
 let mcRestApiUrl = "https://mcxd-api.dev.materialscloud.org/";
-let exploreBaseUrl = "https://www.materialscloud.dev/explore/";
+let exploreBaseUrl = "https://www.materialscloud.xyz/explore/";
 
 // Use production backend if specified
 if (import.meta.env.VITE_PRODUCTION_BACKEND === "true") {

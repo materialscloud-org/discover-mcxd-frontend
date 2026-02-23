@@ -24,7 +24,6 @@ export const AIIDA_API_URLS = {
   "pbesol-v1-fermisurf": `${AIIDA_REST_BASE_URL}/mc3d-pbesol-v1-fermisurf/api/v4`,
   "pbesol-v1-wannierisation": `${AIIDA_REST_BASE_URL}/mc3d-pbesol-v1-wannierisation/api/v4`,
   "pbesol-v1-supercon": `${AIIDA_REST_BASE_URL}/mc3d-pbesol-v1-supercon/api/v4`,
-
 };
 
 export const EXPLORE_URLS = {
