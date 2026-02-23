@@ -14,6 +14,7 @@ export const McTable = ({
   contents,
   floatPrecision = 4,
   style = null,
+  dontFormatCols = [],
 }) => {
   // headerRow - array of header labels
   // contents - array for each row (needs to match header size)
@@ -36,7 +37,11 @@ export const McTable = ({
           {contents.map((row, i) => (
             <tr key={i}>
               {row.map((cell, j) => (
-                <td key={j}>{formatIfFloat(cell, floatPrecision)}</td>
+                <td key={j}>
+                  {dontFormatCols.includes(j)
+                    ? cell
+                    : formatIfFloat(cell, floatPrecision)}
+                </td>
               ))}
             </tr>
           ))}

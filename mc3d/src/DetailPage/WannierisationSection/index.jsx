@@ -182,7 +182,8 @@ const WannierisationSection = ({ params, loadedData }) => {
             <div className="mb-3 ms-2">Information regarding wannier sites</div>
             <McTable
               style={{ maxHeight: "425px" }}
-              headerRow={["Index", "x [Å]", "y [Å]", "z [Å]", "Spread", ""]}
+              dontFormatCols={[0]}
+              headerRow={["Index", "x [Å]", "y [Å]", "z [Å]", "Spread [Å²]", ""]}
               contents={(wannierData?.wf_info?.wf_array || []).map((v) => [
                 v.index,
                 v.center?.[0],
