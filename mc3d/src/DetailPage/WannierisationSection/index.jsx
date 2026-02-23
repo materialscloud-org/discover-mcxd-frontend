@@ -188,7 +188,7 @@ const WannierisationSection = ({ params, loadedData }) => {
                 "y [Å]",
                 "z [Å]",
                 "Spread",
-                "Download",
+                "",
               ]}
               contents={(wannierData?.wf_info?.wf_array || []).map((v) => [
                 v.index,
