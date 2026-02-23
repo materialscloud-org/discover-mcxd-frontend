@@ -42,6 +42,35 @@ export const standardTraceConfigs = {
   },
 };
 
+export const wannierTraceConfigs = {
+  pw: {
+    label: "PW",
+    units: "eV",
+    trace: {
+      mode: "lines",
+      line: {
+        color: "#6baed6",
+        dash: "solid",
+        width: 2.25,
+        opacity: 0.95,
+      },
+    },
+  },
+  w90: {
+    label: "w90",
+    units: "eV",
+    trace: {
+      mode: "lines",
+      line: {
+        color: "#d62728",
+        width: 1.75,
+        dash: "4px",
+        opacity: 0.95,
+      },
+    },
+  },
+};
+
 export const SuperConTraceConfigs = {
   electronicEPW: {
     label: "EPW",

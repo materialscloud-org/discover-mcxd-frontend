@@ -23,6 +23,7 @@ export const EXPLORE_URLS = {
   "pbesol-v1": `${EXPLORE_BASE_URL}/mc3d-pbesol-v1`,
   "pbesol-v2": `${EXPLORE_BASE_URL}/mc3d-pbesol-v2`,
   "pbesol-v1-fermisurf": `${EXPLORE_BASE_URL}/mc3d-pbesol-v1-fermisurf/api/v4`,
+  "pbesol-v1-wannierisation": `${EXPLORE_BASE_URL}/mc3d-pbesol-v1-wannierisation/api/v4`,
   "pbesol-v1-supercon": `${EXPLORE_BASE_URL}/mc3d-pbesol-v1-supercon/api/v4`,
 };
 
@@ -107,6 +108,12 @@ export async function loadXrd(method, id) {
 export async function loadDhva(method, id) {
   const primary = `${MC_REST_API_URL}/${method}/fermisurf_base/${id}`;
   const fallback = `${MC_REST_API_FALLBACK_URL}/${method}/fermisurf_base/${id}`;
+  return fetchWithFallback(primary, fallback);
+}
+
+export async function loadWannier(method, id) {
+  const primary = `${MC_REST_API_URL}/${method}/wannierisation_base/${id}`;
+  const fallback = `${MC_REST_API_FALLBACK_URL}/${method}/wannierisation_base/${id}`;
   return fetchWithFallback(primary, fallback);
 }
 

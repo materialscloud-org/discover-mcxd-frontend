@@ -38,6 +38,7 @@ import MissingDataWarning from "./MissingDataWarning";
 
 import { CitationBanner } from "@mcxd/shared";
 import PageLayout from "../Layout";
+import WannierisationSection from "./WannierisationSection";
 
 // contributed sections
 // import RelatedSection from "./RelatedSection";
@@ -198,6 +199,8 @@ function DetailPage() {
       <XrdSection params={params} loadedData={coreData} />
 
       {/* <ElectronicStructureSection params={params} /> */}
+
+      <WannierisationSection params={params} />
 
       <VibrationalSection
         params={params}
