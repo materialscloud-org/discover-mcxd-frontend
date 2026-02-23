@@ -20,10 +20,14 @@ import {
 import { wannierTraceConfigs } from "@mcxd/shared";
 import { buildTraceFormat } from "@mcxd/shared";
 
+import { McTable } from "@mcxd/shared";
+
+import { Button } from "react-bootstrap";
+
 const EXPLORE_URL = EXPLORE_URLS["pbesol-v1-wannierisation"];
 
 // we do some hardcoding here while its a demo; TODO - cleanup
-// TODO - this fully rerenders when switching methodology (this is a free place for performance gains)
+// TODO - this fully rerenders when switching methodology (this is a free placse for performance gains)
 // Perhaps switching page structure is a nice way to avoid this.
 
 const S3_ROOT_URL =
@@ -33,14 +37,29 @@ const wannierMethod = "pbesol-v1";
 
 const aiidaProfile = "pbesol-v1-wannierisation";
 
+const downloadCube = (id, index) => {
+  const url = `${S3_ROOT_URL}/${id}/aiida_${String(index).padStart(5, "0")}.cube.br`;
+  fetch(url)
+    .then((res) => res.blob())
+    .then((blob) => {
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `aiida_${String(index).padStart(5, "0")}.cube`; // guaranteed
+      a.click();
+      URL.revokeObjectURL(a.href);
+    })
+    .catch(console.error);
+};
+
 const WannierisationSection = ({ params, loadedData }) => {
   const { id, method } = params;
-  const [loading, setLoading] = useState(false);
+  const [wanLoading, setWanLoading] = useState(false);
+  const [bandsLoading, setBandsLoading] = useState(false);
+
   const [error, setError] = useState(false);
   const [wannierData, setWannierData] = useState(null);
   const [bandsData, setBandsData] = useState([]);
 
-  console.log("wannier", params);
   console.log("lD", loadedData);
 
   // Fetch wannier data
@@ -48,7 +67,7 @@ const WannierisationSection = ({ params, loadedData }) => {
     if (!id || !method) return;
 
     const fetchWannier = async () => {
-      setLoading(true);
+      setWanLoading(true);
 
       try {
         // 1. Load base DHVA metadata
@@ -59,7 +78,7 @@ const WannierisationSection = ({ params, loadedData }) => {
         console.error(err);
         setError(err.message || "Failed to fetch DHVA data");
       } finally {
-        setLoading(false);
+        setWanLoading(false);
       }
     };
 
@@ -72,7 +91,7 @@ const WannierisationSection = ({ params, loadedData }) => {
 
     const fetchBands = async () => {
       try {
-        setLoading(true);
+        setBandsLoading(true);
 
         const bandUuids = [
           wannierData?.pw_band_uuid,
@@ -100,16 +119,16 @@ const WannierisationSection = ({ params, loadedData }) => {
         console.error(err);
         setError(err.message || "Failed to fetch band data");
       } finally {
-        setLoading(false);
+        setBandsLoading(false);
       }
     };
 
     fetchBands();
   }, [wannierData]);
 
-  console.log(wannierData);
+  console.log("wannierData", wannierData);
 
-  if (loading)
+  if (bandsLoading || wanLoading)
     return (
       <>
         <div className="section-heading">Wannierisation</div>
@@ -122,8 +141,6 @@ const WannierisationSection = ({ params, loadedData }) => {
       </>
     );
   if (error) return <></>;
-
-  console.log("bandsData", bandsData);
 
   return (
     <div>
@@ -158,6 +175,34 @@ const WannierisationSection = ({ params, loadedData }) => {
               minYval={-15.4}
               maxYval={15.8}
               layoutOverrides={COMMON_LAYOUT_CONFIG}
+            />
+          </Col>
+          <Col>
+            <div className="subsection-title">Wannierisation Information</div>
+            <div className="mb-3 ms-2">Information regarding wannier sites</div>
+            <McTable
+              style={{ maxHeight: "425px" }}
+              headerRow={[
+                "Index",
+                "x [Å]",
+                "y [Å]",
+                "z [Å]",
+                "Spread",
+                "Download",
+              ]}
+              contents={(wannierData?.wf_info?.wf_array || []).map((v) => [
+                v.index,
+                v.center?.[0],
+                v.center?.[1],
+                v.center?.[2],
+                v.spread,
+                <Button
+                  size="sm"
+                  onClick={() => downloadCube(params.id, v.index)}
+                >
+                  <span className="bi bi-download" />
+                </Button>,
+              ])}
             />
           </Col>
         </Row>
