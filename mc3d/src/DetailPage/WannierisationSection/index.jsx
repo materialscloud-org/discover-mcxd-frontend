@@ -158,14 +158,14 @@ const WannierisationSection = ({ params, loadedData }) => {
               Calculated with PW (QE){" "}
               {wannierData?.pw_band_uuid && (
                 <ExploreButton
-                  explore_url={EXPLORE_URLS["pbesol-v1-wannierisation"]}
+                  explore_url={EXPLORE_URL}
                   uuid={wannierData?.pw_band_uuid}
                 />
               )}{" "}
               and W90{" "}
               {wannierData?.w90_band_uuid && (
                 <ExploreButton
-                  explore_url={EXPLORE_URLS["pbesol-v1-wannierisation"]}
+                  explore_url={EXPLORE_URL}
                   uuid={wannierData.w90_band_uuid}
                 />
               )}
@@ -182,14 +182,7 @@ const WannierisationSection = ({ params, loadedData }) => {
             <div className="mb-3 ms-2">Information regarding wannier sites</div>
             <McTable
               style={{ maxHeight: "425px" }}
-              headerRow={[
-                "Index",
-                "x [Å]",
-                "y [Å]",
-                "z [Å]",
-                "Spread",
-                "",
-              ]}
+              headerRow={["Index", "x [Å]", "y [Å]", "z [Å]", "Spread", ""]}
               contents={(wannierData?.wf_info?.wf_array || []).map((v) => [
                 v.index,
                 v.center?.[0],
