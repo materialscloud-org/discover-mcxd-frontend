@@ -174,7 +174,7 @@ const TopologySection = ({ params, loadedData }) => {
               This dataset provides results from a high-throughput search for
               topological insulating two-dimensional materials. This requires
               high-accuracy spin-orbit coupling DFT calculations. This frontend
-              section contains the final band structure and the corrosponding
+              section contains the final band structure and the corresponding
               calculated band gaps. For further details regarding the
               methodology see the{" "}
               <Link
@@ -250,7 +250,7 @@ const TopologySection = ({ params, loadedData }) => {
                   <>
                     {" "}
                     <div className="subsection-title mt-2">
-                      HWCC tracking plot
+                      Hybrid Wannier charge center (HWCC) tracking plot
                     </div>
                     <HWCCPlot hwcc={loadedData.topologyInfo.hwcc} />
                   </>
