@@ -17,14 +17,14 @@ export default class CustomHeader extends React.Component {
   componentDidMount() {
     this.props.column.addEventListener(
       "filterChanged",
-      this.onFilterChanged.bind(this)
+      this.onFilterChanged.bind(this),
     );
 
     // note: same eventlistener can be applied to the column api
     // but the sortIndex is not updated correctly in that case
     this.props.api.addEventListener(
       "sortChanged",
-      this.onSortChanged.bind(this)
+      this.onSortChanged.bind(this),
     );
 
     this.onSortClicked.bind(this);

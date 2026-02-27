@@ -11,8 +11,8 @@ export const RGB_Log_Blend = (p, c0, c1) => {
         (!d
           ? h
           : !h
-          ? d
-          : r((parseFloat(d) * P + parseFloat(h) * p) * 1000) / 1000 + ")")
+            ? d
+            : r((parseFloat(d) * P + parseFloat(h) * p) * 1000) / 1000 + ")")
       : ")";
   return (
     "rgb" +
@@ -20,7 +20,7 @@ export const RGB_Log_Blend = (p, c0, c1) => {
     r(
       (P * i(a[3] === "a" ? a.slice(5) : a.slice(4)) ** 2 +
         p * i(e[3] === "a" ? e.slice(5) : e.slice(4)) ** 2) **
-        0.5
+        0.5,
     ) +
     "," +
     r((P * i(b) ** 2 + p * i(f) ** 2) ** 0.5) +

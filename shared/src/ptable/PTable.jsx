@@ -201,7 +201,7 @@ class PTable extends React.Component {
           onSelectionChange={this.props.onSelectionChange}
           selection={selection}
           doc={false}
-        />
+        />,
       );
     }
     return items;

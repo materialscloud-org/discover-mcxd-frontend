@@ -61,7 +61,7 @@ const ColumnSelector = (props) => {
                       <span>{item.headerName}</span>
                     </label>
                   </li>
-                )
+                ),
             )}
           </ul>
         </div>
