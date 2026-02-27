@@ -1,4 +1,4 @@
-# Superconductivity calculations
+## Superconductivity calculations
 
 ### Motivation
 
@@ -6,7 +6,7 @@ Superconductors play an important role in many modern technologies, finding appl
 
 The theoretical background for understanding high temperature superconductivity is still an active area of research and the importance on electron-phonon interactions cannot be understated. Since the materials cloud three-dimensional database (MC3D) provides a large dataset of experimentally synthesised materials, it serves as a foundation for performing high accuracy electron-phonon calculations on known materials.
 
-## supercond-EPW database
+### supercond-EPW database
 
 This dataset extends the base dataset (PBEsol-v1) and therefore the methodology may slightly differ. Full details are available in the publication[^1].
 
