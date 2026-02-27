@@ -221,16 +221,27 @@ const TopologySection = ({ params, loadedData }) => {
               <McInfoBox title="General">
                 <ul className="no-bullets">
                   {loadedData?.topologyInfo?.inversion_strength && (
-                    <li>{`Topological inversion strength: ${loadedData?.topologyInfo.inversion_strength} meV `}</li>
+                    <li>{`Topological inversion strength (with spin-orbit couping): ${loadedData?.topologyInfo.inversion_strength} meV `}</li>
                   )}
                   <li>
-                    {`Spin-orbit coupling band gap: ${loadedData?.topologyInfo.soc_band_gap} meV `}{" "}
+                    {`Band gap (with spin-orbit couping): ${loadedData?.topologyInfo.soc_band_gap} meV `}{" "}
                     {loadedData?.topologyInfo?.strain_percent && (
                       <WarningLabel
                         warning={`This band gap is for ${loadedData.topologyInfo.strain_percent}% strain but the band structure shown is unstrained.`}
                       />
                     )}
                   </li>
+                  {/* custom string for Pt material? */}
+                  {/* <li
+                    style={{
+                      fontSize: "13px",
+                      paddingTop: "4px",
+                      fontStyle: "italic",
+                    }}
+                  >
+                    {params?.id === "mc2d-400" &&
+                      "Note: A Pd analog of this structure was also calculated. See the publication for more information"}
+                  </li> */}
                 </ul>
               </McInfoBox>
 
