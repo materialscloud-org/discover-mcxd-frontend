@@ -83,6 +83,9 @@ const ElectronicSection = (props) => {
     setLoadingBands(true);
 
     loadAiidaBands(electronicData.bands_uuid).then((bands) => {
+      // The fermi energy matches with the top of valence band
+      // shift bands such that 0 is the same for both spin channels
+      // at the middle of the gap
       let bandShift = -math.max(electronicData.fermi_energy.value);
       bandShift -= electronicData.band_gap.value / 2;
 
@@ -115,7 +118,7 @@ const ElectronicSection = (props) => {
     });
   }, [electronicData.bands_uuid]);
 
-  console.log(bandsData);
+  console.log("workin", bandsData);
 
   return (
     <div>

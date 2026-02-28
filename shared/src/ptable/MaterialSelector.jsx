@@ -37,6 +37,7 @@ const MaterialSelector = forwardRef((props, ref) => {
       mode - "exact", "include"
       elements - {Ag: num_clicked} (e.g. 1 - one click, 2 - two clicks)
   */
+  MaterialSelector.displayName = "MaterialSelector";
   const [ptableFilter, setPtableFilter] = useState({
     mode: "include",
     elements: {},

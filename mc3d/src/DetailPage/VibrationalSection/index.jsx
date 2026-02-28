@@ -190,8 +190,12 @@ export default function VibrationalSection({ params, loadedData, phononData }) {
           characterize promising superconducting materials. This frontend
           section shows phonon vibrational modes. For further details regarding
           the methodology see the{" "}
-          <Link to="/contributions" target="_blank" rel="noopener noreferrer">
-            extended dataset documentation
+          <Link
+            to="/contributions/phonons"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            contributed details for this section
           </Link>
           .
         </div>

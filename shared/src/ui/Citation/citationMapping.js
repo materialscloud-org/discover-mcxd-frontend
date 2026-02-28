@@ -97,6 +97,66 @@ export const CITATION_MAPPING = {
       },
     ],
   },
+  Marrazzo2019: {
+    authors: [
+      "A. Marrazzo",
+      "M. Gibertini",
+      "D. Campi",
+      "N. Mounet",
+      "N. Marzari",
+    ],
+    authorsShort: "Marrazzo et al.",
+    assoiciatedDois: [
+      {
+        type: "paper",
+        year: 2019,
+        doi: "10.1021/acs.nanolett.9b02689",
+        journal: "ACS Nano Letters",
+        journalRef: "ACS Nano Letters 2019, 19 (12), 8431–8440",
+        journalRefShort: "ACS Nano Lett. 12, 8431–8440",
+        title:
+          "Relative Abundance of Z₂ Topological Order in Exfoliable Two-Dimensional Insulators",
+      },
+      {
+        type: "data",
+        year: 2022,
+        doi: "10.24435/materialscloud:cm-7p",
+        journal: "Materials Cloud Archive",
+        journalRef: "Materials Cloud Archive, 2020.86",
+        journalRefShort: "Materials Cloud Archive",
+        title:
+          "Relative abundance of Z₂ topological Order in exfoliable two-dimensional insulators",
+      },
+    ],
+  },
+
+  Grassano2023: {
+    authors: ["D. Grassano", "D. Campi", "A. Marrazzo", "N. Marzari"],
+    authorsShort: "Grassano et al.",
+    assoiciatedDois: [
+      {
+        type: "paper",
+        year: 2023,
+        doi: "10.1103/PhysRevMaterials.7.094202",
+        journal: "Physical Review Materials,",
+        journalRef: "Phys. Rev. Materials 7, 094202-094209",
+        journalRefShort: "Phys. Rev. Mater. 7, 094202",
+        title:
+          "Complementary screening for quantum spin Hall insulators in two-dimensional exfoliable materials",
+      },
+      {
+        type: "data",
+        year: 2923,
+        doi: "10.24435/materialscloud:ea-d3",
+        journal: "Materials Cloud Archive",
+        journalRef: "Materials Cloud Archive, 2023.9",
+        journalRefShort: "Materials Cloud Archive",
+        title:
+          "A complementary screening for quantum spin Hall insulators in 2D exfoliable materials",
+      },
+    ],
+  },
+
   // MC3D
   HuberMc3d25: {
     authors: [

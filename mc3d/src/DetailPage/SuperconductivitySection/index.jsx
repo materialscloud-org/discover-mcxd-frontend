@@ -111,8 +111,12 @@ export default function SuperConductivitySection({
           section contains the final superconductivity estimation results, as
           well as the intermediate electronic and vibrational calculated
           properties. For further details regarding the methodology see the{" "}
-          <Link to="/contributions" target="_blank" rel="noopener noreferrer">
-            extended dataset documentation
+          <Link
+            to="/contributions/superconductivity"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            contributed details for this section
           </Link>
           .
         </div>

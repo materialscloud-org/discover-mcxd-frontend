@@ -1,0 +1,12 @@
+[
+  {
+    "slug": "phonons",
+    "title": "Phonon calculations",
+    "description": "Phonon screening for potential superconductor materials"
+  },
+  {
+    "slug": "superconductivity",
+    "title": "Superconductivity dataset",
+    "description": "Electron-phonon eliashberg spectral calculations for finding potential superconducting materials"
+  }
+]

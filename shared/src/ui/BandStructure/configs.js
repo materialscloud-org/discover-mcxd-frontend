@@ -42,6 +42,35 @@ export const standardTraceConfigs = {
   },
 };
 
+export const topologyTraceConfigs = {
+  nosoc: {
+    label: "no SOC",
+    units: "eV",
+    trace: {
+      mode: "lines",
+      line: {
+        color: "#6baed6",
+        dash: "solid",
+        width: 2.25,
+        opacity: 0.95,
+      },
+    },
+  },
+  soc: {
+    label: "SOC",
+    units: "eV",
+    trace: {
+      mode: "lines",
+      line: {
+        color: "#d62728",
+        dash: "4px",
+        width: 1.75,
+        opacity: 1,
+      },
+    },
+  },
+};
+
 export const SuperConTraceConfigs = {
   electronicEPW: {
     label: "EPW",
@@ -133,7 +162,7 @@ export const COMMON_LAYOUT_CONFIG = {
     borderwidth: 1,
   },
 
-  margin: { l: 65, r: 10, t: 10, b: 50 },
+  margin: { l: 65, r: 10, t: 2, b: 50 },
 
   shapes: [
     {
