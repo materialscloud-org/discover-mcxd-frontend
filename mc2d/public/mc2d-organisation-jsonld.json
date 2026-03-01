@@ -1,0 +1,47 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "name": "Materials Cloud",
+      "url": "https://mc2d.materialscloud.org",
+      "logo": "https://mc2d.materialscloud.org/favicon.png",
+      "description": "Materials Cloud is an open science platform providing curated computational materials data and tools for reproducible research.",
+      "sameAs": [
+        "https://www.materialscloud.org",
+        "https://twitter.com/materialscloud",
+        "https://www.linkedin.com/company/materials-cloud",
+        "https://github.com/materialscloud"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "name": "MC2D - Materials Cloud 2D Crystals Database",
+      "url": "https://mc2d.materialscloud.org",
+      "description": "Curated set of computationally relaxed two-dimensional crystal structures derived from experimental and computational crystallographic databases.",
+      "publisher": {
+        "@type": "Organization",
+        "name": "Materials Cloud"
+      }
+    },
+    {
+      "@type": "Dataset",
+      "name": "MC2D - 2D Crystals Database",
+      "description": "A curated database of computationally relaxed two-dimensional crystal structures based on raw data from experimental and computational sources.",
+      "url": "https://mc2d.materialscloud.org",
+      "creator": {
+        "@type": "Organization",
+        "name": "Materials Cloud"
+      },
+      "license": "https://creativecommons.org/licenses/by/4.0/",
+      "keywords": [
+        "2D materials",
+        "crystal structures",
+        "computational materials science",
+        "density functional theory",
+        "2D crystals",
+        "materials database"
+      ]
+    }
+  ]
+}
