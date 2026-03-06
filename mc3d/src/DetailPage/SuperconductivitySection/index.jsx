@@ -211,7 +211,7 @@ export default function SuperConductivitySection({
         {/* Anisotropic gap function. */}
         {supercon.aniso_info && (
           <Row>
-            <Col style={{ maxWidth: "910px" }}>
+            <Col style={{ maxWidth: "600px" }}>
               <div className="subsection-title">
                 Anisotropic superconducting gap function{" "}
                 {supercon.aniso_gap_function_uuid && (
