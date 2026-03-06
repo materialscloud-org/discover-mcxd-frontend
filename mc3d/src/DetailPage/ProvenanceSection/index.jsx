@@ -15,22 +15,20 @@ function ProvenanceSection(props) {
       <Container fluid className="section-container">
         <Row>
           <div className="provenance-section">
-            <div className="provenance-section-inner">
-              <div>Relevant nodes in the provenance browser:</div>
-              <ul>
-                {details.provenance_links.map((e) => {
-                  return (
-                    <li key={e.uuid}>
-                      {e.label}{" "}
-                      <ExploreButton
-                        explore_url={EXPLORE_URLS[props.params.method]}
-                        uuid={e.uuid}
-                      />
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
+            <div>Relevant nodes in the provenance browser:</div>
+            <ul>
+              {details.provenance_links.map((e) => {
+                return (
+                  <li key={e.uuid}>
+                    {e.label}{" "}
+                    <ExploreButton
+                      explore_url={EXPLORE_URLS[props.params.method]}
+                      uuid={e.uuid}
+                    />
+                  </li>
+                );
+              })}
+            </ul>
           </div>
         </Row>
       </Container>
