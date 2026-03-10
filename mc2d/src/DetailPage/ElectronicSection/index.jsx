@@ -83,18 +83,23 @@ const ElectronicSection = (props) => {
     setLoadingBands(true);
 
     loadAiidaBands(electronicData.bands_uuid).then((bands) => {
-      // The fermi energy matches with the top of valence band
-      // shift bands such that 0 is the same for both spin channels
-      // at the middle of the gap
-      let bandShift = -math.max(electronicData.fermi_energy.value);
-      bandShift -= electronicData.band_gap.value / 2;
-
-      shiftBands(bands, bandShift);
+      const fermiEnergy = electronicData.fermi_energy.value;
 
       let finalBands = [];
 
       if (bands.paths[0].two_band_types) {
         const [up, down] = splitBandsData(bands, 2);
+
+        if (Array.isArray(fermiEnergy) && fermiEnergy.length === 2) {
+          // Shift each spin channel separately
+          shiftBands(up, -fermiEnergy[0]);
+          shiftBands(down, -fermiEnergy[1]);
+        } else {
+          // Fallback: use the same shift for both channels
+          const bandShift = -math.max(fermiEnergy);
+          shiftBands(up, bandShift);
+          shiftBands(down, bandShift);
+        }
 
         finalBands.push(
           {
@@ -107,6 +112,12 @@ const ElectronicSection = (props) => {
           },
         );
       } else {
+        const bandShift = Array.isArray(fermiEnergy)
+          ? -math.max(fermiEnergy)
+          : -fermiEnergy;
+
+        shiftBands(bands, bandShift);
+
         finalBands.push({
           bandsData: bands,
           traceFormat: buildTraceFormat(standardTraceConfigs.nonSpinPolarised),
@@ -117,8 +128,6 @@ const ElectronicSection = (props) => {
       setLoadingBands(false);
     });
   }, [electronicData.bands_uuid]);
-
-  console.log("workin", bandsData);
 
   return (
     <div>
