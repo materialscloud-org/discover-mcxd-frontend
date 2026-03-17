@@ -140,7 +140,7 @@ const WannierisationSection = ({ params, loadedData }) => {
         </Row>
       </>
     );
-  if (error) return <></>;
+  if (error || wannierData === null) return <></>;
 
   return (
     <div>
@@ -183,7 +183,14 @@ const WannierisationSection = ({ params, loadedData }) => {
             <McTable
               style={{ maxHeight: "425px" }}
               dontFormatCols={[0]}
-              headerRow={["Index", "x [Å]", "y [Å]", "z [Å]", "Spread [Å²]", ""]}
+              headerRow={[
+                "Index",
+                "x [Å]",
+                "y [Å]",
+                "z [Å]",
+                "Spread [Å²]",
+                "",
+              ]}
               contents={(wannierData?.wf_info?.wf_array || []).map((v) => [
                 v.index,
                 v.center?.[0],
