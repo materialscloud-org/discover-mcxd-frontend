@@ -12,10 +12,6 @@ import { EXPLORE_URLS, loadWannier } from "../../common/MCrestApiUtils";
 import { loadAiidaBands } from "../../common/aiidaRestApiUtils";
 
 import { BandStructure, COMMON_LAYOUT_CONFIG } from "@mcxd/shared";
-import {
-  SUPERCON_BANDS_LAYOUT_CONFIG,
-  SUPERCON_PHONON_A2F_LAYOUT_CONFIG,
-} from "@mcxd/shared";
 
 import { wannierTraceConfigs } from "@mcxd/shared";
 import { buildTraceFormat } from "@mcxd/shared";
@@ -50,6 +46,16 @@ const downloadCube = (id, index) => {
     })
     .catch(console.error);
 };
+
+function shiftBands(bandsData, shift) {
+  bandsData.paths.forEach((path) => {
+    path.values.forEach((subpath) => {
+      subpath.forEach((val, idx, arr) => {
+        arr[idx] += shift;
+      });
+    });
+  });
+}
 
 const WannierisationSection = ({ params, loadedData }) => {
   const { id, method } = params;
@@ -104,6 +110,10 @@ const WannierisationSection = ({ params, loadedData }) => {
           bandUuids.map((uuid) => loadAiidaBands(aiidaProfile, uuid)),
         );
 
+        // shift by fermi
+        const fermiEnergy = wannierData.fermi_energy;
+        results.forEach((r) => shiftBands(r, -fermiEnergy));
+
         const finalBands = results.map((bands, index) => {
           const config =
             index === 0 ? wannierTraceConfigs.pw : wannierTraceConfigs.w90;
@@ -125,8 +135,6 @@ const WannierisationSection = ({ params, loadedData }) => {
 
     fetchBands();
   }, [wannierData]);
-
-  console.log("wannierData", wannierData);
 
   if (bandsLoading || wanLoading)
     return (
@@ -174,7 +182,16 @@ const WannierisationSection = ({ params, loadedData }) => {
               bandsDataArray={bandsData}
               minYval={-15.4}
               maxYval={15.8}
-              layoutOverrides={COMMON_LAYOUT_CONFIG}
+              layoutOverrides={{
+                ...COMMON_LAYOUT_CONFIG,
+                yaxis: {
+                  ...COMMON_LAYOUT_CONFIG.yaxis,
+                  title: {
+                    ...COMMON_LAYOUT_CONFIG.yaxis?.title,
+                    text: "E - E<sub>F</sub> [eV]",
+                  },
+                },
+              }}
             />
           </Col>
           <Col>
