@@ -37,7 +37,7 @@ export default function PageLayout({ children, breadcrumbs = [] }) {
         <TitleAndLogo
           titleString="Materials Cloud Three-Dimensional Structure Database (MC3D)"
           imgSrc={Mc3dLogo}
-          doiIds={["rw-t0"]}
+          doiIds={["jn-ac"]}
         />
 
         {children}
