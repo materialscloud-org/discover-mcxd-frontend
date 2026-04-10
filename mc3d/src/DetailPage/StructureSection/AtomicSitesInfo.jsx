@@ -1,21 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 
 import { matrix, ToggleSwitch } from "mc-react-library";
 
 import { McTable } from "@mcxd/shared";
 
-function cartToFrac(positions, cell) {
-  const invCell = matrix.invertMatrix(cell);
-
-  console.log("Cell", cell);
-  console.log("Inverse Cell", invCell);
-
-  return positions.map((pos) => [
-    invCell[0][0] * pos[0] + invCell[0][1] * pos[1] + invCell[0][2] * pos[2],
-    invCell[1][0] * pos[0] + invCell[1][1] * pos[1] + invCell[1][2] * pos[2],
-    invCell[2][0] * pos[0] + invCell[2][1] * pos[1] + invCell[2][2] * pos[2],
-  ]);
-}
+import { cartesianToFractional } from "matsci-parse";
 
 export const AtomicSitesInfoBox = ({ structureInfo }) => {
   const [atomsModeState, setAtomsModeState] = useState(false);
@@ -23,60 +12,63 @@ export const AtomicSitesInfoBox = ({ structureInfo }) => {
   const cell = structureInfo.aiidaAttributes.cell;
   const sites = structureInfo.aiidaAttributes.sites;
 
-  const cartesianData = sites.map((s) => [
-    s.kind_name,
-    s.position[0].toFixed(4),
-    s.position[1].toFixed(4),
-    s.position[2].toFixed(4),
-  ]);
-
-  const positions = sites.map((s) => s.position);
-  const fractionalPositions = cartToFrac(positions, cell);
-
-  const fractionalData = sites.map((s, i) => {
-    const frac = fractionalPositions[i];
-    return [
-      s.kind_name,
-      frac[0].toFixed(4),
-      frac[1].toFixed(4),
-      frac[2].toFixed(4),
-    ];
-  });
-
-  const headerCartesian = ["Kind label", "x [Å]", "y [Å]", "z [Å]"];
-  const headerFractional = ["Kind label", "x", "y", "z"];
-
-  const handleLatticeInfoClick = (checked) => {
+  const handleToggle = (checked) => {
     setAtomsModeState(checked);
   };
 
+  // Compute table data only when needed
+  const tableData = useMemo(() => {
+    return sites.map((s) => {
+      const coords = atomsModeState
+        ? cartesianToFractional(s.position, cell)
+        : s.position;
+
+      return [
+        s.kind_name,
+        coords[0].toFixed(4),
+        coords[1].toFixed(4),
+        coords[2].toFixed(4),
+      ];
+    });
+  }, [sites, cell, atomsModeState]);
+
+  const header = atomsModeState
+    ? ["Kind label", "x", "y", "z"]
+    : ["Kind label", "x [Å]", "y [Å]", "z [Å]"];
+
   return (
     <div>
-      <div className="subsection-title flex justify-between items-center">
-        <span style={{ flex: 1 }}>Atomic positions</span>
+      <div
+        className="subsection-title"
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <span>Atomic positions</span>
+
         <div
           style={{
             display: "flex",
-            justifyContent: "flex-end",
             gap: "40px",
             marginRight: "5px",
-            alignItems: "stretch",
+            alignItems: "center",
           }}
         >
-          {/* Commented as currently buggy? */}
-          {/* <ToggleSwitch
+          <ToggleSwitch
             labelLeft="Cartesian"
             labelRight="Fractional"
             switchLength="30px"
             fontSize="17px"
-            onToggle={handleLatticeInfoClick}
-          /> */}
+            onToggle={handleToggle}
+          />
         </div>
       </div>
 
       <McTable
-        headerRow={atomsModeState ? headerFractional : headerCartesian}
-        contents={atomsModeState ? fractionalData : cartesianData}
+        headerRow={header}
+        contents={tableData}
         style={{ maxHeight: "332px" }}
       />
     </div>
