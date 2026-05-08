@@ -13,7 +13,6 @@
     "ag-grid-community": "^32.1.0",
     "ag-grid-react": "^32.1.0",
     "bands-visualiser": "^0.0.3",
-    "matsci-parse": "file:../matsci-parse-0.6.0.tgz",
     "react-bootstrap": "^2.10.10"
   }
 }
