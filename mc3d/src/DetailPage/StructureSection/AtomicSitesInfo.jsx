@@ -1,67 +1,55 @@
 import React, { useState, useMemo } from "react";
 
-import { matrix, ToggleSwitch } from "mc-react-library";
-
+import { ToggleSwitch } from "mc-react-library";
 import { McTable } from "@mcxd/shared";
 
 import { cartesianToFractional } from "matsci-parse";
 
-export const AtomicSitesInfoBox = ({ structureInfo }) => {
-  const [atomsModeState, setAtomsModeState] = useState(false);
+export const AtomicSitesInfoBox = ({ crystals, cellMode }) => {
+  const [showFractional, setShowFractional] = useState(false);
 
-  const cell = structureInfo.aiidaAttributes.cell;
-  const sites = structureInfo.aiidaAttributes.sites;
+  const crystalStructure = cellMode.usePrimitive
+    ? crystals?.primitive
+    : crystals?.conventional;
 
-  const handleToggle = (checked) => {
-    setAtomsModeState(checked);
-  };
+  const cell = crystalStructure?.lattice;
+  const sites = crystalStructure?.sites || [];
+  const species = crystalStructure?.species || [];
 
-  // Compute table data only when needed
   const tableData = useMemo(() => {
-    return sites.map((s) => {
-      const coords = atomsModeState
-        ? cartesianToFractional(s.position, cell)
-        : s.position;
+    if (!cell || !Array.isArray(sites)) return [];
+
+    return sites.map((site) => {
+      const coords = showFractional
+        ? cartesianToFractional(site.cart, cell)
+        : site.cart;
 
       return [
-        s.kind_name,
+        species[site.speciesIndex] ?? `#${site.speciesIndex}`,
         coords[0].toFixed(4),
         coords[1].toFixed(4),
         coords[2].toFixed(4),
       ];
     });
-  }, [sites, cell, atomsModeState]);
+  }, [sites, species, cell, showFractional]);
 
-  const header = atomsModeState
-    ? ["Kind label", "x", "y", "z"]
-    : ["Kind label", "x [Å]", "y [Å]", "z [Å]"];
+  const header = showFractional
+    ? ["Species", "x", "y", "z"]
+    : ["Species", "x [Å]", "y [Å]", "z [Å]"];
 
   return (
     <div>
-      <div
-        className="subsection-title"
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
+      <div className="subsection-title">
         <span>Atomic positions</span>
 
-        <div
-          style={{
-            display: "flex",
-            gap: "40px",
-            marginRight: "5px",
-            alignItems: "center",
-          }}
-        >
+        <div style={{ float: "right" }}>
           <ToggleSwitch
             labelLeft="Cartesian"
             labelRight="Fractional"
             switchLength="30px"
             fontSize="17px"
-            onToggle={handleToggle}
+            toggled={showFractional}
+            onToggle={setShowFractional}
           />
         </div>
       </div>

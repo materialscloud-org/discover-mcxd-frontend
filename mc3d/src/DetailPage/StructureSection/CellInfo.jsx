@@ -1,137 +1,90 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 
 import { ToggleSwitch } from "mc-react-library";
-
-import { matrix, getPrimToConvMatrix } from "mc-react-library";
-
 import { McTable } from "@mcxd/shared";
+import { latticeToCellParams } from "matsci-parse";
 
-function bundleLatticeData({ baseMatrix, transform_matrix = null }) {
-  // function to bundle the lattice data to make
-  // switch condition logic more readible
-  const finalMatrix = transform_matrix
-    ? matrix.multiplyMatrices(transform_matrix, baseMatrix)
-    : baseMatrix;
+export const CellInfoBox = ({ crystals, cellMode }) => {
+  const [showMatrix, setShowMatrix] = useState(false);
 
-  const par = matrix.getMatrixParams(finalMatrix);
+  const activeLattice = cellMode.usePrimitive
+    ? crystals?.primitive?.lattice
+    : crystals?.conventional?.lattice;
 
-  return {
-    matrix: finalMatrix,
-    angles: [
-      par.angles[1][2], // alpha
-      par.angles[0][2], // beta
-      par.angles[0][1], // gamma
-    ],
-    lengths: par.lengths,
-  };
-}
+  const safeParams = useMemo(() => {
+    if (!activeLattice || !Array.isArray(activeLattice)) return null;
 
-export const CellInfoBox = ({ structureInfo, spacegroup_symbol = "P1" }) => {
-  const [latticeInfoState, setLatticeInfoState] = useState(false);
-  const [latticeTypeState, setLatticeTypeState] = useState(false);
+    try {
+      return latticeToCellParams(activeLattice);
+    } catch (e) {
+      console.warn("latticeToCellParams failed:", e);
+      return null;
+    }
+  }, [activeLattice]);
 
-  const primitive_matrix = structureInfo.aiidaAttributes.cell;
-  const transform_matrix = getPrimToConvMatrix(spacegroup_symbol);
-
-  // bundle matrices
-  const prim_bundled = bundleLatticeData({ baseMatrix: primitive_matrix });
-  const conv_bundled = bundleLatticeData({
-    baseMatrix: primitive_matrix,
-    transform_matrix: transform_matrix,
-  });
-  const current = latticeTypeState ? conv_bundled : prim_bundled;
-
-  const handleLatticeTypeClick = () => {
-    const newState = !latticeTypeState;
-    setLatticeTypeState(newState);
-  };
-
-  const handleLatticeInfoClick = () => {
-    const newState = !latticeInfoState;
-    setLatticeInfoState(newState);
-  };
+  const safeMatrix = Array.isArray(activeLattice) ? activeLattice : [];
 
   return (
     <div>
-      <div
-        className="subsection-title"
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        {/* Text Align left */}
-        <div style={{ flex: 1 }}>
-          <span>Cell info</span>
-        </div>
-        {/* Switch Align right */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "flex-end",
-            gap: "40px",
-            marginRight: "5px",
-            alignItems: "stretch",
-          }}
-        >
-          {/* Param to Matrix Switch */}
+      {/* Header */}
+      <div className="subsection-title">
+        <span>Cell info</span>
+
+        <div style={{ float: "right" }}>
           <ToggleSwitch
             labelLeft="Parameters"
             labelRight="Matrix"
             switchLength="30px"
             fontSize="17px"
-            onToggle={handleLatticeInfoClick}
+            toggled={showMatrix}
+            onToggle={setShowMatrix}
           />
-
-          {/* Prim to Conv Switch  DROPPED WHILE CONSIDERED BUGGED*/}
-          {/* <ToggleSwitch
-            labelLeft="Primitive"
-            labelRight="Conventional"
-            switchLength="30px"
-            fontSize="17px"
-            onToggle={handleLatticeTypeClick}
-          /> */}
         </div>
       </div>
 
+      {/* Body */}
       <div
         style={{
           minHeight: "181px",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "center", // vertical centering
+          justifyContent: "center",
         }}
       >
-        {latticeInfoState ? (
-          <div>
-            <McTable //Matrix Render
-              headerRow={["", "x [Å]", "y [Å]", "z [Å]"]}
-              contents={current.matrix.map((v, i) => [
-                <span key={`v${i}`}>
-                  v<sub>{i + 1}</sub>
-                </span>,
-                v[0],
-                v[1],
-                v[2],
-              ])}
-            />
-          </div>
+        {!safeParams ? (
+          <div>Structure data missing</div>
+        ) : showMatrix ? (
+          <McTable
+            headerRow={["", "x [Å]", "y [Å]", "z [Å]"]}
+            contents={safeMatrix.map((v, i) => [
+              <span key={i}>
+                v<sub>{i + 1}</sub>
+              </span>,
+              v[0],
+              v[1],
+              v[2],
+            ])}
+          />
         ) : (
           <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "0.25rem",
-            }}
+            style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}
           >
-            <McTable // lengths render
+            <McTable
               headerRow={["", "a", "b", "c"]}
-              contents={[["Lengths [Å]", ...current.lengths]]}
+              contents={[
+                ["Lengths [Å]", safeParams.a, safeParams.b, safeParams.c],
+              ]}
             />
-            <McTable // angles render
+            <McTable
               headerRow={["", "α", "β", "γ"]}
-              contents={[["Angles [°]", ...current.angles]]}
+              contents={[
+                [
+                  "Angles [°]",
+                  safeParams.alpha,
+                  safeParams.beta,
+                  safeParams.gamma,
+                ],
+              ]}
             />
           </div>
         )}

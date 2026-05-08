@@ -10,7 +10,9 @@ import { McInfoBox } from "@mcxd/shared";
 import { AIIDA_API_URLS, EXPLORE_URLS } from "../../common/aiidaRestApiUtils";
 import { format_aiida_prop } from "../../common/utils";
 
-const StructureSection = ({ params, loadedData }) => {
+import { ToggleSwitch } from "mc-react-library";
+
+const StructureSection = ({ params, loadedData, cellMode, crystals }) => {
   let details = loadedData.details;
   let structureInfo = loadedData.structureInfo;
 
@@ -24,7 +26,40 @@ const StructureSection = ({ params, loadedData }) => {
         <Row>
           <Col className="flex-column">
             <div style={{ marginBottom: "10px" }}>
-              <div className="subsection-title">General</div>
+              <div
+                className="subsection-title"
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                {/* Text Align left */}
+                <div style={{ flex: 1 }}>
+                  <span>General</span>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    gap: "40px",
+                    marginRight: "5px",
+                    alignItems: "stretch",
+                  }}
+                >
+                  {/* Switch Align right */}
+                  <ToggleSwitch
+                    labelLeft="Primitive"
+                    labelRight="Conventional"
+                    switchLength="30px"
+                    fontSize="17px"
+                    toggled={!cellMode.usePrimitive}
+                    onToggle={(value) => {
+                      cellMode.setUsePrimitive(!value);
+                    }}
+                  />
+                </div>
+              </div>
               <McInfoBox title="General">
                 <ul className="no-bullets">
                   <li style={{ marginTop: "-5px", marginBottom: "-4px" }}>
@@ -56,10 +91,16 @@ const StructureSection = ({ params, loadedData }) => {
             <CellInfoBox
               structureInfo={structureInfo}
               spacegroup_symbol={details.general.spacegroup_international}
+              crystals={crystals}
+              cellMode={cellMode}
             />
           </Col>
           <Col className="flex-column">
-            <AtomicSitesInfoBox structureInfo={structureInfo} />
+            <AtomicSitesInfoBox
+              structureInfo={structureInfo}
+              crystals={crystals}
+              cellMode={cellMode}
+            />
           </Col>
         </Row>
       </Container>

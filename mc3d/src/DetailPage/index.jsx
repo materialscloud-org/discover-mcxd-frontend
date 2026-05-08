@@ -39,6 +39,8 @@ import MissingDataWarning from "./MissingDataWarning";
 import { CitationBanner } from "@mcxd/shared";
 import PageLayout from "../Layout";
 
+import { aiidaToStructure, analyzeCrystal, symToCrystal } from "matsci-parse";
+
 // contributed sections
 // import RelatedSection from "./RelatedSection";
 
@@ -54,7 +56,7 @@ async function fetchCompoundData(method, id) {
 
     const [aiidaAttributes, structureCif] = await Promise.all([
       loadAiidaAttributes(method, structureUuid),
-      loadAiidaCif(method, structureUuid),
+      // loadAiidaCif(method, structureUuid),
     ]);
 
     return {
@@ -97,6 +99,13 @@ async function fetchSuperconSubset(method, id) {
 function DetailPage() {
   const navigate = useNavigate();
   const params = useParams(); // Route parameters
+  const [crystals, setCrystals] = useState({});
+  const [usePrimitive, setUsePrimitive] = useState(true);
+
+  const cellMode = {
+    usePrimitive,
+    setUsePrimitive,
+  };
 
   const [datasetIndex, setDatasetIndex] = useState(null);
   const [resultsObject, setResultsObject] = useState({});
@@ -118,6 +127,20 @@ function DetailPage() {
       setResultsObject(buildResultsObject(lD.index, params.method));
     });
   }, [params.id, params.method]);
+
+  useEffect(() => {
+    async function runAnalysis() {
+      const cs = aiidaToStructure(coreData.structureInfo.aiidaAttributes);
+      const result = await analyzeCrystal(cs);
+
+      const crystals = symToCrystal(result);
+      setCrystals(crystals);
+    }
+
+    if (coreData?.structureInfo) {
+      runAnalysis();
+    }
+  }, [coreData]);
 
   useEffect(() => {
     if (!resultsObject) return;
@@ -192,8 +215,15 @@ function DetailPage() {
           margin: "0px 0px 10px 0px",
           padding: "0px 0px 10px 0px",
         }}
+        crystals={crystals}
+        cellMode={cellMode}
       />
-      <StructureSection params={params} loadedData={coreData} />
+      <StructureSection
+        params={params}
+        loadedData={coreData}
+        cellMode={cellMode}
+        crystals={crystals}
+      />
       <ProvenanceSection params={params} loadedData={coreData} />
       <XrdSection params={params} loadedData={coreData} />
 

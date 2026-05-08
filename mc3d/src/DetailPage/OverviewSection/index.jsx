@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+
 import "./index.css";
 
 import StructureVisualizer from "mc-react-structure-visualizer";
@@ -19,6 +21,10 @@ import { McInfoBox } from "@mcxd/shared";
 import SourceInfo from "./SourceInfo";
 
 import { AIIDA_API_URLS, EXPLORE_URLS } from "../../common/aiidaRestApiUtils";
+
+import { ToggleSwitch } from "mc-react-library";
+
+import { structureToCif } from "matsci-parse";
 
 function GeneralInfoBox({ details, metadata, methodLabel }) {
   return (
@@ -98,18 +104,66 @@ function GeneralInfoBox({ details, metadata, methodLabel }) {
   );
 }
 
-const StructureViewerBox = ({ uuid, structureInfo, methodLabel }) => {
+const StructureViewerBox = ({
+  uuid,
+  structureInfo,
+  methodLabel,
+  crystals,
+  cellMode,
+}) => {
+  const handleToggle = () => {
+    cellMode.setUsePrimitive((v) => !v);
+  };
+
+  const crystalStructure = cellMode.usePrimitive
+    ? crystals.primitive
+    : crystals.conventional;
+
+  const primitiveCif = useMemo(() => {
+    return crystals.primitive ? structureToCif(crystals.primitive) : null;
+  }, [crystals.primitive]);
+
+  const conventionalCif = useMemo(() => {
+    return crystals.conventional ? structureToCif(crystals.conventional) : null;
+  }, [crystals.conventional]);
+
+  const cifText = cellMode.usePrimitive ? primitiveCif : conventionalCif;
+
   return (
     <>
       <div className="subsection-title">
         Structure{" "}
         <ExploreButton explore_url={EXPLORE_URLS[methodLabel]} uuid={uuid} />
       </div>
-      <div className="structure-view-box subsection-shadow">
-        <StructureVisualizer
-          cifText={structureInfo.cif}
-          initSupercell={[2, 2, 2]}
-        />
+
+      <div
+        className="structure-view-box subsection-shadow"
+        style={{ position: "relative" }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            top: "12px",
+            left: "12px",
+            zIndex: 10,
+          }}
+        >
+          <ToggleSwitch
+            labelLeft="Primitive"
+            labelRight="Conventional"
+            switchLength="30px"
+            fontSize="17px"
+            toggled={!cellMode.usePrimitive}
+            onToggle={(value) => {
+              cellMode.setUsePrimitive(!value);
+            }}
+          />
+        </div>
+
+        {cifText && (
+          <StructureVisualizer cifText={cifText} initSupercell={[2, 2, 2]} />
+        )}
+
         <div className="download-button-container">
           <StructDownloadButton
             aiida_rest_url={AIIDA_API_URLS[methodLabel]}
@@ -121,7 +175,13 @@ const StructureViewerBox = ({ uuid, structureInfo, methodLabel }) => {
   );
 };
 
-function OverviewSection({ params, loadedData, headerStyle = {} }) {
+function OverviewSection({
+  params,
+  loadedData,
+  headerStyle = {},
+  crystals,
+  cellMode,
+}) {
   return (
     <div>
       <div className="section-heading" style={headerStyle}>
@@ -134,6 +194,8 @@ function OverviewSection({ params, loadedData, headerStyle = {} }) {
               uuid={loadedData.details.general.structure_uuid}
               structureInfo={loadedData.structureInfo}
               methodLabel={params.method}
+              crystals={crystals}
+              cellMode={cellMode}
             />
           </Col>
           <Col className="flex-column">
