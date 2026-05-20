@@ -20,6 +20,9 @@ import { McTable } from "@mcxd/shared";
 
 import { Button } from "react-bootstrap";
 
+import JSZip from "jszip";
+import { saveAs } from "file-saver";
+
 const EXPLORE_URL = EXPLORE_URLS["pbesol-v1-wannierisation"];
 
 // we do some hardcoding here while its a demo; TODO - cleanup
@@ -55,6 +58,42 @@ function shiftBands(bandsData, shift) {
       });
     });
   });
+}
+
+async function downloadAllCubesZip(id, wannierData) {
+  try {
+    const wfArray = wannierData?.wf_info?.wf_array || [];
+
+    if (!wfArray.length) return;
+
+    const zip = new JSZip();
+
+    await Promise.all(
+      wfArray.map(async function ({ index }) {
+        const filename = `aiida_${String(index).padStart(5, "0")}.cube`;
+
+        const url = `${S3_ROOT_URL}/${id}/${filename}.br`;
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch ${filename}`);
+        }
+
+        const blob = await response.blob();
+
+        zip.file(filename, blob);
+      }),
+    );
+
+    const zipBlob = await zip.generateAsync({
+      type: "blob",
+    });
+
+    saveAs(zipBlob, `wannier_cubes_${id}.zip`);
+  } catch (err) {
+    console.error("Failed to create ZIP:", err);
+  }
 }
 
 const WannierisationSection = ({ params, loadedData }) => {
@@ -196,7 +235,10 @@ const WannierisationSection = ({ params, loadedData }) => {
           </Col>
           <Col>
             <div className="subsection-title">Wannierisation Information</div>
-            <div className="mb-3 ms-2">Information regarding wannier sites</div>
+            <div className="mb-3 ms-2">
+              Information regarding Wannier centers
+            </div>
+
             <McTable
               style={{ maxHeight: "425px" }}
               dontFormatCols={[0]}
@@ -206,7 +248,14 @@ const WannierisationSection = ({ params, loadedData }) => {
                 "y [Å]",
                 "z [Å]",
                 "Spread [Å²]",
-                "",
+                <Button
+                  size="sm"
+                  variant="primary"
+                  onClick={() => downloadAllCubesZip(params.id, wannierData)}
+                >
+                  <span className="bi bi-download me-2" />
+                  All
+                </Button>,
               ]}
               contents={(wannierData?.wf_info?.wf_array || []).map((v) => [
                 v.index,
