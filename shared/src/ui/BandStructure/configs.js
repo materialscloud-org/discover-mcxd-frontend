@@ -44,7 +44,7 @@ export const standardTraceConfigs = {
 
 export const wannierTraceConfigs = {
   pw: {
-    label: "PW",
+    label: "QE",
     units: "eV",
     trace: {
       mode: "lines",
@@ -57,7 +57,7 @@ export const wannierTraceConfigs = {
     },
   },
   w90: {
-    label: "w90",
+    label: "W90",
     units: "eV",
     trace: {
       mode: "lines",

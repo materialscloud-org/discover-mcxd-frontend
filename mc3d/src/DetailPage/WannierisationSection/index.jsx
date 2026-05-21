@@ -96,6 +96,38 @@ async function downloadAllCubesZip(id, wannierData) {
   }
 }
 
+async function downloadAllDatFiles(id) {
+  try {
+    const files = ["aiida_tb.dat", "aiida_wsvec.dat"];
+
+    const zip = new JSZip();
+
+    await Promise.all(
+      files.map(async (filename) => {
+        const url = `${S3_ROOT_URL}/${id}/${filename}.br`;
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch ${filename}`);
+        }
+
+        const blob = await response.blob();
+
+        zip.file(filename, blob);
+      }),
+    );
+
+    const zipBlob = await zip.generateAsync({
+      type: "blob",
+    });
+
+    saveAs(zipBlob, `wannier_dat_${id}.zip`);
+  } catch (err) {
+    console.error("Failed to create DAT ZIP:", err);
+  }
+}
+
 const WannierisationSection = ({ params, loadedData }) => {
   const { id, method } = params;
   const [wanLoading, setWanLoading] = useState(false);
@@ -202,20 +234,21 @@ const WannierisationSection = ({ params, loadedData }) => {
           <Col sm={12} md={6} className="mt-3 mt-md-0">
             <div className="subsection-title">Electronic band structure</div>
             <div className="mb-3 ms-2">
-              Calculated with PW (QE){" "}
+              Comparison between Quantum ESPRESSO (QE){" "}
               {wannierData?.pw_band_uuid && (
                 <ExploreButton
                   explore_url={EXPLORE_URL}
                   uuid={wannierData?.pw_band_uuid}
                 />
               )}{" "}
-              and W90{" "}
+              and Wannier90 (W90){" "}
               {wannierData?.w90_band_uuid && (
                 <ExploreButton
                   explore_url={EXPLORE_URL}
                   uuid={wannierData.w90_band_uuid}
                 />
               )}
+              interpolated bands. E<sub>F</sub> is the QE SCF Fermi energy.
             </div>
             <BandStructure
               bandsDataArray={bandsData}
@@ -236,41 +269,51 @@ const WannierisationSection = ({ params, loadedData }) => {
           <Col>
             <div className="subsection-title">Wannierisation Information</div>
             <div className="mb-3 ms-2">
-              Information regarding Wannier centers
-            </div>
-
-            <McTable
-              style={{ maxHeight: "425px" }}
-              dontFormatCols={[0]}
-              headerRow={[
-                "Index",
-                "x [Å]",
-                "y [Å]",
-                "z [Å]",
-                "Spread [Å²]",
+              The table below provides information regarding the Wannier
+              centers.
+              <McTable
+                style={{ maxHeight: "425px" }}
+                dontFormatCols={[0]}
+                headerRow={[
+                  "Index",
+                  "x [Å]",
+                  "y [Å]",
+                  "z [Å]",
+                  "Spread [Å²]",
+                  <Button
+                    size="sm"
+                    variant="primary"
+                    onClick={() => downloadAllCubesZip(params.id, wannierData)}
+                  >
+                    <span className="bi bi-download me-2" />
+                    All
+                  </Button>,
+                ]}
+                contents={(wannierData?.wf_info?.wf_array || []).map((v) => [
+                  v.index,
+                  v.center?.[0],
+                  v.center?.[1],
+                  v.center?.[2],
+                  v.spread,
+                  <Button
+                    size="sm"
+                    onClick={() => downloadCube(params.id, v.index)}
+                  >
+                    <span className="bi bi-download" />
+                  </Button>,
+                ])}
+              />
+              <div className="pt-3 ms-2">
+                Download a zip of the Hamiltonians{" "}
                 <Button
                   size="sm"
                   variant="primary"
-                  onClick={() => downloadAllCubesZip(params.id, wannierData)}
-                >
-                  <span className="bi bi-download me-2" />
-                  All
-                </Button>,
-              ]}
-              contents={(wannierData?.wf_info?.wf_array || []).map((v) => [
-                v.index,
-                v.center?.[0],
-                v.center?.[1],
-                v.center?.[2],
-                v.spread,
-                <Button
-                  size="sm"
-                  onClick={() => downloadCube(params.id, v.index)}
+                  onClick={() => downloadAllDatFiles(params.id, wannierData)}
                 >
                   <span className="bi bi-download" />
-                </Button>,
-              ])}
-            />
+                </Button>
+              </div>
+            </div>
           </Col>
         </Row>
       </Container>
