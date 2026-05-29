@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { loadAiidaBands, loadXY } from "../../common/aiidaRestApiUtils";
+import { loadAiidaBands, loadXY } from "../../common/fetchingUtils";
 
 import { normalizeBandsData, prepareSuperConBand } from "@mcxd/shared";
 

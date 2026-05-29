@@ -2,7 +2,7 @@ import "./index.css";
 
 import { ExploreButton } from "mc-react-library";
 
-import { EXPLORE_URLS } from "../../common/aiidaRestApiUtils";
+import { EXPLORE_URLS } from "../../common/fetchingUtils";
 
 import { Container, Row } from "react-bootstrap";
 

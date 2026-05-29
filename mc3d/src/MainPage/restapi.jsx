@@ -1,13 +1,8 @@
-import {
-  MC_REST_API_URL_BASE,
-  MC_REST_API_URL,
-} from "../common/MCrestApiUtils";
-
-import { AIIDA_API_URLS } from "../common/aiidaRestApiUtils";
+import { AIIDA_API_URLS, MC_REST_API_URL } from "../common/fetchingUtils";
 
 import "./restapi.css";
 
-const DOCS_URL = `${MC_REST_API_URL_BASE}docs`;
+const DOCS_URL = `${MC_REST_API_URL.replace(/\/mc3d\/?$/, "")}/docs`;
 const INDEX_URL = `${MC_REST_API_URL}/pbe-v1/overview`;
 const SINGLE_ENTRY_URL = `${MC_REST_API_URL}/pbe-v1/core_base/mc3d-10`;
 

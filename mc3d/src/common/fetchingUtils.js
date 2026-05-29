@@ -41,6 +41,8 @@ export const EXPLORE_URLS = Object.fromEntries(
   explorePaths.map((k) => [k, `${URLS.explore}/mc3d-${k}`]),
 );
 
+export const MC_REST_API_URL = URLS.mcRest;
+
 export const S3_URL = URLS["s3"];
 
 const delayTest = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -106,6 +108,9 @@ export const loadSuperConDetails = (method, id) =>
 
 export const loadSuperConPhononVis = (method, id) =>
   mcRestFetch(method, `supercon_phonon-vis/${id}`);
+
+export const loadStructureUuids = (method) =>
+  mcRestFetch(method, "structure-uuids");
 
 export const loadGeneralInfo = () => mcRestFetch("info");
 

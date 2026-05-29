@@ -13,7 +13,7 @@ import { restapiText } from "./restapi";
 import { loadDataMc3d } from "./loadDataMc3d";
 import { DownloadButton } from "./DownloadButton";
 import { MethodSelectionBox } from "./MethodSelectionBox";
-import { loadGeneralInfo } from "../common/MCrestApiUtils";
+import { loadGeneralInfo } from "../common/fetchingUtils";
 
 import { CitationBanner } from "@mcxd/shared";
 

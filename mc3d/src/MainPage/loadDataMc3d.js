@@ -1,4 +1,4 @@
-import { loadIndex, loadMetadata } from "../common/MCrestApiUtils";
+import { loadIndex, loadMetadata } from "../common/fetchingUtils";
 import { generatePath } from "react-router-dom";
 
 import {
