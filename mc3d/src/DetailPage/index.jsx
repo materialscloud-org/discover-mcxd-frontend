@@ -30,7 +30,6 @@ import VibrationalSection from "./VibrationalSection";
 import SuperconductivitySection from "./SuperconductivitySection";
 
 import SimilaritySection from "./SimilaritySection";
-
 import ElectronicStructureSection from "./ElectronicStructureSection";
 
 // if fetching fails we use this.
@@ -79,6 +78,8 @@ async function fetchSuperconSubset(method, id) {
       loadSuperConDetails(method, id),
       loadSuperConPhononVis(method, id),
     ]);
+
+    console.log("scDetails", scDetails);
 
     return {
       method: method,
@@ -136,6 +137,7 @@ function DetailPage() {
     // Check if supercon entries exist in resultsObject
     // This should be extended to the other partial methods at somepoint.
     if (resultsObject.supercon_base) {
+      console.log("supercon exists");
       fetchSuperconSubset(resultsObject.supercon_base, params.id).then((sc) => {
         setSuperconSCData(sc); // superconducting details
         setSuperconPhononData(sc); // phonon/vis data
