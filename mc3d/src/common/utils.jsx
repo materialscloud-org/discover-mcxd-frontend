@@ -1,5 +1,5 @@
 import { ExploreButton } from "mc-react-library";
-import { EXPLORE_URLS } from "./aiidaRestApiUtils";
+import { EXPLORE_URLS } from "./fetchingUtils";
 
 export function format_aiida_prop(
   property,

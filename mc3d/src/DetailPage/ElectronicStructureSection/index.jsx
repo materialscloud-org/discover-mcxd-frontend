@@ -9,8 +9,7 @@ import { McloudSpinner } from "mc-react-library";
 
 import { WarningBoxOtherMethod } from "../../common/WarningBox";
 
-import { loadXY } from "../../common/aiidaRestApiUtils";
-import { loadDhva } from "../../common/MCrestApiUtils";
+import { loadXY, loadDhva } from "../../common/fetchingUtils";
 
 // we do some hardcoding here while its a demo; TODO - cleanup
 // TODO - this fully rerenders when switching methodology (this is a free place for performance gains)

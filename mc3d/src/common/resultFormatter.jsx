@@ -1,5 +1,5 @@
 import { ExploreButton } from "mc-react-library";
-import { EXPLORE_URLS } from "./aiidaRestApiUtils";
+import { EXPLORE_URLS } from "./fetchingUtils";
 
 // helper function to render data that may or may not be present in the dataabase.
 // filters undefined and renders a fallback.

@@ -4,7 +4,7 @@ import { Row, Col, Container } from "react-bootstrap";
 import { CitationBanner } from "@mcxd/shared";
 import PhononVisualizer from "mc-react-phonon-visualizer";
 
-import { loadSuperConPhononVis } from "../../common/MCrestApiUtils";
+import { loadSuperConPhononVis } from "../../common/fetchingUtils";
 
 import { WarningBoxOtherMethod } from "../../common/WarningBox";
 

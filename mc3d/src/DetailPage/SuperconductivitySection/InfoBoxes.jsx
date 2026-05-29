@@ -1,6 +1,6 @@
 import { TwoWideInfoBox } from "../../common/TwoWideInfoBox";
 import { ExploreButton } from "mc-react-library";
-import { EXPLORE_URLS } from "../../common/aiidaRestApiUtils";
+import { EXPLORE_URLS } from "../../common/fetchingUtils";
 
 import formatIfExists from "../../common/resultFormatter";
 

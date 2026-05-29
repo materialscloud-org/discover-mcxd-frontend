@@ -13,7 +13,7 @@ import {
 import { CitationBanner } from "@mcxd/shared";
 
 import { ExploreButton } from "mc-react-library";
-import { EXPLORE_URLS } from "../../common/aiidaRestApiUtils";
+import { EXPLORE_URLS } from "../../common/fetchingUtils";
 
 import SuperconInfoBox from "./InfoBoxes";
 import GapFunction from "./GapFunction";
