@@ -43,7 +43,7 @@ export const EXPLORE_URLS = Object.fromEntries(
 
 export const MC_REST_API_URL = URLS.mcRest;
 
-export const S3_URL = URLS["s3"];
+export const S3_URL = URLS."s3";
 
 const delayTest = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -81,6 +81,8 @@ It also contains overview and meta data endpoints
 
 function mcRestFetch(path) {
   const primary = `${URLS.mcRest}/${path}`;
+
+  console.log("primary", primary);
   const fallback = `${URLS.mcRestFallback}/${path}`;
   return fallbackFetch([primary, fallback]);
 }
@@ -95,22 +97,17 @@ export const loadDetails = (method, id) =>
 export const loadDatasetIndex = (method, id) =>
   mcRestFetch(`dataset-index/${id}`);
 
-export const loadXrd = async (method, id) => {
-  const res = await mcRestFetch(method, `core_xrd/${id}`);
-  return res?.data ?? null;
-};
-
 export const loadDhva = (method, id) =>
-  mcRestFetch(method, `fermisurf_base/${id}`);
+  mcRestFetch(`${method}/fermisurf_base/${id}`);
 
 export const loadSuperConDetails = (method, id) =>
-  mcRestFetch(method, `supercon_base/${id}`);
+  mcRestFetch(`${method}/supercon_base/${id}`);
 
 export const loadSuperConPhononVis = (method, id) =>
-  mcRestFetch(method, `supercon_phonon-vis/${id}`);
+  mcRestFetch(`${method}/supercon_phonon-vis/${id}`);
 
 export const loadStructureUuids = (method) =>
-  mcRestFetch(method, "structure-uuids");
+  mcRestFetch(`${method}/structure-uuids`);
 
 export const loadGeneralInfo = () => mcRestFetch("info");
 
@@ -207,8 +204,6 @@ and thus some care is needed.
 
 export async function loadXrdWavelength({ method, id, wavelength }) {
   const url = `${S3_URL}/${method}_xrd/prod/${id}/${wavelength}.json.br`;
-
-  console.log(url);
 
   const res = await fetch(url);
 
