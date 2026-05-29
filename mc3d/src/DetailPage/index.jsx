@@ -14,9 +14,9 @@ import {
   loadDatasetIndex,
   loadSuperConDetails,
   loadSuperConPhononVis,
-} from "../common/MCrestApiUtils";
-
-import { loadAiidaAttributes, loadAiidaCif } from "../common/aiidaRestApiUtils";
+  loadAiidaAttributes,
+  loadAiidaCif,
+} from "../common/fetchingUtils";
 
 import AlternativeMethodsList from "./AlternativeMethodsList";
 import buildResultsObject from "../common/buildResultsObject";
@@ -225,7 +225,7 @@ function DetailPage() {
         crystals={crystals}
       />
       <ProvenanceSection params={params} loadedData={coreData} />
-      <XrdSection params={params} loadedData={coreData} />
+      <XrdSection method={params.method} id={params.id} />
 
       {/* <ElectronicStructureSection params={params} /> */}
 
