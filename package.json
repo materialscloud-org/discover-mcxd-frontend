@@ -15,5 +15,8 @@
     "build:cf:mc3d": "if [ \"$CF_PAGES_BRANCH\" = \"main\" ]; then npm run build:mc3d; else npm run build:be-dev --workspace=mc3d; fi",
     "preview:mc2d": "npm run preview --workspace=mc2d",
     "preview:mc3d": "npm run preview --workspace=mc3d"
+  },
+  "dependencies": {
+    "matsci-parse": "^0.7.2"
   }
 }
