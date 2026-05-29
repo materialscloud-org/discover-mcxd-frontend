@@ -43,7 +43,7 @@ export const EXPLORE_URLS = Object.fromEntries(
 
 export const MC_REST_API_URL = URLS.mcRest;
 
-export const S3_URL = URLS."s3";
+export const S3_URL = URLS.s3;
 
 const delayTest = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
