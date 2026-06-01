@@ -98,7 +98,7 @@ function GeneralInfoBox({ details, metadata, methodLabel }) {
   );
 }
 
-const StructureViewerBox = ({ uuid, structureInfo, methodLabel }) => {
+export function StructureViewerBox({ uuid, structureInfo, methodLabel }) {
   return (
     <>
       <div className="subsection-title">
@@ -119,9 +119,13 @@ const StructureViewerBox = ({ uuid, structureInfo, methodLabel }) => {
       </div>
     </>
   );
-};
+}
 
-function OverviewSection({ params, loadedData, headerStyle = {} }) {
+export default function OverviewSection({
+  params,
+  loadedData,
+  headerStyle = {},
+}) {
   return (
     <div>
       <div className="section-heading" style={headerStyle}>
@@ -150,5 +154,3 @@ function OverviewSection({ params, loadedData, headerStyle = {} }) {
     </div>
   );
 }
-
-export default OverviewSection;

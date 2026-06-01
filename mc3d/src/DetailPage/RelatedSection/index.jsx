@@ -8,24 +8,30 @@ function extractIntId(strId) {
   return parseInt(strId.split(/-|\//)[1]);
 }
 
-function RelatedSection(props) {
-  let aiidaRestEndpoint = props.loadedData.aiidaRestEndpoint;
-  let details = props.loadedData.details;
-  let metadata = props.loadedData.metadata;
-  let structureInfo = props.loadedData.structureInfo;
+export default function RelatedSection({
+  params,
+  loadedData,
+  currentStructure,
+  sameFormulaStructures,
+}) {
+  let aiidaRestEndpoint = loadedData.aiidaRestEndpoint;
+  let details = loadedData.details;
+  let metadata = loadedData.metadata;
+  let structureInfo = loadedData.structureInfo;
 
   const navigate = useNavigate();
 
-  let formula = props.currentStructure.compound;
+  let formula = currentStructure.compound;
 
-  let currentId = `${props.currentStructure.id}/${props.currentStructure.functional}`;
+  let currentId = `${currentStructure.id}/${currentStructure.functional}`;
 
   let formatedArr = [];
 
-  props.sameFormulaStructures.ids.forEach((id, index) => {
-    let sg = props.sameFormulaStructures.spacegrps[index];
+  sameFormulaStructures.ids.forEach((id, index) => {
+    let sg = sameFormulaStructures.spacegrps[index];
     formatedArr.push({ id: id, sg: sg });
   });
+
   // sort by the numerical value of mc3d-id
   formatedArr.sort((a, b) => extractIntId(a.id) - extractIntId(b.id));
 
@@ -60,5 +66,3 @@ function RelatedSection(props) {
     </div>
   );
 }
-
-export default RelatedSection;

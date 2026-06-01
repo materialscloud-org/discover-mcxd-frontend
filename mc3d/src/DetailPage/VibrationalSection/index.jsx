@@ -19,6 +19,8 @@ import formatIfExists from "../../common/resultFormatter";
 import { Link } from "react-router-dom";
 
 export default function VibrationalSection({ params, loadedData, phononData }) {
+  console.log("phononData", phononData);
+
   // if data doesnt exist dont render.
   if (!phononData || !phononData?.scDetails?.phonons) return null;
   if (!phononData?.scDetails?.phonons?.matdyn_uuid) return null;

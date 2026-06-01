@@ -6,8 +6,8 @@ import { EXPLORE_URLS } from "../../common/fetchingUtils";
 
 import { Container, Row } from "react-bootstrap";
 
-function ProvenanceSection(props) {
-  let details = props.loadedData.details;
+export default function ProvenanceSection({ loadedData, params }) {
+  let details = loadedData.details;
 
   return (
     <div>
@@ -22,7 +22,7 @@ function ProvenanceSection(props) {
                   <li key={e.uuid}>
                     {e.label}{" "}
                     <ExploreButton
-                      explore_url={EXPLORE_URLS[props.params.method]}
+                      explore_url={EXPLORE_URLS[params.method]}
                       uuid={e.uuid}
                     />
                   </li>
@@ -35,5 +35,3 @@ function ProvenanceSection(props) {
     </div>
   );
 }
-
-export default ProvenanceSection;

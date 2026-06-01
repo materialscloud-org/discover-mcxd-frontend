@@ -10,7 +10,7 @@ import { McInfoBox } from "@mcxd/shared";
 import { AIIDA_API_URLS, EXPLORE_URLS } from "../../common/fetchingUtils";
 import { format_aiida_prop } from "../../common/utils";
 
-const StructureSection = ({ params, loadedData }) => {
+export default function StructureSection({ params, loadedData }) {
   let details = loadedData.details;
   let structureInfo = loadedData.structureInfo;
 
@@ -65,6 +65,4 @@ const StructureSection = ({ params, loadedData }) => {
       </Container>
     </div>
   );
-};
-
-export default StructureSection;
+}

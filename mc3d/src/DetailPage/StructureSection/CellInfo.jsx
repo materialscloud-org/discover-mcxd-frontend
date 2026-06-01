@@ -26,7 +26,7 @@ function bundleLatticeData({ baseMatrix, transform_matrix = null }) {
   };
 }
 
-export const CellInfoBox = ({ structureInfo, spacegroup_symbol = "P1" }) => {
+export function CellInfoBox({ structureInfo, spacegroup_symbol = "P1" }) {
   const [latticeInfoState, setLatticeInfoState] = useState(false);
   const [latticeTypeState, setLatticeTypeState] = useState(false);
 
@@ -138,4 +138,4 @@ export const CellInfoBox = ({ structureInfo, spacegroup_symbol = "P1" }) => {
       </div>
     </div>
   );
-};
+}

@@ -6,7 +6,7 @@ import { McTable } from "@mcxd/shared";
 
 import { fractional, createLattice } from "matsci-parse";
 
-export const AtomicSitesInfoBox = ({ structureInfo }) => {
+export function AtomicSitesInfoBox({ structureInfo }) {
   const [atomsModeState, setAtomsModeState] = useState(false);
 
   const cell = structureInfo.aiidaAttributes.cell;
@@ -19,9 +19,11 @@ export const AtomicSitesInfoBox = ({ structureInfo }) => {
   // Compute table data only when needed
   const tableData = useMemo(() => {
     return sites.map((s) => {
-      const l = createLattice(cell.flat());
+      const lattice = createLattice(cell.flat());
 
-      const coords = atomsModeState ? fractional(l, s.position) : s.position;
+      const coords = atomsModeState
+        ? fractional(lattice, s.position)
+        : s.position;
 
       return [
         s.kind_name,
@@ -73,4 +75,4 @@ export const AtomicSitesInfoBox = ({ structureInfo }) => {
       />
     </div>
   );
-};
+}

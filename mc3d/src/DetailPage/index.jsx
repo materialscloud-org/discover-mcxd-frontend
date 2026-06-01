@@ -137,7 +137,6 @@ function DetailPage() {
     // Check if supercon entries exist in resultsObject
     // This should be extended to the other partial methods at somepoint.
     if (resultsObject.supercon_base) {
-      console.log("supercon exists");
       fetchSuperconSubset(resultsObject.supercon_base, params.id).then((sc) => {
         setSuperconSCData(sc); // superconducting details
         setSuperconPhononData(sc); // phonon/vis data
@@ -169,6 +168,9 @@ function DetailPage() {
     params.id,
     params.method,
   );
+
+  console.log("params", params);
+  console.log("coreData", coreData);
 
   return (
     <PageLayout
