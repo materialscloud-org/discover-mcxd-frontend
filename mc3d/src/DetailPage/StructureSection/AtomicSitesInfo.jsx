@@ -4,7 +4,7 @@ import { matrix, ToggleSwitch } from "mc-react-library";
 
 import { McTable } from "@mcxd/shared";
 
-import { cartesianToFractional } from "matsci-parse";
+import { fractional, createLattice } from "matsci-parse";
 
 export const AtomicSitesInfoBox = ({ structureInfo }) => {
   const [atomsModeState, setAtomsModeState] = useState(false);
@@ -19,9 +19,9 @@ export const AtomicSitesInfoBox = ({ structureInfo }) => {
   // Compute table data only when needed
   const tableData = useMemo(() => {
     return sites.map((s) => {
-      const coords = atomsModeState
-        ? cartesianToFractional(s.position, cell)
-        : s.position;
+      const l = createLattice(cell.flat());
+
+      const coords = atomsModeState ? fractional(l, s.position) : s.position;
 
       return [
         s.kind_name,
