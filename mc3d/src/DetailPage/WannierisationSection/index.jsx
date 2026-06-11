@@ -26,7 +26,7 @@ import { saveAs } from "file-saver";
 const EXPLORE_URL = EXPLORE_URLS["pbesol-v1-wannierisation"];
 
 // we do some hardcoding here while its a demo; TODO - cleanup
-// TODO - this fully rerenders when switching methodology (this is a free placse for performance gains)
+// TODO - this fully rerenders when switching methodology (this is a free place for performance gains)
 // Perhaps switching page structure is a nice way to avoid this.
 
 const S3_ROOT_URL =
@@ -236,17 +236,17 @@ const WannierisationSection = ({ params, loadedData }) => {
             <div className="mb-3 ms-2">
               Comparison between Quantum ESPRESSO (QE){" "}
               {wannierData?.pw_band_uuid && (
-                <ExploreButton
+                {/* <ExploreButton
                   explore_url={EXPLORE_URL}
                   uuid={wannierData?.pw_band_uuid}
-                />
+                /> */}
               )}{" "}
               and Wannier90 (W90){" "}
               {wannierData?.w90_band_uuid && (
-                <ExploreButton
+                {/* <ExploreButton
                   explore_url={EXPLORE_URL}
                   uuid={wannierData.w90_band_uuid}
-                />
+                /> */}
               )}
               interpolated bands. E<sub>F</sub> is the QE SCF Fermi energy.
             </div>
