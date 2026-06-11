@@ -24,7 +24,7 @@ import { AIIDA_API_URLS, EXPLORE_URLS } from "../../common/fetchingUtils";
 
 import { ToggleSwitch } from "mc-react-library";
 
-import { structureToCif } from "matsci-parse";
+import { toCIF } from "matsci-parse";
 
 function GeneralInfoBox({ details, metadata, methodLabel }) {
   return (
@@ -120,11 +120,11 @@ const StructureViewerBox = ({
     : crystals.conventional;
 
   const primitiveCif = useMemo(() => {
-    return crystals.primitive ? structureToCif(crystals.primitive) : null;
+    return crystals.primitive ? toCIF(crystals.primitive) : null;
   }, [crystals.primitive]);
 
   const conventionalCif = useMemo(() => {
-    return crystals.conventional ? structureToCif(crystals.conventional) : null;
+    return crystals.conventional ? toCIF(crystals.conventional) : null;
   }, [crystals.conventional]);
 
   const cifText = cellMode.usePrimitive ? primitiveCif : conventionalCif;

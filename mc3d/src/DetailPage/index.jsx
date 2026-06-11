@@ -38,7 +38,7 @@ import MissingDataWarning from "./MissingDataWarning";
 import { CitationBanner } from "@mcxd/shared";
 import PageLayout from "../Layout";
 
-import { aiidaToStructure, analyzeCrystal, symToCrystal } from "matsci-parse";
+import { fromStructureData, getSymmetry } from "matsci-parse";
 
 // contributed sections
 // import RelatedSection from "./RelatedSection";
@@ -131,10 +131,12 @@ function DetailPage() {
 
   useEffect(() => {
     async function runAnalysis() {
-      const cs = aiidaToStructure(coreData.structureInfo.aiidaAttributes);
-      const result = await analyzeCrystal(cs);
+      const cs = fromStructureData(coreData.structureInfo.aiidaAttributes);
+      const result = await getSymmetry(cs, 1e-3);
 
-      const crystals = symToCrystal(result);
+      const crystals = result;
+
+      console.log("crystals", crystals);
       setCrystals(crystals);
     }
 

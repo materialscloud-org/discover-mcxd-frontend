@@ -3,7 +3,7 @@ import React, { useState, useMemo } from "react";
 import { ToggleSwitch } from "mc-react-library";
 import { McTable } from "@mcxd/shared";
 
-import { cartesianToFractional } from "matsci-parse";
+import { fractional, cartesian } from "matsci-parse";
 
 export const AtomicSitesInfoBox = ({ crystals, cellMode }) => {
   const [showFractional, setShowFractional] = useState(false);
@@ -20,12 +20,10 @@ export const AtomicSitesInfoBox = ({ crystals, cellMode }) => {
     if (!cell || !Array.isArray(sites)) return [];
 
     return sites.map((site) => {
-      const coords = showFractional
-        ? cartesianToFractional(site.cart, cell)
-        : site.cart;
+      const coords = showFractional ? site.frac : cartesian(cell, site);
 
       return [
-        species[site.speciesIndex] ?? `#${site.speciesIndex}`,
+        site.species.symbol,
         coords[0].toFixed(4),
         coords[1].toFixed(4),
         coords[2].toFixed(4),
