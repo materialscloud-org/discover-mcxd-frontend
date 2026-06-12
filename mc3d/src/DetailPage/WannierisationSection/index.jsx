@@ -293,7 +293,15 @@ const WannierisationSection = ({ params, loadedData }) => {
               <div className="mb-2">
                 The table below provides the Wannier centers and spreads for the
                 maximally localized Wannier functions obtained with the
-                projectability disentanglement.
+                <a
+                  href="https://doi.org/10.1038/s41524-023-01146-w"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {" "}
+                  projectability-disentangled Wannier functions (PDWFs){" "}
+                </a>
+                method.
               </div>
 
               <McTable
