@@ -26,7 +26,7 @@ import { ToggleSwitch } from "mc-react-library";
 
 import { toCIF } from "matsci-parse";
 
-import { volume } from "matsci-parse";
+import { volume, density } from "matsci-parse";
 
 function GeneralInfoBox({
   details,
@@ -77,16 +77,22 @@ function GeneralInfoBox({
           </li>
           <li>
             Density:{" "}
+            {crystalStructure?.lattice
+              ? `${(density(crystalStructure) * 1660.5390666).toFixed(0)} kg/m³`
+              : "—"}
+          </li>
+          {/* <li>
+            Density:{" "}
             {formula.calculateDensity(
               details.general.formula_hill,
               details.properties.cell_volume,
             )}{" "}
             kg/m<sup>3</sup>
-          </li>
+          </li> */}
           <li>
             Volume:{" "}
             {crystalStructure?.lattice
-              ? `${volume(crystalStructure.lattice).toFixed(2)} Å³`
+              ? `${volume(crystalStructure).toFixed(2)} Å³`
               : "—"}
           </li>
           {/* <li>
