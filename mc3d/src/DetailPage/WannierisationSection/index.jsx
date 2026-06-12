@@ -319,7 +319,7 @@ const WannierisationSection = ({ params, loadedData }) => {
               Download a zip file containing aiida_tb.dat and aiida_wsvec.dat
               for the Hamiltonian and position operator, in the{" "}
               <a href="https://wannier90.readthedocs.io/en/latest/user_guide/wannier90/files/#seedname_tbdat">
-                [wannier90 format]
+                wannier90 format
               </a>{" "}
               <Button
                 size="sm"
