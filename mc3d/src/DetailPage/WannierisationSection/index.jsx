@@ -7,6 +7,10 @@ import {
 
 import { Container, Row, Col } from "react-bootstrap";
 
+import Popover from "react-bootstrap/Popover";
+
+import { HelpButton } from "mc-react-library";
+
 import { WarningBoxOtherMethod } from "../../common/WarningBox";
 import { EXPLORE_URLS, loadWannier } from "../../common/MCrestApiUtils";
 import { loadAiidaBands } from "../../common/aiidaRestApiUtils";
@@ -35,6 +39,23 @@ const S3_ROOT_URL =
 const wannierMethod = "pbesol-v1";
 
 const aiidaProfile = "pbesol-v1-wannierisation";
+
+const wannierPopover = (
+  <Popover id="popover-basic">
+    <Popover.Body>
+      The zip file contains: aiida_tb.dat and aiida_wsvec.dat for the the
+      Hamiltonian and position operator, in the{" "}
+      <a
+        href="https://wannier90.readthedocs.io/en/latest/user_guide/wannier90/files/#seedname_tbdat"
+        target="_blank"
+        rel="noreferrer"
+      >
+        wannier90 format
+      </a>
+      . The aiida_*.cube files are the real-space Wannier functions.
+    </Popover.Body>
+  </Popover>
+);
 
 const downloadCube = (id, index) => {
   const url = `${S3_ROOT_URL}/${id}/aiida_${String(index).padStart(5, "0")}.cube.br`;
@@ -315,12 +336,14 @@ const WannierisationSection = ({ params, loadedData }) => {
             <div className="subsection-title">
               Hamiltonian in the Wannier basis
             </div>
-            <div className="mb-3 ms-2">
-              Download a zip file containing aiida_tb.dat and aiida_wsvec.dat
-              for the Hamiltonian and position operator, in the{" "}
-              <a href="https://wannier90.readthedocs.io/en/latest/user_guide/wannier90/files/#seedname_tbdat">
-                wannier90 format
-              </a>{" "}
+            <div className="mb-3 ms-2 d-flex align-items-center gap-2">
+              <span>
+                Download a zip file of the Hamiltonian and position operator
+                matrix elements in the Wannier basis.
+              </span>
+
+              <HelpButton popover={wannierPopover} placement="top" />
+
               <Button
                 size="sm"
                 variant="primary"
