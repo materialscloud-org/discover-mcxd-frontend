@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 
 import { ToggleSwitch } from "mc-react-library";
 import { McTable } from "@mcxd/shared";

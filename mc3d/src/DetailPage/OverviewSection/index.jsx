@@ -26,7 +26,19 @@ import { ToggleSwitch } from "mc-react-library";
 
 import { toCIF } from "matsci-parse";
 
-function GeneralInfoBox({ details, metadata, methodLabel }) {
+import { volume } from "matsci-parse";
+
+function GeneralInfoBox({
+  details,
+  metadata,
+  methodLabel,
+  crystals,
+  cellMode,
+}) {
+  const crystalStructure = cellMode.usePrimitive
+    ? crystals.primitive
+    : crystals.conventional;
+
   return (
     <McInfoBox style={{ height: "450px" }}>
       <div>
@@ -72,6 +84,12 @@ function GeneralInfoBox({ details, metadata, methodLabel }) {
             kg/m<sup>3</sup>
           </li>
           <li>
+            Volume:{" "}
+            {crystalStructure?.lattice
+              ? `${volume(crystalStructure.lattice).toFixed(2)} Å³`
+              : "—"}
+          </li>
+          {/* <li>
             Cell volume:{" "}
             {format_aiida_prop(
               details.properties.cell_volume,
@@ -79,7 +97,7 @@ function GeneralInfoBox({ details, metadata, methodLabel }) {
               methodLabel,
               2,
             )}
-          </li>
+          </li> */}
           <li>
             Total magnetization:{" "}
             {format_aiida_prop(
@@ -204,6 +222,8 @@ function OverviewSection({
                 details={loadedData.details}
                 metadata={loadedData.metadata}
                 methodLabel={params.method}
+                crystals={crystals}
+                cellMode={cellMode}
               />
             </div>
           </Col>

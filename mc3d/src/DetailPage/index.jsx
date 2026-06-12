@@ -132,7 +132,7 @@ function DetailPage() {
   useEffect(() => {
     async function runAnalysis() {
       const cs = fromStructureData(coreData.structureInfo.aiidaAttributes);
-      const result = await getSymmetry(cs, 1e-3);
+      const result = await getSymmetry(cs, 1e-4);
 
       const crystals = result;
 
