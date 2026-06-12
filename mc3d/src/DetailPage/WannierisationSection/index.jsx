@@ -235,19 +235,19 @@ const WannierisationSection = ({ params, loadedData }) => {
             <div className="subsection-title">Electronic band structure</div>
             <div className="mb-3 ms-2">
               Comparison between Quantum ESPRESSO (QE){" "}
-              {wannierData?.pw_band_uuid && (
-                {/* <ExploreButton
+              {/* {wannierData?.pw_band_uuid && (
+                <ExploreButton
                   explore_url={EXPLORE_URL}
                   uuid={wannierData?.pw_band_uuid}
-                /> */}
-              )}{" "}
+                />
+              )} */}{" "}
               and Wannier90 (W90){" "}
-              {wannierData?.w90_band_uuid && (
-                {/* <ExploreButton
+              {/* {wannierData?.w90_band_uuid && (
+                <ExploreButton
                   explore_url={EXPLORE_URL}
                   uuid={wannierData.w90_band_uuid}
-                /> */}
-              )}
+                />
+              )} */}
               interpolated bands. E<sub>F</sub> is the QE SCF Fermi energy.
             </div>
             <BandStructure
@@ -267,12 +267,16 @@ const WannierisationSection = ({ params, loadedData }) => {
             />
           </Col>
           <Col>
-            <div className="subsection-title">Wannierisation Information</div>
-            <div className="mb-3 ms-2">
-              The table below provides information regarding the Wannier
-              centers.
+            <div className="subsection-title">Wannier centers and spreads</div>
+            <div className="mb-4 ms-2">
+              <div className="mb-2">
+                The table below provides the Wannier centers and spreads for the
+                maximally localized Wannier functions obtained with the
+                projectability disentanglement.
+              </div>
+
               <McTable
-                style={{ maxHeight: "425px" }}
+                style={{ maxHeight: "420px" }}
                 dontFormatCols={[0]}
                 headerRow={[
                   "Index",
@@ -303,18 +307,29 @@ const WannierisationSection = ({ params, loadedData }) => {
                   </Button>,
                 ])}
               />
-              <div className="pt-3 ms-2">
-                Download a zip of the Hamiltonians{" "}
-                <Button
-                  size="sm"
-                  variant="primary"
-                  onClick={() => downloadAllDatFiles(params.id, wannierData)}
-                >
-                  <span className="bi bi-download" />
-                </Button>
-              </div>
             </div>
           </Col>
+        </Row>
+        <Row>
+          <div className="">
+            <div className="subsection-title">
+              Hamiltonian in the Wannier basis
+            </div>
+            <div className="mb-3 ms-2">
+              Download a zip file containing aiida_tb.dat and aiida_wsvec.dat
+              for the Hamiltonian and position operator, in the{" "}
+              <a href="https://wannier90.readthedocs.io/en/latest/user_guide/wannier90/files/#seedname_tbdat">
+                [wannier90 format]
+              </a>{" "}
+              <Button
+                size="sm"
+                variant="primary"
+                onClick={() => downloadAllDatFiles(params.id, wannierData)}
+              >
+                <span className="bi bi-download" />
+              </Button>
+            </div>
+          </div>
         </Row>
       </Container>
     </div>
