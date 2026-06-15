@@ -4,6 +4,8 @@ import "./index.css";
 
 import StructureVisualizer from "mc-react-structure-visualizer";
 
+import { StructureDownload } from "../../common/StructureDownload";
+
 import { Container, Row, Col } from "react-bootstrap";
 
 import { formula } from "mc-react-library";
@@ -130,6 +132,7 @@ function GeneralInfoBox({
 
 const StructureViewerBox = ({
   uuid,
+  id,
   structureInfo,
   methodLabel,
   crystals,
@@ -152,6 +155,8 @@ const StructureViewerBox = ({
   }, [crystals.conventional]);
 
   const cifText = cellMode.usePrimitive ? primitiveCif : conventionalCif;
+
+  const filenamePrefix = `${id}_${cellMode.usePrimitive ? "prim" : "conv"}`;
 
   return (
     <>
@@ -188,10 +193,10 @@ const StructureViewerBox = ({
           <StructureVisualizer cifText={cifText} initSupercell={[2, 2, 2]} />
         )}
 
-        <div className="download-button-container">
-          <StructDownloadButton
-            aiida_rest_url={AIIDA_API_URLS[methodLabel]}
-            uuid={uuid}
+        <div className="download-button-container px-1">
+          <StructureDownload
+            structure={crystalStructure}
+            namePrefix={filenamePrefix}
           />
         </div>
       </div>
@@ -206,6 +211,7 @@ function OverviewSection({
   crystals,
   cellMode,
 }) {
+  console.log("p", params);
   return (
     <div>
       <div className="section-heading" style={headerStyle}>
@@ -216,6 +222,7 @@ function OverviewSection({
           <Col className="flex-column">
             <StructureViewerBox
               uuid={loadedData.details.general.structure_uuid}
+              id={params.id}
               structureInfo={loadedData.structureInfo}
               methodLabel={params.method}
               crystals={crystals}
