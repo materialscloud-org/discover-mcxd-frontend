@@ -38,24 +38,67 @@ function GeneralInfoBox({
 }) {
   const crystalStructure = crystals[cellMode.selectedCell];
 
+  console.log(crystals);
+
+  console.log(crystals?.calculationResults?.hm_symbol);
+
+  const symbol = crystals?.calculationResults?.hm_symbol ?? "";
+
+  const cleanSymbol =
+    typeof symbol === "string" ? symbol.replace(/\s+/g, "") : "";
+
   return (
-    <McInfoBox style={{ height: "450px" }}>
+    <McInfoBox style={{ height: "260px" }}>
       <div>
         <b>Info</b>
         <ul className="no-bullets">
           <li>
+            Formula: {formatChemicalFormula(details.general.formula)}
+            <i> (IUPAC) </i>{" "}
+            {formatChemicalFormula(details.general.formula_hill)}{" "}
+            <i>Hill (full):</i>
+          </li>
+          {/* <li>
             Formula (IUPAC): {formatChemicalFormula(details.general.formula)}
           </li>
           <li>
             Hill formula (full):{" "}
             {formatChemicalFormula(details.general.formula_hill)}
-          </li>
+          </li> */}
           <li>Bravais lattice: {details.general.bravais_lattice}</li>
-          <li>
+          {/* <li>
             Space group symbol:{" "}
             {formatSpaceGroupSymbol(details.general.spacegroup_international)}
+          </li> */}
+          <li>
+            Space group Info:{" "}
+            {crystalStructure?.lattice ? (
+              <>
+                {formatSpaceGroupSymbol(
+                  (crystals?.calculationResults?.hm_symbol ?? "").replace(
+                    /\s+/g,
+                    "",
+                  ),
+                )}{" "}
+                ({crystals?.calculationResults?.number})
+              </>
+            ) : (
+              "—"
+            )}
           </li>
-          <li>Space group number: {details.general.spacegroup_number}</li>
+          {/* <li>Space group number: {details.general.spacegroup_number}</li> */}
+          <li>
+            <li>
+              Volume:{" "}
+              {crystalStructure?.lattice
+                ? `${volume(crystalStructure).toFixed(2)} Å³`
+                : "—"}
+            </li>
+            Density:{" "}
+            {crystalStructure?.lattice
+              ? `${(density(crystalStructure) * 1660.5390666).toFixed(0)} kg/m³`
+              : "—"}
+          </li>
         </ul>
       </div>
       <div>
@@ -63,23 +106,7 @@ function GeneralInfoBox({
         <SourceInfo sources={details.source} metadata={metadata} />
       </div>
       <div>
-        <b>Properties</b>
         <ul className="no-bullets">
-          <li>
-            Total energy:{" "}
-            {format_aiida_prop(
-              details.properties.total_energy,
-              metadata.info.properties.total_energy,
-              methodLabel,
-              2,
-            )}
-          </li>
-          <li>
-            Density:{" "}
-            {crystalStructure?.lattice
-              ? `${(density(crystalStructure) * 1660.5390666).toFixed(0)} kg/m³`
-              : "—"}
-          </li>
           {/* <li>
             Density:{" "}
             {formula.calculateDensity(
@@ -88,12 +115,6 @@ function GeneralInfoBox({
             )}{" "}
             kg/m<sup>3</sup>
           </li> */}
-          <li>
-            Volume:{" "}
-            {crystalStructure?.lattice
-              ? `${volume(crystalStructure).toFixed(2)} Å³`
-              : "—"}
-          </li>
           {/* <li>
             Cell volume:{" "}
             {format_aiida_prop(
@@ -103,7 +124,7 @@ function GeneralInfoBox({
               2,
             )}
           </li> */}
-          <li>
+          {/* <li>
             Total magnetization:{" "}
             {format_aiida_prop(
               details.properties.total_magnetization,
@@ -120,7 +141,7 @@ function GeneralInfoBox({
               methodLabel,
               2,
             )}
-          </li>
+          </li> */}
         </ul>
       </div>
     </McInfoBox>
@@ -212,7 +233,6 @@ function OverviewSection({
   crystals,
   cellMode,
 }) {
-  console.log("p", params);
   return (
     <div>
       <div className="section-heading" style={headerStyle}>
