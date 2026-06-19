@@ -8,9 +8,7 @@ import { fractional, cartesian } from "matsci-parse";
 export const AtomicSitesInfoBox = ({ crystals, cellMode }) => {
   const [showFractional, setShowFractional] = useState(false);
 
-  const crystalStructure = cellMode.usePrimitive
-    ? crystals?.primitive
-    : crystals?.conventional;
+  const crystalStructure = crystals?.[cellMode.selectedCell];
 
   const cell = crystalStructure?.lattice;
   const sites = crystalStructure?.sites || [];

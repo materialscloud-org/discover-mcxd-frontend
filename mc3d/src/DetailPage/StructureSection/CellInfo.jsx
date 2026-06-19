@@ -8,9 +8,7 @@ export const CellInfoBox = ({ crystals, cellMode }) => {
   const [showMatrix, setShowMatrix] = useState(false);
 
   const cellData = useMemo(() => {
-    const lattice = cellMode.usePrimitive
-      ? crystals?.primitive?.lattice
-      : crystals?.conventional?.lattice;
+    const lattice = crystals?.[cellMode.selectedCell]?.lattice;
 
     if (!lattice) return null;
 
@@ -37,7 +35,7 @@ export const CellInfoBox = ({ crystals, cellMode }) => {
       console.warn("cellData build failed:", e);
       return null;
     }
-  }, [crystals, cellMode.usePrimitive]);
+  }, [crystals, cellMode.selectedCell]);
 
   const isValid = cellData?.valid ?? false;
   const matrix = cellData?.matrix ?? [];

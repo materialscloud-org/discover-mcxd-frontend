@@ -101,11 +101,12 @@ function DetailPage() {
   const navigate = useNavigate();
   const params = useParams(); // Route parameters
   const [crystals, setCrystals] = useState({});
+  const [selectedCell, setSelectedCell] = useState("aiida");
   const [usePrimitive, setUsePrimitive] = useState(true);
 
   const cellMode = {
-    usePrimitive,
-    setUsePrimitive,
+    selectedCell,
+    setSelectedCell,
   };
 
   const [datasetIndex, setDatasetIndex] = useState(null);
@@ -135,6 +136,7 @@ function DetailPage() {
       const result = await getSymmetry(cs, 1e-4);
 
       const crystals = result;
+      crystals.aiida = cs;
 
       console.log("crystals", crystals);
       setCrystals(crystals);

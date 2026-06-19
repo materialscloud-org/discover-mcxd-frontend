@@ -29,6 +29,7 @@ import { ToggleSwitch } from "mc-react-library";
 import { toCIF } from "matsci-parse";
 
 import { volume, density } from "matsci-parse";
+import CellSelector from "../../common/CellSelector";
 
 function GeneralInfoBox({
   details,
@@ -37,9 +38,7 @@ function GeneralInfoBox({
   crystals,
   cellMode,
 }) {
-  const crystalStructure = cellMode.usePrimitive
-    ? crystals.primitive
-    : crystals.conventional;
+  const crystalStructure = crystals[cellMode.selectedCell];
 
   return (
     <McInfoBox style={{ height: "450px" }}>
@@ -142,21 +141,31 @@ const StructureViewerBox = ({
     cellMode.setUsePrimitive((v) => !v);
   };
 
-  const crystalStructure = cellMode.usePrimitive
-    ? crystals.primitive
-    : crystals.conventional;
+  const crystalStructure = crystals[cellMode.selectedCell];
 
-  const primitiveCif = useMemo(() => {
-    return crystals.primitive ? toCIF(crystals.primitive) : null;
-  }, [crystals.primitive]);
+  const primitiveCif = useMemo(
+    () => (crystals.primitive ? toCIF(crystals.primitive) : null),
+    [crystals.primitive],
+  );
 
-  const conventionalCif = useMemo(() => {
-    return crystals.conventional ? toCIF(crystals.conventional) : null;
-  }, [crystals.conventional]);
+  const conventionalCif = useMemo(
+    () => (crystals.conventional ? toCIF(crystals.conventional) : null),
+    [crystals.conventional],
+  );
 
-  const cifText = cellMode.usePrimitive ? primitiveCif : conventionalCif;
+  const aiidaCif = useMemo(
+    () => (crystals.aiida ? toCIF(crystals.aiida) : null),
+    [crystals.aiida],
+  );
 
-  const filenamePrefix = `${id}_${cellMode.usePrimitive ? "prim" : "conv"}`;
+  const cifMap = {
+    primitive: primitiveCif,
+    conventional: conventionalCif,
+    aiida: aiidaCif,
+  };
+
+  const cifText = cifMap[cellMode.selectedCell];
+  const filenamePrefix = `${id}_${cellMode.selectedCell}`;
 
   return (
     <>
@@ -177,15 +186,9 @@ const StructureViewerBox = ({
             zIndex: 10,
           }}
         >
-          <ToggleSwitch
-            labelLeft="Primitive"
-            labelRight="Conventional"
-            switchLength="30px"
-            fontSize="17px"
-            toggled={!cellMode.usePrimitive}
-            onToggle={(value) => {
-              cellMode.setUsePrimitive(!value);
-            }}
+          <CellSelector
+            value={cellMode.selectedCell}
+            onChange={cellMode.setSelectedCell}
           />
         </div>
 

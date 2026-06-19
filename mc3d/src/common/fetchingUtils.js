@@ -13,14 +13,14 @@ const URLS = beProd
       mcRestFallback: "https://mcxd-api.dev.materialscloud.org/",
       s3: "https://mcxd-publicbucket.materialscloud.xyz/mc3d",
       aiida: "https://aiida.materialscloud.org",
-      explore: "https://develop.mc-frontend.pages.dev/explore/",
+      explore: "https://www.materialscloud.org/explore/",
     }
   : {
       mcRest: "https://mcxd-api.dev.materialscloud.org/mc3d",
       mcRestFallback: "https://mcxd-api.dev.materialscloud.org/",
       s3: "https://rgw.cscs.ch/matcloud:mc-discover-mcxd-public/mc3d",
       aiida: "https://aiida.dev.materialscloud.org",
-      explore: "https://www.materialscloud.org/explore/",
+      explore: "https://develop.mc-frontend.pages.dev/explore/",
     };
 
 const datasets = [

@@ -11,6 +11,7 @@ import { AIIDA_API_URLS, EXPLORE_URLS } from "../../common/fetchingUtils";
 import { format_aiida_prop } from "../../common/utils";
 
 import { ToggleSwitch } from "mc-react-library";
+import CellSelector from "../../common/CellSelector";
 
 const StructureSection = ({ params, loadedData, cellMode, crystals }) => {
   let details = loadedData.details;
@@ -48,15 +49,9 @@ const StructureSection = ({ params, loadedData, cellMode, crystals }) => {
                   }}
                 >
                   {/* Switch Align right */}
-                  <ToggleSwitch
-                    labelLeft="Primitive"
-                    labelRight="Conventional"
-                    switchLength="30px"
-                    fontSize="17px"
-                    toggled={!cellMode.usePrimitive}
-                    onToggle={(value) => {
-                      cellMode.setUsePrimitive(!value);
-                    }}
+                  <CellSelector
+                    value={cellMode.selectedCell}
+                    onChange={cellMode.setSelectedCell}
                   />
                 </div>
               </div>
