@@ -26,9 +26,7 @@ import { AIIDA_API_URLS, EXPLORE_URLS } from "../../common/fetchingUtils";
 
 import { ToggleSwitch } from "mc-react-library";
 
-import { toCIF } from "matsci-parse";
-
-import { volume, density } from "matsci-parse";
+import { toCIF, volume, density } from "matsci-parse";
 import CellSelector from "../../common/CellSelector";
 
 function GeneralInfoBox({
