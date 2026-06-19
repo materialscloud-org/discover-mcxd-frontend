@@ -126,6 +126,7 @@ function DetailPage() {
 
     loadDatasetIndex(params.method, params.id).then((lD) => {
       setDatasetIndex(lD.index);
+
       setResultsObject(buildResultsObject(lD.index, params.method));
     });
   }, [params.id, params.method]);
@@ -133,7 +134,7 @@ function DetailPage() {
   useEffect(() => {
     async function runAnalysis() {
       const cs = fromStructureData(coreData.structureInfo.aiidaAttributes);
-      const result = await getSymmetry(cs, 1e-4);
+      const result = await getSymmetry(cs, 0.005);
 
       const crystals = result;
       crystals.aiida = cs;
