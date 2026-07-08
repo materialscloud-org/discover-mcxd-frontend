@@ -4,7 +4,6 @@ import { CellInfoBox } from "./CellInfo";
 import { AtomicSitesInfoBox } from "./AtomicSitesInfo";
 
 import { Container, Row, Col } from "react-bootstrap";
-
 import { McInfoBox } from "@mcxd/shared";
 
 import { AIIDA_API_URLS, EXPLORE_URLS } from "../../common/fetchingUtils";
