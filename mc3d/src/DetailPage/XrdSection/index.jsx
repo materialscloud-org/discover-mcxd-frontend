@@ -66,7 +66,7 @@ const XrdSection = ({ method, id }) => {
     return () => {
       cancelled = true;
     };
-  }, [wavelength, cache, id, method]);
+  }, [wavelength, id, method]);
 
   useEffect(() => {
     if (current) {
@@ -90,7 +90,7 @@ const XrdSection = ({ method, id }) => {
     return traces;
   }, [current, showHistogram, showCurve, fwhm, fitType]);
 
-  const xRange = current?.angular_range?.slice() || [];
+  const xRange = useMemo(() => current?.angular_range || [], [current]);
 
   useEffect(() => {
     if (!plotRef.current || !current) return;
