@@ -1,5 +1,49 @@
 .material_selector_container {
-  /* max-width: 940px; */
   width: 100%;
   margin: 0 auto;
+}
+
+.ptable-mode-row {
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+
+periodic-table {
+  --cell-size: 42px;
+  --gap: 3px;
+}
+
+.selection_mode_outer {
+  position: absolute;
+  transform: translateY(-0%) translateX(-40%);
+
+  border: 1px solid #999;
+  border-radius: 2px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+  padding: 8px 10px;
+  font-size: 14px;
+  gap: 8px;
+  min-width: 220px;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.selection_mode_inner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0px 20px;
+}
+
+.selection_mode_control {
+  line-height: 1.5;
+  margin-left: 0;
+}
+
+.selection_mode_control input {
+  margin-right: 4px;
 }
