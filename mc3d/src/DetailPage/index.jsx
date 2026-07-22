@@ -14,6 +14,7 @@ import {
   loadDatasetIndex,
   loadSuperConDetails,
   loadSuperConPhononVis,
+  loadMechanicalProps,
   loadAiidaAttributes,
   loadAiidaCif,
 } from "../common/fetchingUtils";
@@ -37,6 +38,7 @@ import MissingDataWarning from "./MissingDataWarning";
 
 import { CitationBanner } from "@mcxd/shared";
 import PageLayout from "../Layout";
+import MechanicalSection from "./MechanicalSection";
 
 // contributed sections
 // import RelatedSection from "./RelatedSection";
@@ -95,16 +97,36 @@ async function fetchSuperconSubset(method, id) {
   }
 }
 
+async function fetchMechanicalSubset(method, id) {
+  try {
+    const mechDetails = await loadMechanicalProps(method, id);
+
+    console.log("loaded", mechDetails);
+
+    return {
+      method,
+      mechDetails,
+    };
+  } catch (err) {
+    console.error(err);
+    return {
+      method,
+      mechDetails: null,
+    };
+  }
+}
+
 function DetailPage() {
   const navigate = useNavigate();
   const params = useParams(); // Route parameters
 
   const [datasetIndex, setDatasetIndex] = useState(null);
-  const [resultsObject, setResultsObject] = useState({});
+  const [resultsObject, setResultsObject] = useState(null);
 
   const [coreData, setCoreData] = useState(null);
   const [superconPhononData, setSuperconPhononData] = useState(null);
   const [superconSCData, setSuperconSCData] = useState();
+  const [mechanicalData, setMechanicalData] = useState(null);
 
   useEffect(() => {
     // Reset all dependent state so stale data never appears
@@ -113,6 +135,7 @@ function DetailPage() {
     setCoreData(null);
     setSuperconPhononData(null);
     setSuperconSCData(null);
+    setMechanicalData(null);
 
     loadDatasetIndex(params.method, params.id).then((lD) => {
       setDatasetIndex(lD.index);
@@ -141,6 +164,16 @@ function DetailPage() {
         setSuperconSCData(sc); // superconducting details
         setSuperconPhononData(sc); // phonon/vis data
       });
+    }
+
+    // Check if mechanical entries exist in resultsObject
+    // This should be extended to the other partial methods at somepoint.
+    if (resultsObject.mechanical_base) {
+      fetchMechanicalSubset(resultsObject.mechanical_base, params.id).then(
+        (mc) => {
+          setMechanicalData(mc);
+        },
+      );
     }
   }, [resultsObject, params.id, params.method]);
 
@@ -171,6 +204,8 @@ function DetailPage() {
 
   console.log("params", params);
   console.log("coreData", coreData);
+
+  console.log("mech", mechanicalData);
 
   return (
     <PageLayout
@@ -213,6 +248,12 @@ function DetailPage() {
         params={params}
         loadedData={coreData}
         superconData={superconSCData}
+      />
+
+      <MechanicalSection
+        params={params}
+        loadedData={coreData}
+        mechanicalData={mechanicalData}
       />
       {/* <SimilaritySection params={params} /> */}
     </PageLayout>

@@ -16,8 +16,8 @@ const URLS = beProd
       explore: "https://www.materialscloud.org/explore/",
     }
   : {
-      mcRest: "https://mcxd-api.dev.materialscloud.org/mc3d",
-      mcRestFallback: "https://mcxd-api.dev.materialscloud.org/",
+      mcRest: "http://127.0.0.1:8000/mc3d",
+      mcRestFallback: "http://127.0.0.1:8000/mc3d",
       s3: "https://rgw.cscs.ch/matcloud:mc-discover-mcxd-public/mc3d",
       aiida: "https://aiida.dev.materialscloud.org",
       explore: "https://develop.mc-frontend.pages.dev/explore/",
@@ -51,7 +51,11 @@ const delayTest = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 The following function is used to fetch data from multiple sources
 in the case that the first source URL is down, 
 */
-async function fallbackFetch(urls = [], timeout = 3500) {
+async function fallbackFetch(
+  urls = [],
+  timeout = 3500,
+  { suppress404 = true } = {},
+) {
   for (const url of urls) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
@@ -59,6 +63,10 @@ async function fallbackFetch(urls = [], timeout = 3500) {
     try {
       const res = await fetch(url, { signal: controller.signal });
       clearTimeout(timeoutId);
+
+      if (res.status === 404 && suppress404) {
+        return null;
+      }
 
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
@@ -103,6 +111,9 @@ export const loadSuperConDetails = (method, id) =>
 
 export const loadSuperConPhononVis = (method, id) =>
   mcRestFetch(`${method}/supercon_phonon-vis/${id}`);
+
+export const loadMechanicalProps = (method, id) =>
+  mcRestFetch(`${method}/mechanical_base/${id}`);
 
 export const loadStructureUuids = (method) =>
   mcRestFetch(`${method}/structure-uuids`);

@@ -12,6 +12,7 @@ export default function buildResultsObject(methods, currentMethod) {
     "vibrational",
     "supercon_phonon-vis",
     "supercon_base",
+    "mechanical_base",
   ];
 
   // Excluded entries per method
