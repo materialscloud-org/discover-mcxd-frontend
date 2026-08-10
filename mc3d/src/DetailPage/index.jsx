@@ -202,9 +202,6 @@ function DetailPage() {
     params.method,
   );
 
-  console.log("params", params);
-  console.log("coreData", coreData);
-
   console.log("mech", mechanicalData);
 
   return (
@@ -238,7 +235,7 @@ function DetailPage() {
 
       {/* <ElectronicStructureSection params={params} /> */}
 
-      <VibrationalSection
+      {/* <VibrationalSection
         params={params}
         loadedData={coreData}
         phononData={superconPhononData}
@@ -248,7 +245,7 @@ function DetailPage() {
         params={params}
         loadedData={coreData}
         superconData={superconSCData}
-      />
+      /> */}
 
       <MechanicalSection
         params={params}

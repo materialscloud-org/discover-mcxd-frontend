@@ -53,7 +53,7 @@ in the case that the first source URL is down,
 */
 async function fallbackFetch(
   urls = [],
-  timeout = 3500,
+  timeout = 20000,
   { suppress404 = true } = {},
 ) {
   for (const url of urls) {
