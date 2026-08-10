@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { Container, Row, Col, Form } from "react-bootstrap";
 import { McInfoBox } from "@mcxd/shared";
+import { EXPLORE_URLS } from "../../common/fetchingUtils";
+import { ExploreButton } from "mc-react-library";
 
 import MECHANICAL_PROPERTY_META from "./metadata";
 import ElasticConstantsMatrix from "./ElasticConstantsMatrix";
@@ -153,6 +155,7 @@ export default function MechanicalSection({
 
   const elasticConstants = selectedData?.elastic_constants;
   const vickersHardness = averageData?.vickers_hardness;
+  const workchainUuid = selectedData?.workchain_uuid;
 
   const scalarData = averageData
     ? Object.fromEntries(
@@ -232,8 +235,15 @@ export default function MechanicalSection({
           <Col lg={6}>
             {scalarData && Object.keys(scalarData).length > 0 && (
               <>
-                <div className="subsection-title">Calculated Properties</div>
-
+                <div className="subsection-title">
+                  Calculated Properties{" "}
+                  {workchainUuid && (
+                    <ExploreButton
+                      explore_url={EXPLORE_URLS["pbesol-v1-mechanical"]} // todo add this...
+                      uuid={workchainUuid}
+                    />
+                  )}
+                </div>
                 <McInfoBox title={average ?? "Mechanical Properties"}>
                   <PropertyList data={scalarData} />
                 </McInfoBox>
