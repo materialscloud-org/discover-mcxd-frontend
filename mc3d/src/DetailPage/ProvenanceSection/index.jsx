@@ -22,7 +22,7 @@ function ProvenanceSection(props) {
   console.log(props);
   return (
     <div>
-      <div className="section-heading">Calculation Information</div>
+      <div className="section-heading">Calculation information</div>
       {/* <div className="provenance-section"> */}
 
       <Container fluid className="section-container">
@@ -54,7 +54,7 @@ function ProvenanceSection(props) {
           </Col>
           <Col>
             <McInfoBox>
-              <b>Calculated Properties (AiiDA)</b>
+              <b>Calculated properties</b>
               <ul className="no-bullets">
                 <li>
                   Cell volume:{" "}

@@ -22,16 +22,23 @@ const StructureSection = ({ params, loadedData, cellMode, crystals }) => {
 
   return (
     <div>
-      <div className="section-heading">Structural details</div>
+      <div
+        className="section-heading"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "12px",
+        }}
+      >
+        <span>Structural details</span>
+
+        <CellSelector
+          value={cellMode.selectedCell}
+          onChange={cellMode.setSelectedCell}
+        />
+      </div>
       <Container fluid className="section-container">
         <Row>
-          <div style={{ marginBottom: "10px" }}>
-            {/* Switch Align right */}
-            <CellSelector
-              value={cellMode.selectedCell}
-              onChange={cellMode.setSelectedCell}
-            />
-          </div>
           <Col className="flex-column">
             <CellInfoBox
               structureInfo={structureInfo}

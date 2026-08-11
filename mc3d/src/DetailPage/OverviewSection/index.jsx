@@ -48,15 +48,16 @@ function GeneralInfoBox({
     typeof symbol === "string" ? symbol.replace(/\s+/g, "") : "";
 
   return (
-    <McInfoBox style={{ height: "260px" }}>
+    <McInfoBox style={{ height: "307px" }}>
       <div>
         <b>Info</b>
         <ul className="no-bullets">
           <li>
-            Formula: {formatChemicalFormula(details.general.formula)}
-            <i> (IUPAC) </i>{" "}
+            IUPAC formula: {formatChemicalFormula(details.general.formula)}
+          </li>
+          <li>
+            Hill formula (full):{" "}
             {formatChemicalFormula(details.general.formula_hill)}{" "}
-            <i>Hill (full):</i>
           </li>
           {/* <li>
             Formula (IUPAC): {formatChemicalFormula(details.general.formula)}
@@ -219,6 +220,15 @@ const StructureViewerBox = ({
           <StructureDownload
             structure={crystalStructure}
             namePrefix={filenamePrefix}
+            id={id}
+            method={methodLabel}
+            cellType={
+              cellMode.selectedCell === "primitive"
+                ? "primitive"
+                : cellMode.selectedCell === "aiida"
+                  ? "from AiiDA"
+                  : "conventional"
+            }
           />
         </div>
       </div>

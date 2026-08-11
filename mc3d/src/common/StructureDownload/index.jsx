@@ -44,11 +44,64 @@ function downloadFile(content, filename) {
   URL.revokeObjectURL(url);
 }
 
+// TODO: maybe move this to the matsci-parse lib to allow overriding the header
+function addMetadataToHeader(content, format, mc3dId, method, cellType) {
+  const metadata = `mc3d-id=${mc3dId} method=${method} cell="${cellType}"`;
+
+  switch (format) {
+    case "xyz": {
+      const lines = content.split("\n");
+
+      if (lines.length >= 2) {
+        lines[1] = `${lines[1]} ${metadata}`;
+      }
+
+      return lines.join("\n");
+    }
+
+    case "cif": {
+      const lines = content.split("\n");
+
+      const lastHeaderIndex = lines.findIndex(
+        (line) => line.trim() && !line.trim().startsWith("_"),
+      );
+
+      if (lastHeaderIndex === -1) {
+        return `${metadata}\n${content}`;
+      }
+
+      lines.splice(lastHeaderIndex, 0, `# ${metadata}`);
+      return lines.join("\n");
+    }
+
+    case "xsf": {
+      const lines = content.split("\n");
+      return [`# ${metadata}`, ...lines].join("\n");
+    }
+
+    case "poscar": {
+      const lines = content.split("\n");
+
+      if (lines.length > 0) {
+        lines[0] = `${lines[0]} ${metadata}`;
+      }
+
+      return lines.join("\n");
+    }
+
+    default:
+      return content;
+  }
+}
+
 export function StructureDownload({
   structure,
   OptimadeStructure,
   download_formats,
   namePrefix = "structure",
+  id,
+  method,
+  cellType,
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
@@ -99,6 +152,8 @@ export function StructureDownload({
       default:
         return;
     }
+
+    content = addMetadataToHeader(content, format, id, method, cellType);
 
     downloadFile(content, filename);
     setOpen(false);
