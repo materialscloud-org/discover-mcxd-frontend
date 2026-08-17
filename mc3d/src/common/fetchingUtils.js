@@ -10,14 +10,14 @@ const beProd = import.meta.env.VITE_PRODUCTION_BACKEND === "true";
 const URLS = beProd
   ? {
       mcRest: "https://mcxd-api.materialscloud.org/mc3d",
-      mcRestFallback: "https://mcxd-api.dev.materialscloud.org/",
+      mcRestFallback: "https://mcxd-api.dev.materialscloud.org/mc3d",
       s3: "https://mcxd-publicbucket.materialscloud.xyz/mc3d",
       aiida: "https://aiida.materialscloud.org",
       explore: "https://www.materialscloud.org/explore/",
     }
   : {
-      mcRest: "http://127.0.0.1:8000/mc3d",
-      mcRestFallback: "http://127.0.0.1:8000/mc3d",
+      mcRest: "https://mcxd-api.dev.materialscloud.org/mc3d",
+      mcRestFallback: "https://mcxd-api.dev.materialscloud.org/mc3d",
       s3: "https://rgw.cscs.ch/matcloud:mc-discover-mcxd-public/mc3d",
       aiida: "https://aiida.dev.materialscloud.org",
       explore: "https://develop.mc-frontend.pages.dev/explore/",
@@ -29,9 +29,16 @@ const datasets = [
   "pbesol-v2",
   "pbesol-v1-fermisurf",
   "pbesol-v1-supercon",
+  "pbesol-v1-mechanical",
 ];
 
-const explorePaths = ["pbe-v1", "pbesol-v1", "pbesol-v2", "pbesol-v1-supercon"];
+const explorePaths = [
+  "pbe-v1",
+  "pbesol-v1",
+  "pbesol-v2",
+  "pbesol-v1-supercon",
+  "pbesol-v1-mechanical",
+];
 
 export const AIIDA_API_URLS = Object.fromEntries(
   datasets.map((k) => [k, `${URLS.aiida}/mc3d-${k}/api/v4`]),
