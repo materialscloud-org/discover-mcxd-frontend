@@ -205,7 +205,11 @@ export default function MechanicalSection({
           {intermediateLevels.map((level) => (
             <Col lg={3} key={level.levelIndex}>
               <Selector
-                label="Configuration"
+                label={
+                  <>
+                    <strong>q</strong>-points distance [Å⁻¹]
+                  </>
+                }
                 value={level.value}
                 options={level.options}
                 onChange={(event) => {
