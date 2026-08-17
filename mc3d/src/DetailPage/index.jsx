@@ -235,7 +235,7 @@ function DetailPage() {
 
       {/* <ElectronicStructureSection params={params} /> */}
 
-      {/* <VibrationalSection
+      <VibrationalSection
         params={params}
         loadedData={coreData}
         phononData={superconPhononData}
@@ -245,7 +245,7 @@ function DetailPage() {
         params={params}
         loadedData={coreData}
         superconData={superconSCData}
-      /> */}
+      />
 
       <MechanicalSection
         params={params}
