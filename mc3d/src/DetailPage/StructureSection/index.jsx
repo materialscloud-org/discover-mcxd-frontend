@@ -4,7 +4,6 @@ import { CellInfoBox } from "./CellInfo";
 import { AtomicSitesInfoBox } from "./AtomicSitesInfo";
 
 import { Container, Row, Col } from "react-bootstrap";
-
 import { McInfoBox } from "@mcxd/shared";
 
 import { AIIDA_API_URLS, EXPLORE_URLS } from "../../common/fetchingUtils";
@@ -13,7 +12,7 @@ import { format_aiida_prop } from "../../common/utils";
 import { ToggleSwitch } from "mc-react-library";
 import CellSelector from "../../common/CellSelector";
 
-const StructureSection = ({ params, loadedData, cellMode, crystals }) => {
+export default function StructureSection({ params, loadedData, cellMode, crystals }) {
   let details = loadedData.details;
   let structureInfo = loadedData.structureInfo;
 
@@ -58,6 +57,4 @@ const StructureSection = ({ params, loadedData, cellMode, crystals }) => {
       </Container>
     </div>
   );
-};
-
-export default StructureSection;
+}

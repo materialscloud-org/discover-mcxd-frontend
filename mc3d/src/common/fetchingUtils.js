@@ -82,7 +82,6 @@ It also contains overview and meta data endpoints
 function mcRestFetch(path) {
   const primary = `${URLS.mcRest}/${path}`;
 
-  console.log("primary", primary);
   const fallback = `${URLS.mcRestFallback}/${path}`;
   return fallbackFetch([primary, fallback]);
 }

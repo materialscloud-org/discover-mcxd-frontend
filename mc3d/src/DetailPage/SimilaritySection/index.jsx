@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { Container, Row } from "react-bootstrap";
 import { McTable } from "@mcxd/shared";
 
+// TODO: move this out of inline.
 const S3_ROOT_URL =
   "https://rgw.cscs.ch/matcloud:mc-public/mc3d_similarity_info";
 
-export default function SimilaritySection({ params }) {
+export default function SimilaritySection({ params, loadedData }) {
   const { id, method } = params;
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);

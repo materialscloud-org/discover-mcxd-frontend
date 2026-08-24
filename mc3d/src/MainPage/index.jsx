@@ -45,7 +45,7 @@ function MainPage({ tab }) {
     const pathTab =
       location.pathname === "/" ? "use" : location.pathname.slice(1);
     setActiveTab(pathTab);
-  }, [location]);
+  }, [location.pathname]);
 
   const handleTabSelect = (selectedTab) => {
     navigate(tabRoutes[selectedTab]);

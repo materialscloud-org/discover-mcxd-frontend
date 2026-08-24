@@ -34,10 +34,8 @@ export default function SuperConductivitySection({
   loadedData,
   superconData,
 }) {
-  if (!superconData?.scDetails?.supercon) return null;
-
-  const method = superconData.method;
-  const supercon = superconData.scDetails.supercon;
+  const method = superconData?.method;
+  const supercon = superconData?.scDetails?.supercon;
 
   // --- Bands ---
   const { data: bandsResults, loading: bandsLoading } = useAsyncEffect(
@@ -56,6 +54,8 @@ export default function SuperConductivitySection({
     () => fetchA2F(supercon, method),
     [supercon, method],
   );
+
+  if (!superconData?.scDetails?.supercon) return null;
 
   const bandsDataArray = bandsResults?.el ?? [];
   const phononBandsArray = bandsResults?.ph ?? [];

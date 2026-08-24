@@ -57,4 +57,4 @@ export const AtomicSitesInfoBox = ({ crystals, cellMode }) => {
       />
     </div>
   );
-};
+}

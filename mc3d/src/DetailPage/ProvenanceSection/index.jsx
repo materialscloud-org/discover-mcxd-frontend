@@ -13,13 +13,12 @@ import { StructDownloadButton } from "mc-react-library";
 
 import { AIIDA_API_URLS } from "../../common/fetchingUtils";
 
-function ProvenanceSection(props) {
-  let details = props.loadedData.details;
+export default function ProvenanceSection({ loadedData, params }) {
+  let details = loadedData.details;
 
-  let metadata = props.loadedData.metadata;
-  let methodLabel = props.params.method;
-  let params = props.params;
-  console.log("d", props);
+  let metadata = loadedData.metadata;
+  let methodLabel = params.method;
+  console.log("d", { loadedData, params });
   return (
     <div>
       <div className="section-heading">Calculation information</div>
@@ -37,7 +36,7 @@ function ProvenanceSection(props) {
                   <li key={e.uuid}>
                     {e.label}{" "}
                     <ExploreButton
-                      explore_url={EXPLORE_URLS[props.params.method]}
+                      explore_url={EXPLORE_URLS[params.method]}
                       uuid={e.uuid}
                     />
                   </li>
@@ -67,9 +66,8 @@ function ProvenanceSection(props) {
                 </li>
                 <li>
                   Atoms per cell:{" "}
-                  {props?.loadedData?.structureInfo?.aiidaAttributes?.sites
-                    .length
-                    ? `${props?.loadedData?.structureInfo?.aiidaAttributes?.sites.length}`
+                  {loadedData?.structureInfo?.aiidaAttributes?.sites?.length
+                    ? `${loadedData?.structureInfo?.aiidaAttributes?.sites.length}`
                     : "—"}
                 </li>
                 <li>
@@ -107,5 +105,3 @@ function ProvenanceSection(props) {
     </div>
   );
 }
-
-export default ProvenanceSection;

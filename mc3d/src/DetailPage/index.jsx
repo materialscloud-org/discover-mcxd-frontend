@@ -198,6 +198,9 @@ function DetailPage() {
     params.method,
   );
 
+  console.log("params", params);
+  console.log("coreData", coreData);
+
   return (
     <PageLayout
       breadcrumbs={[{ name: `${params.id}/${params.method}`, link: null }]}

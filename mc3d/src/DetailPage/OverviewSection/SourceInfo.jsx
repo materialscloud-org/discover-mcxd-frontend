@@ -21,7 +21,7 @@ function sourceUrl(source) {
   return null;
 }
 
-const SourceInfoText = ({ source, metadata }) => {
+function SourceInfoText({ source, metadata }) {
   if (!("info" in source)) {
     console.warn("source['info'] not present.");
     return null;
@@ -111,9 +111,9 @@ const SourceInfoText = ({ source, metadata }) => {
       </div>
     </div>
   );
-};
+}
 
-function SourceInfo({ sources, metadata }) {
+export default function SourceInfo({ sources, metadata }) {
   // currently assume that only one source exists
   const source = sources[0];
 
@@ -121,9 +121,9 @@ function SourceInfo({ sources, metadata }) {
     <ul className="no-bullets">
       {sources.map((s) => {
         let logo = null;
-        if (s["database"] == "ICSD") logo = IcsdLogo;
-        if (s["database"] == "COD") logo = CodLogo;
-        if (s["database"] == "MPDS") logo = MpdsLogo;
+        if (s.database == "ICSD") logo = IcsdLogo;
+        if (s.database == "COD") logo = CodLogo;
+        if (s.database == "MPDS") logo = MpdsLogo;
         return (
           <li key={s["id"]}>
             <a
@@ -139,7 +139,7 @@ function SourceInfo({ sources, metadata }) {
                 }}
               >
                 <img src={logo} style={{ height: "20px" }}></img>
-                {s["database"]} ID: {s["id"]}
+                {s.database} ID: {s["id"]}
               </div>
             </a>
             <SourceInfoText source={source} metadata={metadata} />
@@ -149,5 +149,3 @@ function SourceInfo({ sources, metadata }) {
     </ul>
   );
 }
-
-export default SourceInfo;

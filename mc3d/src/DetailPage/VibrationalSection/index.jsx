@@ -19,7 +19,38 @@ import formatIfExists from "../../common/resultFormatter";
 import { Link } from "react-router-dom";
 
 export default function VibrationalSection({ params, loadedData, phononData }) {
-  // if data doesnt exist dont render.
+  const [phononVisData, setPhononVisData] = useState(null);
+  const [notAvail, setNotAvail] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const method = phononData?.method;
+
+  useEffect(() => {
+    if (!phononData?.scDetails?.phonons?.matdyn_uuid) return;
+
+    setLoading(true);
+
+    loadSuperConPhononVis(method, params.id)
+      .then((loadedSCPVis) => {
+        if (loadedSCPVis) {
+          const CM1_TO_MEV = 0.12398;
+
+          const convertedEigenvalues = loadedSCPVis.eigenvalues?.map(
+            (bandArray) => bandArray.map((val) => val * CM1_TO_MEV),
+          );
+
+          setPhononVisData({
+            ...loadedSCPVis,
+            eigenvalues: convertedEigenvalues,
+            highsym_qpts: loadedSCPVis.highsym_qpts?.map(prettifyLabels),
+          });
+        } else {
+          setNotAvail(true);
+        }
+      })
+      .finally(() => setLoading(false));
+  }, [params.id, method]);
+
   if (!phononData || !phononData?.scDetails?.phonons) return null;
   if (!phononData?.scDetails?.phonons?.matdyn_uuid) return null;
 
@@ -89,38 +120,6 @@ export default function VibrationalSection({ params, loadedData, phononData }) {
       }),
     },
   ];
-
-  const [phononVisData, setPhononVisData] = useState(null);
-  const [notAvail, setNotAvail] = useState(false);
-  const [loading, setLoading] = useState(true);
-
-  const method = phononData.method;
-
-  useEffect(() => {
-    setLoading(true);
-
-    // supercon phonons is in CM1 WE WANT MEV
-    loadSuperConPhononVis(method, params.id)
-      .then((loadedSCPVis) => {
-        if (loadedSCPVis) {
-          const CM1_TO_MEV = 0.12398;
-
-          // Convert eigenvalues to meV
-          const convertedEigenvalues = loadedSCPVis.eigenvalues?.map(
-            (bandArray) => bandArray.map((val) => val * CM1_TO_MEV),
-          );
-
-          setPhononVisData({
-            ...loadedSCPVis,
-            eigenvalues: convertedEigenvalues,
-            highsym_qpts: loadedSCPVis.highsym_qpts?.map(prettifyLabels),
-          });
-        } else {
-          setNotAvail(true);
-        }
-      })
-      .finally(() => setLoading(false));
-  }, [params, loadedData]);
 
   let content;
 

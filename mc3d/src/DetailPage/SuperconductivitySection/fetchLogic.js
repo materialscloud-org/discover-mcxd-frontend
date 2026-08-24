@@ -40,6 +40,7 @@ export function useAsyncEffect(fetcher, deps = []) {
 // --- Fetchers for superconductivity data ---
 
 export async function fetchBands(supercon, method) {
+  if (!supercon) return { el: [], ph: [] };
   console.log("supercon settings", supercon);
   const [epwBands, qeBands, phBands] = await Promise.all([
     supercon.epw_el_band_structure_uuid
@@ -78,11 +79,11 @@ export async function fetchBands(supercon, method) {
 }
 
 export async function fetchGapFunc(supercon, method) {
-  if (!supercon.aniso_gap_function_uuid) return null;
+  if (!supercon?.aniso_gap_function_uuid) return null;
   return loadXY(`${method}-supercon`, supercon.aniso_gap_function_uuid);
 }
 
 export async function fetchA2F(supercon, method) {
-  if (!supercon.a2f_uuid) return null;
+  if (!supercon?.a2f_uuid) return null;
   return loadXY(`${method}-supercon`, supercon.a2f_uuid);
 }
