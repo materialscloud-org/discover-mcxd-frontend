@@ -1,6 +1,10 @@
+import { useMemo } from "react";
+
 import "./index.css";
 
 import StructureVisualizer from "mc-react-structure-visualizer";
+
+import { StructureDownload } from "../../common/StructureDownload";
 
 import { Container, Row, Col } from "react-bootstrap";
 
@@ -20,25 +24,88 @@ import SourceInfo from "./SourceInfo";
 
 import { AIIDA_API_URLS, EXPLORE_URLS } from "../../common/fetchingUtils";
 
-function GeneralInfoBox({ details, metadata, methodLabel }) {
+import { ToggleSwitch } from "mc-react-library";
+
+import { toCIF, volume, density } from "matsci-parse";
+import CellSelector from "../../common/CellSelector";
+
+function GeneralInfoBox({
+  details,
+  metadata,
+  methodLabel,
+  crystals,
+  cellMode,
+}) {
+  const crystalStructure = crystals[cellMode.selectedCell];
+
+  console.log(crystals);
+
+  console.log(crystals?.calculationResults?.hm_symbol);
+
+  const symbol = crystals?.calculationResults?.hm_symbol ?? "";
+
+  const cleanSymbol =
+    typeof symbol === "string" ? symbol.replace(/\s+/g, "") : "";
+
   return (
-    <McInfoBox style={{ height: "450px" }}>
+    <McInfoBox style={{ height: "350px" }}>
       <div>
         <b>Info</b>
         <ul className="no-bullets">
           <li>
+            IUPAC formula: {formatChemicalFormula(details.general.formula)}
+          </li>
+          <li>
+            Hill formula (full):{" "}
+            {formatChemicalFormula(details.general.formula_hill)}{" "}
+          </li>
+          {/* <li>
             Formula (IUPAC): {formatChemicalFormula(details.general.formula)}
           </li>
           <li>
             Hill formula (full):{" "}
             {formatChemicalFormula(details.general.formula_hill)}
-          </li>
+          </li> */}
           <li>Bravais lattice: {details.general.bravais_lattice}</li>
-          <li>
+          {/* <li>
             Space group symbol:{" "}
             {formatSpaceGroupSymbol(details.general.spacegroup_international)}
+          </li> */}
+          <li>
+            Space group info:{" "}
+            {crystalStructure?.lattice ? (
+              <>
+                {formatSpaceGroupSymbol(
+                  (crystals?.calculationResults?.hm_symbol ?? "").replace(
+                    /\s+/g,
+                    "",
+                  ),
+                )}{" "}
+                ({crystals?.calculationResults?.number})
+              </>
+            ) : (
+              "—"
+            )}
           </li>
-          <li>Space group number: {details.general.spacegroup_number}</li>
+          {/* <li>Space group number: {details.general.spacegroup_number}</li> */}
+          <li>
+            <li>
+              Volume:{" "}
+              {crystalStructure?.lattice
+                ? `${volume(crystalStructure).toFixed(2)} Å³`
+                : "—"}
+            </li>
+            <li>
+              Atoms per cell:{" "}
+              {crystalStructure?.sites?.length
+                ? `${crystalStructure.sites.length}`
+                : "—"}
+            </li>
+            Density:{" "}
+            {crystalStructure?.lattice // inlined kg/m3 conversion
+              ? `${(density(crystalStructure) * 1660.5390666).toFixed(0)} kg/m³`
+              : "—"}
+          </li>
         </ul>
       </div>
       <div>
@@ -46,26 +113,16 @@ function GeneralInfoBox({ details, metadata, methodLabel }) {
         <SourceInfo sources={details.source} metadata={metadata} />
       </div>
       <div>
-        <b>Properties</b>
         <ul className="no-bullets">
-          <li>
-            Total energy:{" "}
-            {format_aiida_prop(
-              details.properties.total_energy,
-              metadata.info.properties.total_energy,
-              methodLabel,
-              2,
-            )}
-          </li>
-          <li>
+          {/* <li>
             Density:{" "}
             {formula.calculateDensity(
               details.general.formula_hill,
               details.properties.cell_volume,
             )}{" "}
             kg/m<sup>3</sup>
-          </li>
-          <li>
+          </li> */}
+          {/* <li>
             Cell volume:{" "}
             {format_aiida_prop(
               details.properties.cell_volume,
@@ -73,8 +130,8 @@ function GeneralInfoBox({ details, metadata, methodLabel }) {
               methodLabel,
               2,
             )}
-          </li>
-          <li>
+          </li> */}
+          {/* <li>
             Total magnetization:{" "}
             {format_aiida_prop(
               details.properties.total_magnetization,
@@ -91,40 +148,106 @@ function GeneralInfoBox({ details, metadata, methodLabel }) {
               methodLabel,
               2,
             )}
-          </li>
+          </li> */}
         </ul>
       </div>
     </McInfoBox>
   );
 }
 
-export function StructureViewerBox({ uuid, structureInfo, methodLabel }) {
+const StructureViewerBox = ({
+  uuid,
+  id,
+  structureInfo,
+  methodLabel,
+  crystals,
+  cellMode,
+}) => {
+  const handleToggle = () => {
+    cellMode.setUsePrimitive((v) => !v);
+  };
+
+  const crystalStructure = crystals[cellMode.selectedCell];
+
+  const primitiveCif = useMemo(
+    () => (crystals.primitive ? toCIF(crystals.primitive) : null),
+    [crystals.primitive],
+  );
+
+  const conventionalCif = useMemo(
+    () => (crystals.conventional ? toCIF(crystals.conventional) : null),
+    [crystals.conventional],
+  );
+
+  const aiidaCif = useMemo(
+    () => (crystals.aiida ? toCIF(crystals.aiida) : null),
+    [crystals.aiida],
+  );
+
+  const cifMap = {
+    primitive: primitiveCif,
+    conventional: conventionalCif,
+    aiida: aiidaCif,
+  };
+
+  const cifText = cifMap[cellMode.selectedCell];
+  const filenamePrefix = `${id}_${cellMode.selectedCell}`;
+
   return (
     <>
       <div className="subsection-title">
         Structure{" "}
         <ExploreButton explore_url={EXPLORE_URLS[methodLabel]} uuid={uuid} />
       </div>
-      <div className="structure-view-box subsection-shadow">
-        <StructureVisualizer
-          cifText={structureInfo.cif}
-          initSupercell={[2, 2, 2]}
-        />
-        <div className="download-button-container">
-          <StructDownloadButton
-            aiida_rest_url={AIIDA_API_URLS[methodLabel]}
-            uuid={uuid}
+
+      <div
+        className="structure-view-box subsection-shadow"
+        style={{ position: "relative" }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            top: "12px",
+            left: "12px",
+            zIndex: 10,
+          }}
+        >
+          <CellSelector
+            value={cellMode.selectedCell}
+            onChange={cellMode.setSelectedCell}
+          />
+        </div>
+
+        {cifText && (
+          <StructureVisualizer cifText={cifText} initSupercell={[2, 2, 2]} />
+        )}
+
+        <div className="download-button-container px-1">
+          <StructureDownload
+            structure={crystalStructure}
+            namePrefix={filenamePrefix}
+            id={id}
+            method={methodLabel}
+            cellType={
+              cellMode.selectedCell === "primitive"
+                ? "primitive"
+                : cellMode.selectedCell === "aiida"
+                  ? "from AiiDA"
+                  : "conventional"
+            }
           />
         </div>
       </div>
     </>
   );
-}
+};
 
 export default function OverviewSection({
   params,
   loadedData,
   headerStyle = {},
+  crystals,
+  cellMode,
 }) {
   return (
     <div>
@@ -136,8 +259,11 @@ export default function OverviewSection({
           <Col className="flex-column">
             <StructureViewerBox
               uuid={loadedData.details.general.structure_uuid}
+              id={params.id}
               structureInfo={loadedData.structureInfo}
               methodLabel={params.method}
+              crystals={crystals}
+              cellMode={cellMode}
             />
           </Col>
           <Col className="flex-column">
@@ -146,6 +272,8 @@ export default function OverviewSection({
                 details={loadedData.details}
                 metadata={loadedData.metadata}
                 methodLabel={params.method}
+                crystals={crystals}
+                cellMode={cellMode}
               />
             </div>
           </Col>
