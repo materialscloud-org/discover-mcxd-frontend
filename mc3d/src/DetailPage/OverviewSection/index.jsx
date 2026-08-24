@@ -193,7 +193,6 @@ const StructureViewerBox = ({
   const cifText = cifMap[cellMode.selectedCell];
   const filenamePrefix = `${id}_${cellMode.selectedCell}`;
 
- 
   return (
     <>
       <div className="subsection-title">
@@ -241,7 +240,7 @@ const StructureViewerBox = ({
       </div>
     </>
   );
-}
+};
 
 export default function OverviewSection({
   params,

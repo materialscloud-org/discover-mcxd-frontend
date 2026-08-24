@@ -12,7 +12,12 @@ import { format_aiida_prop } from "../../common/utils";
 import { ToggleSwitch } from "mc-react-library";
 import CellSelector from "../../common/CellSelector";
 
-export default function StructureSection({ params, loadedData, cellMode, crystals }) {
+export default function StructureSection({
+  params,
+  loadedData,
+  cellMode,
+  crystals,
+}) {
   let details = loadedData.details;
   let structureInfo = loadedData.structureInfo;
 

@@ -103,4 +103,4 @@ export const CellInfoBox = ({ crystals, cellMode }) => {
       </div>
     </div>
   );
-}
+};
