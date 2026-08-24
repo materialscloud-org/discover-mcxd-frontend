@@ -65,6 +65,8 @@ export default function SuperConductivitySection({
 
   // fallback if nothing exists.
 
+  console.log("sc", supercon);
+
   return (
     <div>
       <Container fluid className="section-container">

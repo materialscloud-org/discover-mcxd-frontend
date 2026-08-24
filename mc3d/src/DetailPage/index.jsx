@@ -38,6 +38,8 @@ import MissingDataWarning from "./MissingDataWarning";
 import { CitationBanner } from "@mcxd/shared";
 import PageLayout from "../Layout";
 
+import { fromStructureData, getSymmetry } from "matsci-parse";
+
 // contributed sections
 // import RelatedSection from "./RelatedSection";
 
@@ -53,7 +55,7 @@ async function fetchCompoundData(method, id) {
 
     const [aiidaAttributes, structureCif] = await Promise.all([
       loadAiidaAttributes(method, structureUuid),
-      loadAiidaCif(method, structureUuid),
+      // loadAiidaCif(method, structureUuid),
     ]);
 
     return {
@@ -98,6 +100,14 @@ async function fetchSuperconSubset(method, id) {
 function DetailPage() {
   const navigate = useNavigate();
   const params = useParams(); // Route parameters
+  const [crystals, setCrystals] = useState({});
+  const [selectedCell, setSelectedCell] = useState("aiida");
+  const [usePrimitive, setUsePrimitive] = useState(true);
+
+  const cellMode = {
+    selectedCell,
+    setSelectedCell,
+  };
 
   const [datasetIndex, setDatasetIndex] = useState(null);
   const [resultsObject, setResultsObject] = useState({});
@@ -116,9 +126,27 @@ function DetailPage() {
 
     loadDatasetIndex(params.method, params.id).then((lD) => {
       setDatasetIndex(lD.index);
+
       setResultsObject(buildResultsObject(lD.index, params.method));
     });
   }, [params.id, params.method]);
+
+  useEffect(() => {
+    async function runAnalysis() {
+      const cs = fromStructureData(coreData.structureInfo.aiidaAttributes);
+      const result = await getSymmetry(cs, 0.005);
+
+      const crystals = result;
+      crystals.aiida = cs;
+
+      console.log("crystals", crystals);
+      setCrystals(crystals);
+    }
+
+    if (coreData?.structureInfo) {
+      runAnalysis();
+    }
+  }, [coreData]);
 
   useEffect(() => {
     if (!resultsObject) return;
@@ -137,6 +165,7 @@ function DetailPage() {
     // Check if supercon entries exist in resultsObject
     // This should be extended to the other partial methods at somepoint.
     if (resultsObject.supercon_base) {
+      console.log("supercon exists");
       fetchSuperconSubset(resultsObject.supercon_base, params.id).then((sc) => {
         setSuperconSCData(sc); // superconducting details
         setSuperconPhononData(sc); // phonon/vis data
@@ -196,8 +225,15 @@ function DetailPage() {
           margin: "0px 0px 10px 0px",
           padding: "0px 0px 10px 0px",
         }}
+        crystals={crystals}
+        cellMode={cellMode}
       />
-      <StructureSection params={params} loadedData={coreData} />
+      <StructureSection
+        params={params}
+        loadedData={coreData}
+        cellMode={cellMode}
+        crystals={crystals}
+      />
       <ProvenanceSection params={params} loadedData={coreData} />
       <XrdSection method={params.method} id={params.id} />
 

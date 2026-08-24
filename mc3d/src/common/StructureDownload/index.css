@@ -1,0 +1,41 @@
+.structure-download {
+  position: relative;
+  display: inline-block;
+}
+
+.structure-download__button {
+  display: flex;
+  padding: 0.4rem 0.45rem;
+}
+
+.structure-download__menu {
+  position: absolute;
+  top: 100%;
+  right: -25%;
+  margin-top: 2px;
+
+  background: #ffffff;
+  border: 1px solid #bababa87;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 8%);
+
+  z-index: 1000;
+}
+
+.structure-download__item {
+  display: block;
+  width: 100%;
+
+  padding: 6px 10px;
+  border: 0;
+
+  background: transparent;
+  text-align: left;
+  font-size: 0.8rem;
+
+  cursor: pointer;
+}
+
+.structure-download__item:hover {
+  background: #f8f9fa;
+}
