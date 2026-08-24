@@ -19,7 +19,7 @@ function ProvenanceSection(props) {
   let metadata = props.loadedData.metadata;
   let methodLabel = props.params.method;
   let params = props.params;
-  console.log(props);
+  console.log("d", props);
   return (
     <div>
       <div className="section-heading">Calculation information</div>
@@ -57,13 +57,20 @@ function ProvenanceSection(props) {
               <b>Calculated properties</b>
               <ul className="no-bullets">
                 <li>
-                  Cell volume:{" "}
+                  Cell volume (after relaxation):{" "}
                   {format_aiida_prop(
                     details.properties.cell_volume,
                     metadata.info.properties.cell_volume,
                     methodLabel,
                     2,
                   )}
+                </li>
+                <li>
+                  Atoms per cell:{" "}
+                  {props?.loadedData?.structureInfo?.aiidaAttributes?.sites
+                    .length
+                    ? `${props?.loadedData?.structureInfo?.aiidaAttributes?.sites.length}`
+                    : "—"}
                 </li>
                 <li>
                   Total magnetization:{" "}

@@ -48,7 +48,7 @@ function GeneralInfoBox({
     typeof symbol === "string" ? symbol.replace(/\s+/g, "") : "";
 
   return (
-    <McInfoBox style={{ height: "307px" }}>
+    <McInfoBox style={{ height: "350px" }}>
       <div>
         <b>Info</b>
         <ul className="no-bullets">
@@ -72,7 +72,7 @@ function GeneralInfoBox({
             {formatSpaceGroupSymbol(details.general.spacegroup_international)}
           </li> */}
           <li>
-            Space group Info:{" "}
+            Space group info:{" "}
             {crystalStructure?.lattice ? (
               <>
                 {formatSpaceGroupSymbol(
@@ -95,8 +95,14 @@ function GeneralInfoBox({
                 ? `${volume(crystalStructure).toFixed(2)} Å³`
                 : "—"}
             </li>
+            <li>
+              Atoms per cell:{" "}
+              {crystalStructure?.sites?.length
+                ? `${crystalStructure.sites.length}`
+                : "—"}
+            </li>
             Density:{" "}
-            {crystalStructure?.lattice
+            {crystalStructure?.lattice // inlined kg/m3 conversion
               ? `${(density(crystalStructure) * 1660.5390666).toFixed(0)} kg/m³`
               : "—"}
           </li>
