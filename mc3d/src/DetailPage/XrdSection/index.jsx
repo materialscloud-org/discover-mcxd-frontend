@@ -183,7 +183,7 @@ const XrdSection = ({ method, id }) => {
       <Container fluid className="section-container">
         <Row>
           <div style={{ paddingBottom: "10px" }}>
-            XRD diffraction patterns are calculated for the "as calculated"
+            The XRD diffraction patterns shown are for the "as calculated"
             structure
           </div>
           <div className="xrd-section">
