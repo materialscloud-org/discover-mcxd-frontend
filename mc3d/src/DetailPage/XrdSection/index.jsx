@@ -182,6 +182,10 @@ const XrdSection = ({ method, id }) => {
       <div className="section-heading">X-ray diffraction pattern</div>
       <Container fluid className="section-container">
         <Row>
+          <div style={{ paddingBottom: "10px" }}>
+            XRD diffraction patterns are calculated for the "as calculated"
+            structure
+          </div>
           <div className="xrd-section">
             <Row>
               <Col style={{ minWidth: "300px" }}>
