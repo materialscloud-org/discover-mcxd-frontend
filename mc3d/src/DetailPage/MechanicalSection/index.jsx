@@ -7,6 +7,7 @@ import { ExploreButton } from "mc-react-library";
 import MECHANICAL_PROPERTY_META from "./metadata";
 import ElasticConstantsMatrix from "./ElasticConstantsMatrix";
 import VickersHardnessTable from "./VickersHardnessTable";
+import { Link } from "react-router-dom";
 
 function isObject(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
@@ -60,7 +61,7 @@ function Selector({ label, value, options, onChange }) {
       <Form.Select value={value ?? ""} onChange={onChange}>
         {options.map((option) => (
           <option key={option} value={option}>
-            {option}
+            {option.split("_")[0]}
           </option>
         ))}
       </Form.Select>
@@ -174,6 +175,23 @@ export default function MechanicalSection({
       <div className="section-heading">Mechanical Properties</div>
 
       <Container fluid className="section-container">
+        <div style={{ padding: "10px 10px", textAlign: "justify" }}>
+          This dataset extends the PBEsol-v1 database by providing results from
+          a high-throughput calculations of elastic properties of materials.
+          This frontend section contains the elastic constants and related
+          quantities such as Young's modulus, Poisson's ratio, Lamé parameters,
+          acoustic velocities, etc. For further details regarding the
+          methodology see the{" "}
+          <Link
+            to="/contributions/mechanical"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            contributed details for this section
+          </Link>
+          .
+        </div>
+        <br></br>
         <Row>
           <Col lg={3}>
             <Selector
