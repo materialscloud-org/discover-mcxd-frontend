@@ -8,6 +8,7 @@ import MECHANICAL_PROPERTY_META from "./metadata";
 import ElasticConstantsMatrix from "./ElasticConstantsMatrix";
 import VickersHardnessTable from "./VickersHardnessTable";
 import { Link } from "react-router-dom";
+import { WarningBoxOtherMethod } from "../../common/WarningBox";
 
 function isObject(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
@@ -75,8 +76,9 @@ export default function MechanicalSection({
   mechanicalData,
 }) {
   const elastic = mechanicalData?.mechDetails?.elastic;
+  const method = mechanicalData?.method;
 
-  const [method, setMethod] = useState(null);
+  const [subMethod, setSubmethod] = useState(null);
   const [pseudopotential, setPseudopotential] = useState(null);
   const [intermediateSelections, setIntermediateSelections] = useState({});
   const [average, setAverage] = useState(null);
@@ -84,12 +86,12 @@ export default function MechanicalSection({
   const methods = useMemo(() => getObjectKeys(elastic), [elastic]);
 
   useEffect(() => {
-    setMethod((current) =>
+    setSubmethod((current) =>
       methods.includes(current) ? current : (methods[0] ?? null),
     );
   }, [methods]);
 
-  const methodData = method ? elastic?.[method] : null;
+  const methodData = subMethod ? elastic?.[subMethod] : null;
 
   const pseudopotentials = useMemo(
     () => getObjectKeys(methodData),
@@ -175,6 +177,9 @@ export default function MechanicalSection({
       <div className="section-heading">Mechanical Properties</div>
 
       <Container fluid className="section-container">
+        {params.method !== method && (
+          <WarningBoxOtherMethod method={method} id={params.id} />
+        )}
         <div style={{ padding: "10px 10px", textAlign: "justify" }}>
           This dataset extends the PBEsol-v1 database by providing results from
           a high-throughput calculations of elastic properties of materials.
@@ -196,10 +201,10 @@ export default function MechanicalSection({
           <Col lg={3}>
             <Selector
               label="Method"
-              value={method}
+              value={subMethod}
               options={methods}
               onChange={(event) => {
-                setMethod(event.target.value);
+                setSubmethod(event.target.value);
                 setPseudopotential(null);
                 setIntermediateSelections({});
                 setAverage(null);
