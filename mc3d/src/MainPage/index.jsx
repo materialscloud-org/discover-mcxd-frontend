@@ -95,7 +95,11 @@ function MainPage({ tab }) {
     const selected = event.target.value;
     const url = new URL(window.location);
 
-    if (selected === "superconductivity" || selected === "phonons") {
+    if (
+      selected === "superconductivity" ||
+      selected === "phonons" ||
+      selected === "mechanical"
+    ) {
       url.searchParams.set("preset", selected);
       url.searchParams.delete("method");
     } else {
