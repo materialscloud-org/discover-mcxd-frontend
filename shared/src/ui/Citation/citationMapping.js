@@ -259,7 +259,7 @@ export const CITATION_MAPPING = {
       {
         type: "preprint",
         year: 2026,
-        doi: "https://doi.org/10.48550/arXiv.2608.04789",
+        doi: "10.48550/arXiv.2608.04789",
         journal: "arXiv",
         journalRef: "arXiv:2608.04789v2 [cond-mat.supr-con]",
         journalRefShort: "arXiv:2608.04789",
@@ -268,7 +268,7 @@ export const CITATION_MAPPING = {
       {
         type: "data",
         year: 2026,
-        doi: "https://doi.org/10.24435/materialscloud:7a-cx",
+        doi: "10.24435/materialscloud:7a-cx",
         journal: "Materials Cloud Archive",
         journalRef: "Materials Cloud Archive, 2026.126",
         journalRefShort: "Materials Cloud Archive",
