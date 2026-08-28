@@ -10,11 +10,11 @@ export const CitationBanner = ({ citationKeys, doiIndices = [0] }) => {
         const citation = CITATION_MAPPING[key];
         if (!citation) return null;
 
-        const { authorsShort, assoiciatedDois = [] } = citation;
-        if (assoiciatedDois.length === 0) return null;
+        const { authorsShort, associatedDois = [] } = citation;
+        if (associatedDois.length === 0) return null;
 
         const selectedDois = doiIndices
-          .map((i) => assoiciatedDois[i])
+          .map((i) => associatedDois[i])
           .filter(Boolean);
 
         const mainDoi = selectedDois[0];

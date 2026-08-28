@@ -6,13 +6,13 @@ export const CitationBox = ({ citationKey, maxDois = Infinity }) => {
   const citation = CITATION_MAPPING[citationKey];
   if (!citation) return null;
 
-  const { authors, authorsShort, assoiciatedDois = [] } = citation;
+  const { authors, authorsShort, associatedDois = [] } = citation;
 
-  const mainDoi = assoiciatedDois[0];
+  const mainDoi = associatedDois[0];
   const title = mainDoi?.title || citation.title || "Untitled";
   const journalRef = mainDoi?.journalRef || "";
 
-  const extraDois = assoiciatedDois.slice(1, maxDois);
+  const extraDois = associatedDois.slice(1, maxDois);
   const dataDois = extraDois.filter((d) => d.type === "data");
   const otherPublications = extraDois.filter(
     (d) => d.type === "paper" || d.type === "preprint",

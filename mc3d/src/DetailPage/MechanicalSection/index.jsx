@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Container, Row, Col, Form } from "react-bootstrap";
-import { McInfoBox } from "@mcxd/shared";
+import { CitationBanner, McInfoBox } from "@mcxd/shared";
 import { EXPLORE_URLS } from "../../common/fetchingUtils";
 import { ExploreButton } from "mc-react-library";
 
@@ -174,9 +174,30 @@ export default function MechanicalSection({
 
   return (
     <div>
-      <div className="section-heading">Mechanical Properties</div>
-
       <Container fluid className="section-container">
+        <div
+          style={{
+            margin: "10px 0px",
+            padding: "20px 0px 10px",
+            borderBottom: "1px solid #c4c4c4",
+          }}
+        >
+          <div style={{ fontSize: "24px" }}>Mechanical details</div>
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "2px",
+              alignItems: "center",
+            }}
+          >
+            <CitationBanner
+              citationKeys={["YZhangMechanical2026"]}
+              doiIndices={[0, 1]}
+            />
+          </div>
+        </div>
+
         {params.method !== method && (
           <WarningBoxOtherMethod method={method} id={params.id} />
         )}

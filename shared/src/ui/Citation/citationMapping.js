@@ -25,7 +25,7 @@ export const CITATION_MAPPING = {
       "N. Marzari",
     ],
     authorsShort: "N. Mounet et al.",
-    assoiciatedDois: [
+    associatedDois: [
       {
         type: "paper",
         year: 2018,
@@ -67,7 +67,7 @@ export const CITATION_MAPPING = {
       "N. Marzari",
     ],
     authorsShort: "Campi et al.",
-    assoiciatedDois: [
+    associatedDois: [
       {
         type: "paper",
         year: 2023,
@@ -106,7 +106,7 @@ export const CITATION_MAPPING = {
       "N. Marzari",
     ],
     authorsShort: "Marrazzo et al.",
-    assoiciatedDois: [
+    associatedDois: [
       {
         type: "paper",
         year: 2019,
@@ -133,7 +133,7 @@ export const CITATION_MAPPING = {
   Grassano2023: {
     authors: ["D. Grassano", "D. Campi", "A. Marrazzo", "N. Marzari"],
     authorsShort: "Grassano et al.",
-    assoiciatedDois: [
+    associatedDois: [
       {
         type: "paper",
         year: 2023,
@@ -172,7 +172,7 @@ export const CITATION_MAPPING = {
       "G. Pizzi",
     ],
     authorsShort: "Huber et al.",
-    assoiciatedDois: [
+    associatedDois: [
       {
         type: "paper",
         year: 2026,
@@ -218,7 +218,7 @@ export const CITATION_MAPPING = {
       "G. Pizzi",
     ],
     authorsShort: "Bercx et al.",
-    assoiciatedDois: [
+    associatedDois: [
       {
         type: "paper",
         year: 2025,
@@ -226,8 +226,8 @@ export const CITATION_MAPPING = {
         journal: "PRX Energy",
         journalRef: "PRX Energy 4, 033012 (2025)",
         journalRefShort: "PRX Energy 4, 033012",
-        title: `Charting the landscape of Bardeen‑Cooper‑Schrieffer 
-         superconductors in experimentally known compounds`,
+        title:
+          "Charting the landscape of Bardeen-Cooper-Schrieffer superconductors in experimentally known compounds",
       },
       {
         type: "data",
@@ -236,8 +236,8 @@ export const CITATION_MAPPING = {
         journal: "Materials Cloud Archive",
         journalRef: "Materials Cloud Archive, 2025.175",
         journalRefShort: "Materials Cloud Archive",
-        title: `Charting the landscape of Bardeen–Cooper–Schrieffer
-         superconductors in experimentally known compounds`,
+        title:
+          "Charting the landscape of Bardeen–Cooper–Schrieffer superconductors in experimentally known compounds",
       },
       {
         type: "preprint",
@@ -246,8 +246,33 @@ export const CITATION_MAPPING = {
         journal: "arXiv",
         journalRef: "arXiv:2503.10943 [cond-mat.supr-con]",
         journalRefShort: "arXiv:2503.10943",
-        title: `Charting the landscape of Bardeen‑Cooper‑Schrieffer
-         superconductors in experimentally known compounds`,
+        title:
+          "Charting the landscape of Bardeen-Cooper-Schrieffer superconductors in experimentally known compounds",
+      },
+    ],
+  },
+
+  YZhangMechanical2026: {
+    authors: ["Y. Zhang", "S. Poncé"],
+    authorsShort: "Zhang et al.",
+    associatedDois: [
+      {
+        type: "preprint",
+        year: 2026,
+        doi: "https://doi.org/10.48550/arXiv.2608.04789",
+        journal: "arXiv",
+        journalRef: "arXiv:2608.04789v2 [cond-mat.supr-con]",
+        journalRefShort: "arXiv:2608.04789",
+        title: "In search of novel ductile superconductors",
+      },
+      {
+        type: "data",
+        year: 2026,
+        doi: "https://doi.org/10.24435/materialscloud:7a-cx",
+        journal: "Materials Cloud Archive",
+        journalRef: "Materials Cloud Archive, 2026.126",
+        journalRefShort: "Materials Cloud Archive",
+        title: "In search of novel ductile superconductors",
       },
     ],
   },
