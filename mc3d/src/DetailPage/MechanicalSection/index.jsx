@@ -10,6 +10,55 @@ import VickersHardnessTable from "./VickersHardnessTable";
 import { Link } from "react-router-dom";
 import { WarningBoxOtherMethod } from "../../common/WarningBox";
 
+const PROPERTY_ORDER = [
+  "bulk_modulus",
+  "shear_modulus",
+  "youngs_modulus",
+  "longitudinal_modulus",
+  "poisson_ratio",
+  "pugh_ratio",
+  "pettifor_ratio",
+  "modified_pettifor_ratio",
+  "c",
+  "p_wave_modulus",
+  "first_lame_parameter",
+  "second_lame_parameter",
+  "debye_temperature",
+  "melting_temperature",
+  "bulk_sound_velocity",
+  "longitudinal_acoustic_sound_velocity",
+  "transverse_acoustic_sound_velocity",
+  "mean_sound_velocity",
+  "minimum_thermal_conductivity",
+];
+
+function sortProperties(data) {
+  if (!data) {
+    return data;
+  }
+
+  return Object.fromEntries(
+    Object.entries(data).sort(([keyA], [keyB]) => {
+      const indexA = PROPERTY_ORDER.indexOf(keyA);
+      const indexB = PROPERTY_ORDER.indexOf(keyB);
+
+      if (indexA === -1 && indexB === -1) {
+        return 0;
+      }
+
+      if (indexA === -1) {
+        return 1;
+      }
+
+      if (indexB === -1) {
+        return -1;
+      }
+
+      return indexA - indexB;
+    }),
+  );
+}
+
 function isObject(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
@@ -38,6 +87,10 @@ function formatValue(value, key) {
 }
 
 function formatPropertyLabel(key) {
+  if (key === "c") {
+    return "c ratio";
+  }
+
   return getPropertyMeta(key)?.name ?? key;
 }
 
@@ -161,16 +214,14 @@ export default function MechanicalSection({
   const workchainUuid = selectedData?.workchain_uuid;
 
   const scalarData = averageData
-    ? Object.fromEntries(
-        Object.entries(averageData).filter(
-          ([key]) => key !== "vickers_hardness",
+    ? sortProperties(
+        Object.fromEntries(
+          Object.entries(averageData).filter(
+            ([key]) => key !== "vickers_hardness",
+          ),
         ),
       )
     : null;
-
-  if (!elastic || !methods.length || !isObject(selectedData)) {
-    return null;
-  }
 
   return (
     <div>
