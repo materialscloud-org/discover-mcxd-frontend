@@ -141,7 +141,7 @@ const MECHANICAL_PROPERTY_META = {
 
   elastic_constants: {
     symbol: "Cij",
-    name: "Elastic constants [Cᵢⱼ]",
+    name: "Elastic constants [Cᵢⱼ = eᵢ/σⱼ]",
     unit: "GPa",
     decimals: 2,
   },
