@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Container, Row, Col, Form } from "react-bootstrap";
 import { CitationBanner, McInfoBox } from "@mcxd/shared";
-import { EXPLORE_URLS } from "../../common/fetchingUtils";
+import { EXPLORE_URLS, loadAiidaAttributes } from "../../common/fetchingUtils";
 import { ExploreButton } from "mc-react-library";
 
 import MECHANICAL_PROPERTY_META from "./metadata";
@@ -88,6 +88,8 @@ export default function MechanicalSection({
   const [pseudopotential, setPseudopotential] = useState(null);
   const [intermediateSelections, setIntermediateSelections] = useState({});
   const [average, setAverage] = useState(null);
+  const [scfParamsData, setScfParamsData] = useState(null);
+  const [scfKpointsData, setScfKpointsData] = useState(null);
 
   const methods = useMemo(() => getObjectKeys(elastic), [elastic]);
 
@@ -169,7 +171,29 @@ export default function MechanicalSection({
   const elasticConstants = selectedData?.elastic_constants;
   const vickersHardness = averageData?.vickers_hardness;
   const workchainUuid = selectedData?.workchain_uuid;
-  const scfParaUuid = elastic?.FD.SSSP.scf_parameters_uuid;
+  const scfParaUuid = elastic?.FD?.SSSP?.scf_parameters_uuid;
+  const scfKpointsUuid = elastic?.FD?.SSSP?.scf_kpoints_uuid;
+
+  const [scfLoading, setScfLoading] = useState(false);
+
+  useEffect(() => {
+    if (!scfParaUuid || !scfKpointsUuid) return;
+    let cancelled = false;
+    setScfLoading(true);
+    Promise.all([
+      loadAiidaAttributes("pbesol-v1-mechanical", scfParaUuid),
+      loadAiidaAttributes("pbesol-v1-mechanical", scfKpointsUuid),
+    ]).then(([params, kpoints]) => {
+      if (!cancelled) {
+        setScfParamsData(params ?? null);
+        setScfKpointsData(kpoints ?? null);
+        setScfLoading(false);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [scfParaUuid, scfKpointsUuid]);
 
   const scalarData = averageData
     ? Object.fromEntries(
@@ -319,7 +343,32 @@ export default function MechanicalSection({
                       uuid={scfParaUuid}
                     />
                   </div>
-                  <McInfoBox title={"Calculation Details"}>...</McInfoBox>
+                  <McInfoBox title={"Calculation Details"}>
+                    {scfLoading && <div>Loading...</div>}
+                    {!scfLoading && scfParamsData && (
+                      <div className="mb-3">
+                        <div className="mb-1">
+                          <strong>SCF Parameters</strong>
+                        </div>
+                        <pre className="mb-0" style={{ fontSize: "12px" }}>
+                          {JSON.stringify(scfParamsData, null, 2)}
+                        </pre>
+                      </div>
+                    )}
+                    {!scfLoading && scfKpointsData && (
+                      <div>
+                        <div className="mb-1">
+                          <strong>SCF K-points</strong>
+                        </div>
+                        <pre className="mb-0" style={{ fontSize: "12px" }}>
+                          {JSON.stringify(scfKpointsData, null, 2)}
+                        </pre>
+                      </div>
+                    )}
+                    {!scfLoading && !scfParamsData && !scfKpointsData && (
+                      <div>No SCF data available</div>
+                    )}
+                  </McInfoBox>
                 </div>
               )}
           </Col>
