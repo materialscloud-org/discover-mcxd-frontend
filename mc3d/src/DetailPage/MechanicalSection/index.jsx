@@ -10,55 +10,6 @@ import VickersHardnessTable from "./VickersHardnessTable";
 import { Link } from "react-router-dom";
 import { WarningBoxOtherMethod } from "../../common/WarningBox";
 
-const PROPERTY_ORDER = [
-  "bulk_modulus",
-  "shear_modulus",
-  "youngs_modulus",
-  "longitudinal_modulus",
-  "poisson_ratio",
-  "pugh_ratio",
-  "pettifor_ratio",
-  "modified_pettifor_ratio",
-  "c",
-  "p_wave_modulus",
-  "first_lame_parameter",
-  "second_lame_parameter",
-  "debye_temperature",
-  "melting_temperature",
-  "bulk_sound_velocity",
-  "longitudinal_acoustic_sound_velocity",
-  "transverse_acoustic_sound_velocity",
-  "mean_sound_velocity",
-  "minimum_thermal_conductivity",
-];
-
-function sortProperties(data) {
-  if (!data) {
-    return data;
-  }
-
-  return Object.fromEntries(
-    Object.entries(data).sort(([keyA], [keyB]) => {
-      const indexA = PROPERTY_ORDER.indexOf(keyA);
-      const indexB = PROPERTY_ORDER.indexOf(keyB);
-
-      if (indexA === -1 && indexB === -1) {
-        return 0;
-      }
-
-      if (indexA === -1) {
-        return 1;
-      }
-
-      if (indexB === -1) {
-        return -1;
-      }
-
-      return indexA - indexB;
-    }),
-  );
-}
-
 function isObject(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
@@ -131,6 +82,8 @@ export default function MechanicalSection({
   const elastic = mechanicalData?.mechDetails?.elastic;
   const method = mechanicalData?.method;
 
+  console.log("e", elastic);
+
   const [subMethod, setSubmethod] = useState(null);
   const [pseudopotential, setPseudopotential] = useState(null);
   const [intermediateSelections, setIntermediateSelections] = useState({});
@@ -140,7 +93,11 @@ export default function MechanicalSection({
 
   useEffect(() => {
     setSubmethod((current) =>
-      methods.includes(current) ? current : (methods[0] ?? null),
+      methods.includes(current)
+        ? current
+        : methods.includes("FD")
+          ? "FD"
+          : (methods[0] ?? null),
     );
   }, [methods]);
 
@@ -212,14 +169,17 @@ export default function MechanicalSection({
   const elasticConstants = selectedData?.elastic_constants;
   const vickersHardness = averageData?.vickers_hardness;
   const workchainUuid = selectedData?.workchain_uuid;
+  const scfParaUuid = elastic?.FD.SSSP.scf_parameters_uuid;
 
   const scalarData = averageData
-    ? sortProperties(
-        Object.fromEntries(
-          Object.entries(averageData).filter(
-            ([key]) => key !== "vickers_hardness",
+    ? Object.fromEntries(
+        Object.entries(averageData)
+          .filter(([key]) => key !== "vickers_hardness")
+          .sort(
+            ([keyA], [keyB]) =>
+              (MECHANICAL_PROPERTY_META[keyA]?.order ?? Infinity) -
+              (MECHANICAL_PROPERTY_META[keyB]?.order ?? Infinity),
           ),
-        ),
       )
     : null;
 
@@ -343,18 +303,33 @@ export default function MechanicalSection({
                     />
                   )}
                 </div>
-                <McInfoBox title={average ?? "Mechanical Properties"}>
+                <McInfoBox>
                   <PropertyList data={scalarData} />
                 </McInfoBox>
               </>
             )}
+            {scalarData &&
+              Object.keys(scalarData).length > 0 &&
+              subMethod === "FD" && (
+                <div className="pt-4">
+                  <div className="subsection-title">
+                    Calculation Details{" "}
+                    <ExploreButton
+                      explore_url={EXPLORE_URLS["pbesol-v1-mechanical"]} // todo add this...
+                      uuid={scfParaUuid}
+                    />
+                  </div>
+                  <McInfoBox title={"Calculation Details"}>...</McInfoBox>
+                </div>
+              )}
           </Col>
 
           <Col lg={6}>
             {elasticConstants && (
               <>
                 <div className="subsection-title mb-2">
-                  {formatPropertyLabel("elastic_constants")}
+                  {formatPropertyLabel("elastic_constants")} [
+                  {MECHANICAL_PROPERTY_META.elastic_constants.unit}]{" "}
                 </div>
 
                 <ElasticConstantsMatrix value={elasticConstants} />

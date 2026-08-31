@@ -252,6 +252,7 @@ function DetailPage() {
         loadedData={coreData}
         mechanicalData={mechanicalData}
       />
+
       {/* <SimilaritySection params={params} /> */}
     </PageLayout>
   );
