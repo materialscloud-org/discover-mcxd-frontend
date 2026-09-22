@@ -26,5 +26,11 @@ export default function VickersHardnessTable({ value }) {
     ]),
   );
 
-  return <McTable headerRow={["Hardness", "Hᵥ [GPa]"]} contents={contents} />;
+  return (
+    <McTable
+      headerRow={["Hardness", "Hᵥ [GPa]"]}
+      contents={contents}
+      style={{ minHeight: "327px" }}
+    />
+  );
 }

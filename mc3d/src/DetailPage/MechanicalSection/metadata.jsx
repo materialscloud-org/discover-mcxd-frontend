@@ -23,48 +23,8 @@ const MECHANICAL_PROPERTY_META = {
     decimals: 2,
   },
 
-  poisson_ratio: {
-    order: 4,
-    symbol: "ν",
-    name: "Poisson's ratio",
-    unit: null,
-    decimals: 3,
-  },
-
-  pugh_ratio: {
-    order: 5,
-    symbol: "rPugh",
-    name: "Pugh ratio",
-    unit: null,
-    decimals: 3,
-  },
-
-  pettifor_ratio: {
-    order: 6,
-    symbol: "rPett",
-    name: "Pettifor ratio",
-    unit: null,
-    decimals: 3,
-  },
-
-  modified_pettifor_ratio: {
-    order: 7,
-    symbol: "r̃Pett",
-    name: "Modified Pettifor ratio",
-    unit: null,
-    decimals: 3,
-  },
-
-  c: {
-    order: 8,
-    symbol: "c",
-    name: "c ratio",
-    unit: null,
-    decimals: 3,
-  },
-
   p_wave_modulus: {
-    order: 9,
+    order: 4,
     symbol: "M",
     name: "P-wave modulus",
     unit: "GPa",
@@ -72,7 +32,7 @@ const MECHANICAL_PROPERTY_META = {
   },
 
   lame_1st_para: {
-    order: 10,
+    order: 5,
     symbol: "λ",
     name: "First Lamé parameter",
     unit: "GPa",
@@ -80,7 +40,7 @@ const MECHANICAL_PROPERTY_META = {
   },
 
   lame_2nd_para: {
-    order: 11,
+    order: 6,
     symbol: "μ",
     name: "Second Lamé parameter",
     unit: "GPa",
@@ -88,15 +48,19 @@ const MECHANICAL_PROPERTY_META = {
   },
 
   debye_temp: {
-    order: 12,
-    symbol: "ΘD",
+    order: 7,
+    symbol: (
+      <>
+        Θ<sup>D</sup>
+      </>
+    ),
     name: "Debye temperature",
     unit: "K",
     decimals: 1,
   },
 
   melting_temp: {
-    order: 13,
+    order: 8,
     symbol: "Tm",
     name: "Melting temperature",
     unit: "K",
@@ -104,46 +68,126 @@ const MECHANICAL_PROPERTY_META = {
   },
 
   sound_vel_bulk: {
-    order: 14,
-    symbol: "vB",
+    order: 9,
+    symbol: (
+      <>
+        v<sup>B</sup>
+      </>
+    ),
     name: "Bulk sound velocity",
     unit: "km/s",
     decimals: 3,
   },
 
   sound_vel_LA: {
-    order: 15,
-    symbol: "vLA",
+    order: 10,
+    symbol: (
+      <>
+        v<sup>LA</sup>
+      </>
+    ),
     name: "Longitudinal acoustic sound velocity",
     unit: "km/s",
     decimals: 3,
   },
 
+  longitudinal_modulus_L: {
+    order: 11,
+    symbol: "L",
+    name: "Longitudinal modulus",
+    unit: "GPa",
+  },
+
   sound_vel_TA: {
-    order: 16,
-    symbol: "vTA",
+    order: 12,
+    symbol: (
+      <>
+        v<sup>TA</sup>
+      </>
+    ),
     name: "Transverse acoustic sound velocity",
     unit: "km/s",
     decimals: 3,
   },
 
   sound_vel_mean: {
-    order: 17,
-    symbol: "vm",
+    order: 13,
+    symbol: (
+      <>
+        v<sup>m</sup>
+      </>
+    ),
     name: "Mean sound velocity",
     unit: "km/s",
     decimals: 3,
   },
-  min_kappa: {
+
+  poisson_ratio: {
+    order: 14,
+    symbol: "ν",
+    name: "Poisson's ratio",
+    unit: null,
+    decimals: 3,
+  },
+
+  pugh_ratio: {
+    order: 15,
+    symbol: (
+      <>
+        r<sup>Pugh</sup>
+      </>
+    ),
+    name: "Pugh ratio",
+    unit: null,
+    decimals: 3,
+  },
+
+  pettifor_ratio: {
+    order: 16,
+    symbol: (
+      <>
+        r<sup>Pett</sup>
+      </>
+    ),
+    name: "Pettifor ratio",
+    unit: null,
+    decimals: 3,
+  },
+
+  modified_pettifor_ratio: {
+    order: 17,
+    symbol: (
+      <>
+        r̃<sup>Pett</sup>
+      </>
+    ),
+    name: "Modified Pettifor ratio",
+    unit: null,
+    decimals: 3,
+  },
+
+  c: {
     order: 18,
-    symbol: "κmin",
+    // symbol: "c",
+    name: "c ratio",
+    unit: null,
+    decimals: 3,
+  },
+
+  min_kappa: {
+    order: 19,
+    symbol: (
+      <>
+        κ<sup>min</sup>
+      </>
+    ),
     name: "Minimum thermal conductivity",
     unit: "W/(m·K)",
     decimals: 3,
   },
 
   sound_vel_shear: {
-    order: 19,
+    order: 20,
     symbol: "vS",
     name: "Shear sound velocity",
     unit: "km/s",
@@ -151,7 +195,7 @@ const MECHANICAL_PROPERTY_META = {
   },
 
   sound_vel_compressional: {
-    order: 20,
+    order: 21,
     symbol: "vP",
     name: "Compressional sound velocity",
     unit: "km/s",
@@ -159,7 +203,7 @@ const MECHANICAL_PROPERTY_META = {
   },
 
   vickers_hardness: {
-    order: 21,
+    order: 22,
     symbol: "HV",
     name: "Vickers hardness",
     unit: "GPa",
@@ -167,9 +211,9 @@ const MECHANICAL_PROPERTY_META = {
   },
 
   elastic_constants: {
-    order: 22,
+    order: 23,
     symbol: "Cij",
-    name: "Elastic constants (Cᵢⱼ = eᵢ/σⱼ)",
+    name: "Elastic constants (Cᵢⱼ = δεᵢ/δσⱼ)",
     unit: "GPa",
     decimals: 2,
   },

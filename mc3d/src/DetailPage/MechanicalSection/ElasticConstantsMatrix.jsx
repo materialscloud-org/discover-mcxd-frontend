@@ -1,6 +1,8 @@
 import { McTable } from "@mcxd/shared";
 
 export default function ElasticConstantsMatrix({ value }) {
+  // we style the edge in this case since we like it this way.
+  const EdgeStyle = { backgroundColor: "#eff6ff", fontWeight: "bold" };
   return (
     <McTable
       headerRow={[
@@ -23,6 +25,9 @@ export default function ElasticConstantsMatrix({ value }) {
               : String(cell),
         ),
       ])}
+      firstRowStyle={EdgeStyle}
+      firstColumnStyle={EdgeStyle}
+      topCornerStyle={EdgeStyle}
     />
   );
 }

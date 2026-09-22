@@ -10,6 +10,8 @@ import VickersHardnessTable from "./VickersHardnessTable";
 import { Link } from "react-router-dom";
 import { WarningBoxOtherMethod } from "../../common/WarningBox";
 
+import { MechanicalMethodButton } from "./InfoPopover";
+
 function isObject(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
@@ -50,7 +52,14 @@ function PropertyList({ data }) {
     <div>
       {Object.entries(data).map(([key, value]) => (
         <div key={key} className="mb-2 d-flex align-items-baseline">
-          <span className="me-2">{formatPropertyLabel(key)}:</span>
+          <span className="me-2">
+            {getPropertyMeta(key)?.symbol && (
+              <>
+                <i>{getPropertyMeta(key).symbol}</i> ·{" "}
+              </>
+            )}
+            {formatPropertyLabel(key)}:{" "}
+          </span>
           <span>{formatValue(value, key)}</span>
         </div>
       ))}
@@ -82,43 +91,58 @@ export default function MechanicalSection({
   const elastic = mechanicalData?.mechDetails?.elastic;
   const method = mechanicalData?.method;
 
-  console.log("e", elastic);
-
   const [subMethod, setSubmethod] = useState(null);
   const [pseudopotential, setPseudopotential] = useState(null);
   const [intermediateSelections, setIntermediateSelections] = useState({});
   const [average, setAverage] = useState(null);
+
   const [scfParamsData, setScfParamsData] = useState(null);
   const [scfKpointsData, setScfKpointsData] = useState(null);
+  const [scfQpointsData, setScfQpointsData] = useState(null);
+  const [scfLoading, setScfLoading] = useState(false);
+
+  /*
+   * --------------------------------------------------------------------------
+   * Method
+   * --------------------------------------------------------------------------
+   */
 
   const methods = useMemo(() => getObjectKeys(elastic), [elastic]);
 
-  useEffect(() => {
-    setSubmethod((current) =>
-      methods.includes(current)
-        ? current
-        : methods.includes("FD")
-          ? "FD"
-          : (methods[0] ?? null),
-    );
-  }, [methods]);
+  const selectedMethod =
+    subMethod && methods.includes(subMethod)
+      ? subMethod
+      : methods.includes("FD")
+        ? "FD"
+        : (methods[0] ?? null);
 
-  const methodData = subMethod ? elastic?.[subMethod] : null;
+  const methodData = selectedMethod ? elastic?.[selectedMethod] : null;
+
+  /*
+   * --------------------------------------------------------------------------
+   * Pseudopotential
+   * --------------------------------------------------------------------------
+   */
 
   const pseudopotentials = useMemo(
     () => getObjectKeys(methodData),
     [methodData],
   );
 
-  useEffect(() => {
-    setPseudopotential((current) =>
-      pseudopotentials.includes(current)
-        ? current
-        : (pseudopotentials[0] ?? null),
-    );
-  }, [pseudopotentials]);
+  const selectedPseudopotential =
+    pseudopotential && pseudopotentials.includes(pseudopotential)
+      ? pseudopotential
+      : (pseudopotentials[0] ?? null);
 
-  let selectedData = pseudopotential ? methodData?.[pseudopotential] : null;
+  /*
+   * --------------------------------------------------------------------------
+   * Walk through intermediate levels
+   * --------------------------------------------------------------------------
+   */
+
+  let selectedData = selectedPseudopotential
+    ? methodData?.[selectedPseudopotential]
+    : null;
 
   const intermediateLevels = [];
 
@@ -138,7 +162,12 @@ export default function MechanicalSection({
     }
 
     const levelIndex = intermediateLevels.length;
-    const value = intermediateSelections[levelIndex] ?? keys[0];
+
+    const value =
+      intermediateSelections[levelIndex] &&
+      keys.includes(intermediateSelections[levelIndex])
+        ? intermediateSelections[levelIndex]
+        : keys[0];
 
     intermediateLevels.push({
       levelIndex,
@@ -148,6 +177,12 @@ export default function MechanicalSection({
 
     selectedData = selectedData[value];
   }
+
+  /*
+   * --------------------------------------------------------------------------
+   * Average
+   * --------------------------------------------------------------------------
+   */
 
   const averages = useMemo(() => {
     if (!isObject(selectedData)) {
@@ -159,41 +194,73 @@ export default function MechanicalSection({
     );
   }, [selectedData]);
 
-  useEffect(() => {
-    setAverage((current) =>
-      averages.includes(current) ? current : (averages[0] ?? null),
-    );
-  }, [averages]);
+  const selectedAverage =
+    average && averages.includes(average) ? average : (averages[0] ?? null);
 
   const averageData =
-    average && isObject(selectedData) ? selectedData[average] : null;
+    selectedAverage && isObject(selectedData)
+      ? selectedData[selectedAverage]
+      : null;
+
+  /*
+   * --------------------------------------------------------------------------
+   * Calculated data
+   * --------------------------------------------------------------------------
+   */
 
   const elasticConstants = selectedData?.elastic_constants;
   const vickersHardness = averageData?.vickers_hardness;
   const workchainUuid = selectedData?.workchain_uuid;
-  const scfParaUuid = elastic?.FD?.SSSP?.scf_parameters_uuid;
-  const scfKpointsUuid = elastic?.FD?.SSSP?.scf_kpoints_uuid;
 
-  const [scfLoading, setScfLoading] = useState(false);
+  const scfParaUuid = selectedData?.scf_parameters_uuid;
+  const scfKpointsUuid = selectedData?.scf_kpoints_uuid;
+  const scfQpointsUuid = selectedData?.qpoints_uuid;
+
+  /*
+   * --------------------------------------------------------------------------
+   * Load SCF calculation details
+   * --------------------------------------------------------------------------
+   */
 
   useEffect(() => {
-    if (!scfParaUuid || !scfKpointsUuid) return;
+    setScfParamsData(null);
+    setScfKpointsData(null);
+    setScfQpointsData(null);
+
+    if (!scfParaUuid || !scfKpointsUuid) {
+      setScfLoading(false);
+      return;
+    }
+
     let cancelled = false;
+
     setScfLoading(true);
+
     Promise.all([
       loadAiidaAttributes("pbesol-v1-mechanical", scfParaUuid),
       loadAiidaAttributes("pbesol-v1-mechanical", scfKpointsUuid),
-    ]).then(([params, kpoints]) => {
+      scfQpointsUuid
+        ? loadAiidaAttributes("pbesol-v1-mechanical", scfQpointsUuid)
+        : Promise.resolve(null),
+    ]).then(([paramsData, kpointsData, qpointsData]) => {
       if (!cancelled) {
-        setScfParamsData(params ?? null);
-        setScfKpointsData(kpoints ?? null);
+        setScfParamsData(paramsData ?? null);
+        setScfKpointsData(kpointsData ?? null);
+        setScfQpointsData(qpointsData ?? null);
         setScfLoading(false);
       }
     });
+
     return () => {
       cancelled = true;
     };
-  }, [scfParaUuid, scfKpointsUuid]);
+  }, [scfParaUuid, scfKpointsUuid, scfQpointsUuid]);
+
+  /*
+   * --------------------------------------------------------------------------
+   * Scalar properties
+   * --------------------------------------------------------------------------
+   */
 
   const scalarData = averageData
     ? Object.fromEntries(
@@ -218,6 +285,7 @@ export default function MechanicalSection({
           }}
         >
           <div style={{ fontSize: "24px" }}>Mechanical details</div>
+
           <div
             style={{
               display: "flex",
@@ -236,6 +304,7 @@ export default function MechanicalSection({
         {params.method !== method && (
           <WarningBoxOtherMethod method={method} id={params.id} />
         )}
+
         <div style={{ padding: "10px 10px", textAlign: "justify" }}>
           This dataset extends the PBEsol-v1 database by providing results from
           a high-throughput calculations of elastic properties of materials.
@@ -252,12 +321,18 @@ export default function MechanicalSection({
           </Link>
           .
         </div>
-        <br></br>
+
+        <br />
+
         <Row>
           <Col lg={3}>
             <Selector
-              label="Method"
-              value={subMethod}
+              label={
+                <span className="d-inline-flex align-items-center gap-1">
+                  Method <MechanicalMethodButton />
+                </span>
+              }
+              value={selectedMethod}
               options={methods}
               onChange={(event) => {
                 setSubmethod(event.target.value);
@@ -271,7 +346,7 @@ export default function MechanicalSection({
           <Col lg={3}>
             <Selector
               label="Pseudopotential"
-              value={pseudopotential}
+              value={selectedPseudopotential}
               options={pseudopotentials}
               onChange={(event) => {
                 setPseudopotential(event.target.value);
@@ -306,7 +381,7 @@ export default function MechanicalSection({
             <Col lg={3}>
               <Selector
                 label="Average"
-                value={average}
+                value={selectedAverage}
                 options={averages}
                 onChange={(event) => setAverage(event.target.value)}
               />
@@ -322,49 +397,74 @@ export default function MechanicalSection({
                   Calculated Properties{" "}
                   {workchainUuid && (
                     <ExploreButton
-                      explore_url={EXPLORE_URLS["pbesol-v1-mechanical"]} // todo add this...
+                      explore_url={EXPLORE_URLS["pbesol-v1-mechanical"]}
                       uuid={workchainUuid}
                     />
                   )}
                 </div>
+
                 <McInfoBox>
                   <PropertyList data={scalarData} />
                 </McInfoBox>
               </>
             )}
+
             {scalarData &&
               Object.keys(scalarData).length > 0 &&
-              subMethod === "FD" && (
+              (selectedMethod === "FD" || selectedMethod === "Born") && (
                 <div className="pt-4">
                   <div className="subsection-title">
                     Calculation Details{" "}
-                    <ExploreButton
-                      explore_url={EXPLORE_URLS["pbesol-v1-mechanical"]} // todo add this...
-                      uuid={scfParaUuid}
-                    />
+                    {scfParaUuid && (
+                      <ExploreButton
+                        explore_url={EXPLORE_URLS["pbesol-v1-mechanical"]}
+                        uuid={scfParaUuid}
+                      />
+                    )}
                   </div>
-                  <McInfoBox title={"Calculation Details"}>
+
+                  <McInfoBox title="Calculation Details">
                     {scfLoading && <div>Loading...</div>}
-                    {!scfLoading && scfParamsData && (
+
+                    {!scfLoading && (scfParamsData || scfKpointsData) && (
                       <div className="mb-3">
-                        <div className="mb-1">
-                          <strong>SCF Parameters</strong>
-                        </div>
-                        <pre className="mb-0" style={{ fontSize: "12px" }}>
-                          {JSON.stringify(scfParamsData, null, 2)}
-                        </pre>
+                        <ul className="no-bullets">
+                          <li>
+                            exchange-correlation functional:{" "}
+                            {selectedData?.pseudo ?? "—"}
+                          </li>
+
+                          <li>
+                            E<sub>cut</sub>:{" "}
+                            {scfParamsData?.SYSTEM?.ecutwfc ?? "—"} Ry
+                          </li>
+
+                          <li>
+                            Smearing type:{" "}
+                            {scfParamsData?.SYSTEM?.smearing === "cold"
+                              ? "Marzari-Vanderbilt"
+                              : (scfParamsData?.SYSTEM?.smearing ?? "—")}
+                          </li>
+
+                          <li>
+                            Smearing: {scfParamsData?.SYSTEM?.degauss ?? "—"} eV
+                          </li>
+
+                          <li>
+                            DFT <strong>k</strong>-grid:{" "}
+                            {scfKpointsData?.mesh?.join(" × ") ?? "—"}
+                          </li>
+
+                          <li>
+                            DFT <strong>q</strong>-grid:{" "}
+                            {scfQpointsData?.mesh?.join(" × ") ?? "—"}
+                          </li>
+
+                          <></>
+                        </ul>
                       </div>
                     )}
-                    {!scfLoading && scfKpointsData && (
-                      <div>
-                        <div className="mb-1">
-                          <strong>SCF K-points</strong>
-                        </div>
-                        <pre className="mb-0" style={{ fontSize: "12px" }}>
-                          {JSON.stringify(scfKpointsData, null, 2)}
-                        </pre>
-                      </div>
-                    )}
+
                     {!scfLoading && !scfParamsData && !scfKpointsData && (
                       <div>No SCF data available</div>
                     )}
@@ -376,9 +476,9 @@ export default function MechanicalSection({
           <Col lg={6}>
             {elasticConstants && (
               <>
-                <div className="subsection-title mb-2">
+                <div className="subsection-title">
                   {formatPropertyLabel("elastic_constants")} [
-                  {MECHANICAL_PROPERTY_META.elastic_constants.unit}]{" "}
+                  {MECHANICAL_PROPERTY_META.elastic_constants.unit}]
                 </div>
 
                 <ElasticConstantsMatrix value={elasticConstants} />
@@ -387,10 +487,7 @@ export default function MechanicalSection({
 
             {vickersHardness && (
               <>
-                <div className="subsection-title mb-2 mt-3">
-                  {formatPropertyLabel("vickers_hardness")}
-                </div>
-
+                <div className="subsection-title mt-3">Vickers Hardness</div>
                 <VickersHardnessTable value={vickersHardness} />
               </>
             )}
