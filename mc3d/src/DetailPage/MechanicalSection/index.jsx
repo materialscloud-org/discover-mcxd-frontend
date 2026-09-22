@@ -73,11 +73,16 @@ function Selector({ label, value, options, onChange }) {
       <Form.Label>{label}</Form.Label>
 
       <Form.Select value={value ?? ""} onChange={onChange}>
-        {options.map((option) => (
-          <option key={option} value={option}>
-            {option.split("_")[0]}
-          </option>
-        ))}
+        {options.map((option) => {
+          const label = option.split("_")[0];
+          const capitalized = label.charAt(0).toUpperCase() + label.slice(1);
+
+          return (
+            <option key={option} value={option}>
+              {capitalized}
+            </option>
+          );
+        })}
       </Form.Select>
     </Form.Group>
   );
