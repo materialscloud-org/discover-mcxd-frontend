@@ -452,7 +452,11 @@ export default function MechanicalSection({
                           </li>
 
                           <li>
-                            Smearing: {scfParamsData?.SYSTEM?.degauss ?? "—"} eV
+                            Smearing:{" "}
+                            {(
+                              scfParamsData?.SYSTEM?.degauss * 13.605703976
+                            ).toFixed(3) ?? "—"}{" "}
+                            eV
                           </li>
 
                           <li>
