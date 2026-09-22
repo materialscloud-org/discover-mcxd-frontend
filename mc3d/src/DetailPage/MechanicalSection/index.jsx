@@ -452,15 +452,25 @@ export default function MechanicalSection({
 
                           <li>
                             DFT <strong>k</strong>-grid:{" "}
-                            {scfKpointsData?.mesh?.join(" × ") ?? "—"}
+                            {scfKpointsData?.mesh?.join(" × ") ?? "—"}{" "}
+                            <ExploreButton
+                              explore_url={EXPLORE_URLS["pbesol-v1-mechanical"]}
+                              uuid={scfKpointsUuid}
+                            />
                           </li>
 
-                          <li>
-                            DFT <strong>q</strong>-grid:{" "}
-                            {scfQpointsData?.mesh?.join(" × ") ?? "—"}
-                          </li>
-
-                          <></>
+                          {scfQpointsData?.mesh && scfQpointsUuid && (
+                            <li>
+                              DFT <strong>q</strong>-grid:{" "}
+                              {scfQpointsData.mesh.join(" × ")}{" "}
+                              <ExploreButton
+                                explore_url={
+                                  EXPLORE_URLS["pbesol-v1-mechanical"]
+                                }
+                                uuid={scfQpointsUuid}
+                              />
+                            </li>
+                          )}
                         </ul>
                       </div>
                     )}
