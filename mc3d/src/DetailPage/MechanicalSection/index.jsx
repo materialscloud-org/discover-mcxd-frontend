@@ -444,20 +444,8 @@ export default function MechanicalSection({
                             {scfParamsData?.SYSTEM?.ecutwfc ?? "—"} Ry
                           </li>
 
-                          <li>
-                            Smearing type:{" "}
-                            {scfParamsData?.SYSTEM?.smearing === "cold"
-                              ? "Marzari-Vanderbilt"
-                              : (scfParamsData?.SYSTEM?.smearing ?? "—")}
-                          </li>
-
-                          <li>
-                            Smearing:{" "}
-                            {(
-                              scfParamsData?.SYSTEM?.degauss * 13.605703976
-                            ).toFixed(3) ?? "—"}{" "}
-                            eV
-                          </li>
+                          <li>Smearing type: Marzari-Vanderbilt</li>
+                          <li>Smearing: 0.272 eV</li>
 
                           <li>
                             DFT <strong>k</strong>-grid:{" "}
