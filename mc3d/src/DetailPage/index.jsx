@@ -42,6 +42,8 @@ import MechanicalSection from "./MechanicalSection";
 
 import { fromStructureData, getSymmetry } from "matsci-parse";
 
+import { fromStructureData, getSymmetry } from "matsci-parse";
+
 // contributed sections
 // import RelatedSection from "./RelatedSection";
 
