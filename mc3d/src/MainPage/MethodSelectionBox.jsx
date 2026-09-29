@@ -72,6 +72,7 @@ export const MethodSelectionBox = (props) => {
               Superconductivity (PBEsol-v1)
             </option>
             <option value="phonons">Phonons (PBEsol-v1)</option>
+            <option value="mechanical">Mechanical (PBEsol-v1)</option>
           </optgroup>
         </Form.Select>
 

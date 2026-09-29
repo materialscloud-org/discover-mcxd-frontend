@@ -14,6 +14,9 @@ export const McTable = ({
   contents,
   floatPrecision = 4,
   style = null,
+  firstRowStyle = null,
+  firstColumnStyle = null,
+  topCornerStyle = null,
 }) => {
   // headerRow - array of header labels
   // contents - array for each row (needs to match header size)
@@ -26,17 +29,26 @@ export const McTable = ({
         <thead>
           <tr>
             {headerRow.map((h, i) => (
-              <th key={i} className="px-2 py-2">
+              <th
+                key={i}
+                className="px-2 py-2"
+                style={{
+                  ...(i === 0 ? topCornerStyle : firstRowStyle),
+                }}
+              >
                 {h}
               </th>
             ))}
           </tr>
         </thead>
+
         <tbody>
           {contents.map((row, i) => (
             <tr key={i}>
               {row.map((cell, j) => (
-                <td key={j}>{formatIfFloat(cell, floatPrecision)}</td>
+                <td key={j} style={j === 0 ? firstColumnStyle : undefined}>
+                  {formatIfFloat(cell, floatPrecision)}
+                </td>
               ))}
             </tr>
           ))}

@@ -32,6 +32,20 @@ export const PRESETS = {
     ],
     filterColumns: ["matdyn_highest_phonon_frequency"],
   },
+  mechanical: {
+    sort: "pettifor_ratio:desc",
+    method: "pbesol-v1",
+    showColumns: [
+      "id",
+      "formula",
+      "bulk_modulus",
+      "pettifor_ratio",
+      "pugh_ratio",
+      "shear_modulus",
+      "c",
+    ],
+    filterColumns: ["pettifor_ratio"],
+  },
 };
 
 /*
@@ -89,6 +103,7 @@ function parseSortParam(sortStr) {
 // Applies the column state to a given set of columns
 function updateColumnState(columns, sortEntries, hiddenFields, showFields) {
   const isPresetMode = hiddenFields === null;
+  console.log("cols", columns);
 
   return columns.map((col) => {
     const updatedCol = { ...col };

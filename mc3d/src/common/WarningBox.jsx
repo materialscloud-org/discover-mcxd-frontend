@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 
-export const WarningBox = ({ children }) => {
+export const WarningBox = ({ children, style }) => {
   return (
     <div
       className="alert alert-warning"
-      style={{ margin: "10px 10px 5px 10px" }}
+      style={{ margin: "10px 10px 5px 10px", ...style }}
       role="alert"
     >
       {children}

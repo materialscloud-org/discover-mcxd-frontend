@@ -8,5 +8,10 @@
     "slug": "superconductivity",
     "title": "Superconductivity dataset",
     "description": "Electron-phonon eliashberg spectral calculations for finding potential superconducting materials"
+  },
+  {
+    "slug": "mechanical",
+    "title": "Mechanical properties",
+    "description": "Mechanical property calculations for finding potential superconducting materials"
   }
 ]
