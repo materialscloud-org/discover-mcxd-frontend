@@ -9,13 +9,18 @@ import ElasticConstantsMatrix from "./ElasticConstantsMatrix";
 import VickersHardnessTable from "./VickersHardnessTable";
 import { Link } from "react-router-dom";
 import { WarningBoxOtherMethod } from "../../common/WarningBox";
+import { WarningBox } from "../../common/WarningBox";
 
 import { MechanicalMethodButton } from "./InfoPopover";
 
 const AVERAGES = ["voigt_average", "VRH_average", "reuss_average"];
 
 function formatValue(value, key) {
-  if (value == null) {
+  if (
+    value == null ||
+    value === "NaN" ||
+    (typeof value === "number" && Number.isNaN(value))
+  ) {
     return "—";
   }
 
@@ -241,6 +246,13 @@ export default function MechanicalSection({
       )
     : null;
 
+  const hasNaNCalculatedProperty =
+    scalarData &&
+    Object.values(scalarData).some(
+      (value) =>
+        value === "NaN" || (typeof value === "number" && Number.isNaN(value)),
+    );
+
   return (
     <div>
       <Container fluid className="section-container">
@@ -367,6 +379,13 @@ export default function MechanicalSection({
                     />
                   )}
                 </div>
+
+                {hasNaNCalculatedProperty && (
+                  <WarningBox style={{ margin: "2px 10px 10px 10px" }}>
+                    Warning: Some properties were calculated to be unphysical
+                    for this q-points distance.
+                  </WarningBox>
+                )}
 
                 <McInfoBox>
                   <PropertyList data={scalarData} />
