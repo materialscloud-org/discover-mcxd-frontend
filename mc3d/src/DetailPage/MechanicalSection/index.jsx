@@ -105,6 +105,11 @@ export default function MechanicalSection({
   const [scfQpointsData, setScfQpointsData] = useState(null);
   const [scfLoading, setScfLoading] = useState(false);
 
+  // escape on failure
+  if (!elastic || Object.keys(elastic).length === 0) {
+    return null;
+  }
+
   /*
    * --------------------------------------------------------------------------
    * Method
