@@ -413,10 +413,7 @@ export default function MechanicalSection({
                     {!scfLoading && (scfParamsData || scfKpointsData) && (
                       <div className="mb-3">
                         <ul className="no-bullets">
-                          <li>
-                            exchange-correlation functional:{" "}
-                            {currentData?.pseudo ?? "—"}
-                          </li>
+                          <li>exchange-correlation functional: PBE</li>
 
                           <li>
                             E<sub>cut</sub>:{" "}
