@@ -60,7 +60,9 @@ export const ElectronicIcon = ({
     strokeLinecap="round"
     {...props}
   >
-    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" strokeLinejoin="round" />
+    <path d="M4 4v16h16" />
+    <path d="M5 7Q12 15 19 7" />
+    <path d="M5 17Q12 9 19 17" />
   </svg>
 );
 
