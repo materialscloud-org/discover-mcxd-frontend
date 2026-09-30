@@ -16,7 +16,7 @@ import {
 
 import { buildTraceFormat } from "@mcxd/shared";
 
-import { FaWaveSquare } from "react-icons/fa";
+import { VibrationalIcon } from "../../assets/sectionIcons";
 
 const phononTraceConfig = {
   label: "Phonons",
@@ -74,11 +74,7 @@ const VibrationalSection = (props) => {
   return (
     <div id="vibrational" data-toc-section="vibrational">
       <div className="section-heading">
-        <FaWaveSquare
-          size={22}
-          color="#767676"
-          className="section-heading-icon"
-        />
+        <VibrationalIcon size={22} className="section-heading-icon" />
         Vibrational properties
       </div>
       <Container fluid className="section-container">

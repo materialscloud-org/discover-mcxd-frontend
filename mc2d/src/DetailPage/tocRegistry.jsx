@@ -1,11 +1,11 @@
 import {
-  FaEye,
-  FaCube,
-  FaBolt,
-  FaWaveSquare,
-  FaProjectDiagram,
-  FaLayerGroup,
-} from "react-icons/fa";
+  OverviewIcon,
+  StructureIcon,
+  ElectronicIcon,
+  VibrationalIcon,
+  TopologyIcon,
+  ParentsIcon,
+} from "../assets/sectionIcons";
 
 /**
  * Central ToC registry for the MC2D detail page.
@@ -20,22 +20,22 @@ import {
  * own), in this order.
  */
 export const MC2D_TOC_REGISTRY = [
-  { id: "overview", label: "General overview", logo: <FaEye /> },
-  { id: "structure", label: "Structural details", logo: <FaCube /> },
-  { id: "electronic", label: "Electronic properties", logo: <FaBolt /> },
+  { id: "overview", label: "General overview", logo: <OverviewIcon /> },
+  { id: "structure", label: "Structural details", logo: <StructureIcon /> },
+  { id: "electronic", label: "Electronic properties", logo: <ElectronicIcon /> },
   {
     id: "vibrational",
     label: "Vibrational properties",
-    logo: <FaWaveSquare />,
+    logo: <VibrationalIcon />,
   },
   {
     id: "topology",
     label: "Topological insulators",
-    logo: <FaProjectDiagram />,
+    logo: <TopologyIcon />,
   },
   {
     id: "parents-section",
     label: "3D parent crystals",
-    logo: <FaLayerGroup />,
+    logo: <ParentsIcon />,
   },
 ];

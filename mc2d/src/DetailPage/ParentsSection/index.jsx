@@ -4,7 +4,7 @@ import { McloudSpinner } from "mc-react-library";
 
 import { McInfoBox } from "@mcxd/shared";
 
-import { FaLayerGroup } from "react-icons/fa";
+import { ParentsIcon } from "../../assets/sectionIcons";
 
 import { Container, Row, Col } from "react-bootstrap";
 
@@ -178,11 +178,7 @@ const ParentsSection = (props) => {
   return (
     <div id="parents-section" data-toc-section="parents-section">
       <div className="section-heading">
-        <FaLayerGroup
-          size={22}
-          color="#767676"
-          className="section-heading-icon"
-        />
+        <ParentsIcon size={22} className="section-heading-icon" />
         3D parent crystals
       </div>
       <Container fluid className="section-container">

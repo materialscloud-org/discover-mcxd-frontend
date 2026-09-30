@@ -16,7 +16,7 @@ import {
 
 import { McInfoBox } from "@mcxd/shared";
 
-import { FaEye } from "react-icons/fa";
+import { OverviewIcon } from "../../assets/sectionIcons";
 
 import { AIIDA_REST_API_URL, EXPLORE_URL } from "../../common/restApiUtils";
 
@@ -180,7 +180,7 @@ function OverviewSection({ params, loadedData }) {
   return (
     <div id="overview" data-toc-section="overview">
       <div className="section-heading">
-        <FaEye size={22} color="#767676" className="section-heading-icon" />
+        <OverviewIcon size={22} className="section-heading-icon" />
         General overview
       </div>
       <Container fluid className="section-container">

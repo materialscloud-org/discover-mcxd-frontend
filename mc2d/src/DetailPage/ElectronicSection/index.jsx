@@ -21,7 +21,7 @@ import {
 } from "@mcxd/shared";
 import { formatAiidaProp } from "../utils";
 
-import { FaBolt } from "react-icons/fa";
+import { ElectronicIcon } from "../../assets/sectionIcons";
 
 function shiftBands(bandsData, shift) {
   bandsData.paths.forEach((path) => {
@@ -134,7 +134,7 @@ const ElectronicSection = (props) => {
   return (
     <div id="electronic" data-toc-section="electronic">
       <div className="section-heading">
-        <FaBolt size={22} color="#767676" className="section-heading-icon" />
+        <ElectronicIcon size={22} className="section-heading-icon" />
         Electronic properties
       </div>
       <Container fluid className="section-container">
