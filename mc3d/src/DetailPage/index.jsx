@@ -40,6 +40,8 @@ import { CitationBanner } from "@mcxd/shared";
 import PageLayout from "../Layout";
 import MechanicalSection from "./MechanicalSection";
 
+import { MC3D_TOC_REGISTRY } from "./tocRegistry";
+
 import { fromStructureData, getSymmetry } from "matsci-parse";
 
 // contributed sections
@@ -236,6 +238,7 @@ function DetailPage() {
   return (
     <PageLayout
       breadcrumbs={[{ name: `${params.id}/${params.method}`, link: null }]}
+      tocRegistry={MC3D_TOC_REGISTRY}
     >
       <div className="detail-page-heading">{title}</div>
 

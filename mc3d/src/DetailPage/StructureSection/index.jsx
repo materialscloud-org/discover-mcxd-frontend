@@ -6,6 +6,8 @@ import { AtomicSitesInfoBox } from "./AtomicSitesInfo";
 import { Container, Row, Col } from "react-bootstrap";
 import { McInfoBox } from "@mcxd/shared";
 
+import { StructureIcon } from "../../assets/sectionIcons";
+
 import { AIIDA_API_URLS, EXPLORE_URLS } from "../../common/fetchingUtils";
 import { format_aiida_prop } from "../../common/utils";
 
@@ -25,7 +27,7 @@ export default function StructureSection({
   const methodLabel = params.method;
 
   return (
-    <div>
+    <div id="structure" data-toc-section="structure">
       <div
         className="section-heading"
         style={{
@@ -34,7 +36,10 @@ export default function StructureSection({
           gap: "12px",
         }}
       >
-        <span>Structural details</span>
+        <span>
+          <StructureIcon size={22} className="section-heading-icon" />
+          Structural details
+        </span>
 
         <CellSelector
           value={cellMode.selectedCell}

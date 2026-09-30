@@ -21,6 +21,8 @@ import {
 } from "@mcxd/shared";
 import { formatAiidaProp } from "../utils";
 
+import { FaBolt } from "react-icons/fa";
+
 function shiftBands(bandsData, shift) {
   bandsData.paths.forEach((path) => {
     path.values.forEach((subpath) => {
@@ -130,8 +132,11 @@ const ElectronicSection = (props) => {
   }, [electronicData.bands_uuid]);
 
   return (
-    <div>
-      <div className="section-heading">Electronic properties</div>
+    <div id="electronic" data-toc-section="electronic">
+      <div className="section-heading">
+        <FaBolt size={22} color="#767676" className="section-heading-icon" />
+        Electronic properties
+      </div>
       <Container fluid className="section-container">
         <Row>
           <Col className="flex-column" sm={12} md={6}>

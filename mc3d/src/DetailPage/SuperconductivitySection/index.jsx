@@ -12,6 +12,8 @@ import {
 
 import { CitationBanner } from "@mcxd/shared";
 
+import { SuperconductivityIcon } from "../../assets/sectionIcons";
+
 import { ExploreButton } from "mc-react-library";
 import { EXPLORE_URLS } from "../../common/fetchingUtils";
 
@@ -68,7 +70,7 @@ export default function SuperConductivitySection({
   console.log("sc", supercon);
 
   return (
-    <div>
+    <div id="superconductivity" data-toc-section="superconductivity">
       <Container fluid className="section-container">
         <div
           style={{
@@ -77,7 +79,10 @@ export default function SuperConductivitySection({
             borderBottom: "1px solid #c4c4c4",
           }}
         >
-          <div style={{ fontSize: "24px" }}>Superconductivity estimation</div>
+          <div style={{ fontSize: "24px" }}>
+            <SuperconductivityIcon size={22} className="section-heading-icon" />
+            Superconductivity estimation
+          </div>
           <div
             style={{
               display: "flex",

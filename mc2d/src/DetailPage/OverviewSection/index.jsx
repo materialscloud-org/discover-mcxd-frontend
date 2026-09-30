@@ -16,6 +16,8 @@ import {
 
 import { McInfoBox } from "@mcxd/shared";
 
+import { FaEye } from "react-icons/fa";
+
 import { AIIDA_REST_API_URL, EXPLORE_URL } from "../../common/restApiUtils";
 
 import { formatAiidaProp, formatSourceLink } from "../utils";
@@ -176,8 +178,11 @@ const StructureViewerBox = ({ uuid, structureInfo }) => {
 
 function OverviewSection({ params, loadedData }) {
   return (
-    <div>
-      <div className="section-heading">General overview</div>
+    <div id="overview" data-toc-section="overview">
+      <div className="section-heading">
+        <FaEye size={22} color="#767676" className="section-heading-icon" />
+        General overview
+      </div>
       <Container fluid className="section-container">
         <Row>
           <Col className="flex-column">

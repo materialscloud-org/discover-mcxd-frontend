@@ -20,6 +20,8 @@ import {
 
 import { CitationBanner } from "@mcxd/shared";
 
+import { FaProjectDiagram } from "react-icons/fa";
+
 import { buildTraceFormat } from "@mcxd/shared";
 
 import { HWCCPlot } from "./hwccPlot";
@@ -135,7 +137,7 @@ const TopologySection = ({ params, loadedData }) => {
   console.log(topologyData);
 
   return (
-    <div>
+    <div id="topology" data-toc-section="topology">
       <Container fluid className="section-container">
         <div
           style={{
@@ -144,7 +146,14 @@ const TopologySection = ({ params, loadedData }) => {
             borderBottom: "1px solid #c4c4c4",
           }}
         >
-          <div style={{ fontSize: "24px" }}>Topological insulators</div>
+          <div style={{ fontSize: "24px" }}>
+            <FaProjectDiagram
+              size={22}
+              color="#767676"
+              className="section-heading-icon"
+            />
+            Topological insulators
+          </div>
           <div
             style={{
               display: "flex",

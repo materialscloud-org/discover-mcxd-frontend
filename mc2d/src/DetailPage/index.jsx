@@ -30,6 +30,8 @@ import StructureSection from "./StructureSection";
 
 import TopologySection from "./TopologySection";
 
+import { MC2D_TOC_REGISTRY } from "./tocRegistry";
+
 async function fetchCompoundData(id) {
   let datasetIndex = await loadDatasetIndex(id);
 
@@ -81,7 +83,10 @@ function DetailPage() {
   }
 
   return (
-    <PageLayout breadcrumbs={[{ name: params.id, link: null }]}>
+    <PageLayout
+      breadcrumbs={[{ name: params.id, link: null }]}
+      tocRegistry={MC2D_TOC_REGISTRY}
+    >
       {loading ? (
         <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
           <McloudSpinner />

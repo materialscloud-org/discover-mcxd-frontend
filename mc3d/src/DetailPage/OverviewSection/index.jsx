@@ -20,6 +20,8 @@ import {
 import { format_aiida_prop } from "../../common/utils";
 import { McInfoBox } from "@mcxd/shared";
 
+import { OverviewIcon } from "../../assets/sectionIcons";
+
 import SourceInfo from "./SourceInfo";
 
 import { AIIDA_API_URLS, EXPLORE_URLS } from "../../common/fetchingUtils";
@@ -250,8 +252,9 @@ export default function OverviewSection({
   cellMode,
 }) {
   return (
-    <div>
+    <div id="overview" data-toc-section="overview">
       <div className="section-heading" style={headerStyle}>
+        <OverviewIcon size={22} className="section-heading-icon" />
         General overview
       </div>
       <Container fluid className="section-container">

@@ -7,6 +7,8 @@ import { Container, Row, Col } from "react-bootstrap";
 import { McInfoBox } from "@mcxd/shared";
 import { McTable } from "@mcxd/shared";
 
+import { FaCube } from "react-icons/fa";
+
 import { AIIDA_REST_API_URL, EXPLORE_URL } from "../../common/restApiUtils";
 
 const StructureSection = ({ params, loadedData }) => {
@@ -14,8 +16,11 @@ const StructureSection = ({ params, loadedData }) => {
   let structureInfo = loadedData.structureInfo;
 
   return (
-    <div>
-      <div className="section-heading">Structural details</div>
+    <div id="structure" data-toc-section="structure">
+      <div className="section-heading">
+        <FaCube size={22} color="#767676" className="section-heading-icon" />
+        Structural details
+      </div>
       <Container fluid className="section-container">
         <Row>
           <Col className="flex-column">
