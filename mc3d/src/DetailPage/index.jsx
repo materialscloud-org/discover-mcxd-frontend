@@ -30,9 +30,6 @@ import XrdSection from "./XrdSection";
 import VibrationalSection from "./VibrationalSection";
 import SuperconductivitySection from "./SuperconductivitySection";
 
-import SimilaritySection from "./SimilaritySection";
-import ElectronicStructureSection from "./ElectronicStructureSection";
-
 // if fetching fails we use this.
 import MissingDataWarning from "./MissingDataWarning";
 

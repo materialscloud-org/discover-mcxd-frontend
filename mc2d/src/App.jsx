@@ -12,13 +12,6 @@ const ContributionsPage = lazy(() => import("./ContributionsPage"));
 
 const ContributionsIndexPage = lazy(() => import("./ContributionsIndexPage"));
 
-// Chart.js plugins need to be registered outside the library
-import Chart from "chart.js/auto";
-import zoomPlugin from "chartjs-plugin-zoom";
-import annotationPlugin from "chartjs-plugin-annotation";
-Chart.register(zoomPlugin);
-Chart.register(annotationPlugin);
-
 function App() {
   return (
     <BrowserRouter>

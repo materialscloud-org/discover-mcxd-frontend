@@ -5,8 +5,6 @@ import { ExploreButton, StructDownloadButton } from "mc-react-library";
 import { Tooltip, OverlayTrigger } from "react-bootstrap";
 import { Container, Row, Col } from "react-bootstrap";
 
-import { FaExclamationCircle } from "react-icons/fa";
-
 import { McInfoBox } from "@mcxd/shared";
 
 import { Link } from "react-router-dom";
@@ -73,10 +71,20 @@ const WarningLabel = ({ warning }) => {
           verticalAlign: "top",
         }}
       >
-        <FaExclamationCircle
-          size="1.25em"
+        <svg
+          width="1.25em"
+          height="1.25em"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
           style={{ marginBottom: "2px" }}
-        />{" "}
+        >
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 8v4" />
+          <path d="M12 16h.01" />
+        </svg>{" "}
       </span>
     </OverlayTrigger>
   );

@@ -12,8 +12,6 @@ import { loadAiidaBands } from "../../common/restApiUtils";
 
 import { AIIDA_REST_API_URL, EXPLORE_URL } from "../../common/restApiUtils";
 
-import * as math from "mathjs";
-
 import {
   BandStructure,
   COMMON_LAYOUT_CONFIG,
@@ -98,7 +96,7 @@ const ElectronicSection = (props) => {
           shiftBands(down, -fermiEnergy[1]);
         } else {
           // Fallback: use the same shift for both channels
-          const bandShift = -math.max(fermiEnergy);
+          const bandShift = -Math.max(...[].concat(fermiEnergy));
           shiftBands(up, bandShift);
           shiftBands(down, bandShift);
         }
@@ -115,7 +113,7 @@ const ElectronicSection = (props) => {
         );
       } else {
         const bandShift = Array.isArray(fermiEnergy)
-          ? -math.max(fermiEnergy)
+          ? -Math.max(...fermiEnergy)
           : -fermiEnergy;
 
         shiftBands(bands, bandShift);
