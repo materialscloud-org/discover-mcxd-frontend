@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { McloudSpinner, ExploreButton } from "mc-react-library";
 import { Container, Row, Col } from "react-bootstrap";
 import PhononVisualizer from "mc-react-phonon-visualizer";
@@ -13,6 +13,8 @@ import {
   loadPhononVis,
   EXPLORE_URL,
 } from "../../common/restApiUtils";
+
+import { useQuery } from "@tanstack/react-query";
 
 import { buildTraceFormat } from "@mcxd/shared";
 
@@ -33,28 +35,23 @@ const phononTraceConfig = {
 };
 
 const VibrationalSection = (props) => {
-  const [bandsData, setBandsData] = useState(null);
-  const [loadingBands, setLoadingBands] = useState(true);
-  const [phononVisData, setPhononVisData] = useState(null);
-
   const vibrationalData = props.loadedData.details.vibrational;
   const bandsUuid = vibrationalData.phonon_bands_uuid;
 
-  useEffect(() => {
-    if (bandsUuid) {
-      setLoadingBands(true);
-      loadAiidaBands(bandsUuid).then((bands) => {
-        setBandsData(bands);
-        setLoadingBands(false);
-      });
-    } else {
-      setLoadingBands(false);
-    }
+  const { data: bandsData, isPending: bandsPending } = useQuery({
+    queryKey: ["vibrational-bands", bandsUuid],
+    queryFn: () => loadAiidaBands(bandsUuid),
+    enabled: !!bandsUuid,
+  });
 
-    loadPhononVis(props.params.id).then((data) => {
-      setPhononVisData(data);
-    });
-  }, [bandsUuid, props.params.id]);
+  // disabled queries stay pending: only load when bands are expected
+  const loadingBands = !!bandsUuid && bandsPending;
+
+  const { data: phononVisData } = useQuery({
+    queryKey: ["phonon-vis", props.params.id],
+    queryFn: () => loadPhononVis(props.params.id),
+    enabled: !!props.params.id,
+  });
 
   // Handle Phonon Visualizer JSX
   const phononVisJsx = phononVisData && (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React from "react";
 
 import { ExploreButton, StructDownloadButton } from "mc-react-library";
 
@@ -24,6 +24,7 @@ import { buildTraceFormat } from "@mcxd/shared";
 
 import { HWCCPlot } from "./hwccPlot";
 
+import { useQuery } from "@tanstack/react-query";
 import {
   TOPOLOGICAL_EXPLORE_URL,
   loadTopoBands,
@@ -36,6 +37,38 @@ function shiftBands(bandsData, shift) {
         arr[idx] += shift;
       });
     });
+  });
+}
+
+function useTopoBands(topologyData) {
+  return useQuery({
+    queryKey: [
+      "topo-bands",
+      topologyData?.soc_bandstructure_uuid,
+      topologyData?.nosoc_bandstructure_uuid,
+    ],
+    queryFn: () =>
+      Promise.all([
+        loadTopoBands(topologyData.soc_bandstructure_uuid),
+        loadTopoBands(topologyData.nosoc_bandstructure_uuid),
+      ]).then(([socBands, nosocBands]) => {
+        shiftBands(socBands, -topologyData.fermi_with_SOC);
+        shiftBands(nosocBands, -topologyData.fermi_without_SOC);
+
+        return [
+          {
+            bandsData: nosocBands,
+            traceFormat: buildTraceFormat(topologyTraceConfigs.nosoc),
+          },
+          {
+            bandsData: socBands,
+            traceFormat: buildTraceFormat(topologyTraceConfigs.soc),
+          },
+        ];
+      }),
+    enabled:
+      !!topologyData?.soc_bandstructure_uuid &&
+      !!topologyData?.nosoc_bandstructure_uuid,
   });
 }
 
@@ -91,56 +124,10 @@ const WarningLabel = ({ warning }) => {
 };
 
 const TopologySection = ({ params, loadedData }) => {
-  const [bandsData, setBandsData] = useState(null);
-  const [loadingBands, setLoadingBands] = useState(true);
-  let details = loadedData.details;
-
   const topologyData = loadedData?.topologyInfo;
 
-  useEffect(() => {
-    if (
-      !topologyData?.soc_bandstructure_uuid ||
-      !topologyData?.nosoc_bandstructure_uuid
-    ) {
-      return;
-    }
-
-    const loadBands = async () => {
-      setLoadingBands(true);
-
-      try {
-        const [socBands, nosocBands] = await Promise.all([
-          loadTopoBands(topologyData.soc_bandstructure_uuid),
-          loadTopoBands(topologyData.nosoc_bandstructure_uuid),
-        ]);
-
-        shiftBands(socBands, -topologyData.fermi_with_SOC);
-        shiftBands(nosocBands, -topologyData.fermi_without_SOC);
-
-        const finalBands = [
-          {
-            bandsData: nosocBands,
-            traceFormat: buildTraceFormat(topologyTraceConfigs.nosoc),
-          },
-          {
-            bandsData: socBands,
-            traceFormat: buildTraceFormat(topologyTraceConfigs.soc),
-          },
-        ];
-
-        setBandsData(finalBands);
-      } catch (err) {
-        console.error("Failed to load topology bands:", err);
-      } finally {
-        setLoadingBands(false);
-      }
-    };
-
-    loadBands();
-  }, [
-    topologyData?.soc_bandstructure_uuid,
-    topologyData?.nosoc_bandstructure_uuid,
-  ]);
+  const { data: bandsData, isPending: loadingBands } =
+    useTopoBands(topologyData);
 
   console.log(topologyData);
 

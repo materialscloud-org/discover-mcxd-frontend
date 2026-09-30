@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 import { McloudSpinner } from "mc-react-library";
 
 import { McInfoBox } from "@mcxd/shared";
 
 import { ParentsIcon } from "../../assets/sectionIcons";
+
+import { useQuery } from "@tanstack/react-query";
 
 import { Container, Row, Col } from "react-bootstrap";
 
@@ -110,32 +112,31 @@ async function fetchParentStructure(uuid) {
   return { aiidaAttributes: aiidaAttributes, cif: structureCif };
 }
 
+function useParentStructure(uuid) {
+  return useQuery({
+    queryKey: ["parent-structure", uuid],
+    queryFn: () => fetchParentStructure(uuid),
+    enabled: !!uuid,
+  });
+}
+
 const ParentsSection = (props) => {
   const [selectedParentIndex, setSelectedParentIndex] = useState(0);
-  const [parentStructureInfo, setParentStructureInfo] = useState(null);
   // const [selectedParent, setSelectedParent] = useState(parentsList[0]);
 
   let parentsList = props.loadedData.details.parents_3d;
   let selectedParentUuid =
     parentsList[selectedParentIndex].initial_structure_uuid;
 
+  const { data: parentStructureInfo, isPending: parentPending } =
+    useParentStructure(selectedParentUuid);
+
   let symmetryInfoList = [];
   parentsList.forEach((parent) => {
     symmetryInfoList.push(getSymmetryInfo(parent.space_group_number));
   });
 
-  useEffect(() => {
-    if (selectedParentUuid) {
-      fetchParentStructure(selectedParentUuid).then((loaded) => {
-        setParentStructureInfo(loaded);
-      });
-    } else {
-      setParentStructureInfo(null);
-    }
-  }, [selectedParentIndex]);
-
-  let loadingStructure =
-    selectedParentUuid != null && parentStructureInfo == null;
+  let loadingStructure = selectedParentUuid != null && parentPending;
 
   let naMsg = "Parent structure not available.";
   if (

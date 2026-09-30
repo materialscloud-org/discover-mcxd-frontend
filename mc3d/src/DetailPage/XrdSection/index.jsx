@@ -7,6 +7,8 @@ import { McloudSpinner } from "mc-react-library";
 
 import { XrdIcon } from "../../assets/sectionIcons";
 
+import { useQuery, useQueries, keepPreviousData } from "@tanstack/react-query";
+
 import { wavelengthName, getFittedCurve, getHistogram } from "./utils.js";
 
 import BundleAndDownload from "./BundleAndDownload.jsx";
@@ -15,12 +17,27 @@ const WAVELENGTHS = ["CuKa", "MoKa", "CrKa", "FeKa", "CoKa", "AgKa"];
 
 import { loadXrdWavelength } from "../../common/fetchingUtils.js";
 
+export function useXrdWavelength({ method, id, wavelength }) {
+  return useQuery({
+    queryKey: ["xrd", method, id, wavelength],
+    queryFn: () => loadXrdWavelength({ method, id, wavelength }),
+    enabled: !!method && !!id && !!wavelength,
+    placeholderData: keepPreviousData,
+  });
+}
+
+export function useXrdWavelengths({ method, id }) {
+  return useQueries({
+    queries: WAVELENGTHS.map((wavelength) => ({
+      queryKey: ["xrd", method, id, wavelength],
+      queryFn: () => loadXrdWavelength({ method, id, wavelength }),
+      enabled: !!method && !!id,
+    })),
+  });
+}
+
 const XrdSection = ({ method, id }) => {
   const plotRef = useRef(null);
-  const previous = useRef(null);
-
-  const [cache, setCache] = useState({});
-  const [error, setError] = useState(null);
 
   const [wavelength, setWavelength] = useState(WAVELENGTHS[0]);
 
@@ -30,51 +47,14 @@ const XrdSection = ({ method, id }) => {
   const [showCurve, setShowCurve] = useState(true);
   const [showHistogram, setShowHistogram] = useState(true);
 
-  const current = cache[wavelength];
+  const {
+    data: current,
+    isPending,
+    isError,
+  } = useXrdWavelength({ method, id, wavelength });
 
-  const isLoading = !error && Object.keys(cache).length === 0;
-
-  // Fetch missing wavelength
-  useEffect(() => {
-    if (!wavelength || cache[wavelength]) return;
-
-    let cancelled = false;
-
-    const fetchData = async () => {
-      try {
-        setError(null);
-
-        const data = await loadXrdWavelength({
-          method: method,
-          id: id,
-          wavelength,
-        });
-
-        if (cancelled) return;
-
-        setCache((prev) => ({
-          ...prev,
-          [wavelength]: data,
-        }));
-      } catch (err) {
-        if (!cancelled) {
-          setError("Data not available for this material.");
-        }
-      }
-    };
-
-    fetchData();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [wavelength, cache, id, method]);
-
-  useEffect(() => {
-    if (current) {
-      previous.current = current;
-    }
-  }, [current]);
+  const isLoading = isPending && !current;
+  const error = isError ? "Data not available for this material." : null;
 
   const plotData = useMemo(() => {
     if (!current) return [];
@@ -264,12 +244,7 @@ const XrdSection = ({ method, id }) => {
 
                 <div>
                   Download X-ray data
-                  <BundleAndDownload
-                    cache={cache}
-                    setCache={setCache}
-                    method={method}
-                    id={id}
-                  />
+                  <BundleAndDownload method={method} id={id} />
                 </div>
               </Col>
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 import { McloudSpinner, ExploreButton } from "mc-react-library";
 
@@ -8,6 +8,7 @@ import { McInfoBox, buildTraceFormat } from "@mcxd/shared";
 
 import { Container, Row, Col } from "react-bootstrap";
 
+import { useQuery } from "@tanstack/react-query";
 import { loadAiidaBands } from "../../common/restApiUtils";
 
 import { AIIDA_REST_API_URL, EXPLORE_URL } from "../../common/restApiUtils";
@@ -28,6 +29,60 @@ function shiftBands(bandsData, shift) {
         arr[idx] += shift;
       });
     });
+  });
+}
+
+function useElectronicBands(electronicData) {
+  return useQuery({
+    queryKey: ["electronic-bands", electronicData?.bands_uuid],
+    queryFn: () =>
+      loadAiidaBands(electronicData.bands_uuid).then((bands) => {
+        const fermiEnergy = electronicData.fermi_energy.value;
+
+        let finalBands = [];
+
+        if (bands.paths[0].two_band_types) {
+          const [up, down] = splitBandsData(bands, 2);
+
+          if (Array.isArray(fermiEnergy) && fermiEnergy.length === 2) {
+            // Shift each spin channel separately
+            shiftBands(up, -fermiEnergy[0]);
+            shiftBands(down, -fermiEnergy[1]);
+          } else {
+            // Fallback: use the same shift for both channels
+            const bandShift = -Math.max(...[].concat(fermiEnergy));
+            shiftBands(up, bandShift);
+            shiftBands(down, bandShift);
+          }
+
+          finalBands.push(
+            {
+              bandsData: up,
+              traceFormat: buildTraceFormat(standardTraceConfigs.spinUp),
+            },
+            {
+              bandsData: down,
+              traceFormat: buildTraceFormat(standardTraceConfigs.spinDown),
+            },
+          );
+        } else {
+          const bandShift = Array.isArray(fermiEnergy)
+            ? -Math.max(...fermiEnergy)
+            : -fermiEnergy;
+
+          shiftBands(bands, bandShift);
+
+          finalBands.push({
+            bandsData: bands,
+            traceFormat: buildTraceFormat(
+              standardTraceConfigs.nonSpinPolarised,
+            ),
+          });
+        }
+
+        return finalBands;
+      }),
+    enabled: !!electronicData,
   });
 }
 
@@ -63,9 +118,6 @@ function ElectronicInfoBox({ electronicData, metadata }) {
 }
 
 const ElectronicSection = (props) => {
-  const [bandsData, setBandsData] = useState(null);
-  const [loadingBands, setLoadingBands] = useState(true);
-
   const electronicData = props.loadedData.details.electronic;
 
   const bandsAvailable = !!(
@@ -74,60 +126,9 @@ const ElectronicSection = (props) => {
     electronicData.band_gap.value != null
   );
 
-  useEffect(() => {
-    if (!bandsAvailable) {
-      setLoadingBands(false);
-      return;
-    }
-
-    setLoadingBands(true);
-
-    loadAiidaBands(electronicData.bands_uuid).then((bands) => {
-      const fermiEnergy = electronicData.fermi_energy.value;
-
-      let finalBands = [];
-
-      if (bands.paths[0].two_band_types) {
-        const [up, down] = splitBandsData(bands, 2);
-
-        if (Array.isArray(fermiEnergy) && fermiEnergy.length === 2) {
-          // Shift each spin channel separately
-          shiftBands(up, -fermiEnergy[0]);
-          shiftBands(down, -fermiEnergy[1]);
-        } else {
-          // Fallback: use the same shift for both channels
-          const bandShift = -Math.max(...[].concat(fermiEnergy));
-          shiftBands(up, bandShift);
-          shiftBands(down, bandShift);
-        }
-
-        finalBands.push(
-          {
-            bandsData: up,
-            traceFormat: buildTraceFormat(standardTraceConfigs.spinUp),
-          },
-          {
-            bandsData: down,
-            traceFormat: buildTraceFormat(standardTraceConfigs.spinDown),
-          },
-        );
-      } else {
-        const bandShift = Array.isArray(fermiEnergy)
-          ? -Math.max(...fermiEnergy)
-          : -fermiEnergy;
-
-        shiftBands(bands, bandShift);
-
-        finalBands.push({
-          bandsData: bands,
-          traceFormat: buildTraceFormat(standardTraceConfigs.nonSpinPolarised),
-        });
-      }
-
-      setBandsData(finalBands);
-      setLoadingBands(false);
-    });
-  }, [electronicData.bands_uuid]);
+  const { data: bandsData, isPending: loadingBands } = useElectronicBands(
+    bandsAvailable ? electronicData : null,
+  );
 
   return (
     <div id="electronic" data-toc-section="electronic">

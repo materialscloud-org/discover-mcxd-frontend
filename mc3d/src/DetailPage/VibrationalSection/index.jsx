@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
 import { Row, Col, Container } from "react-bootstrap";
 
 import { CitationBanner } from "@mcxd/shared";
 import PhononVisualizer from "mc-react-phonon-visualizer";
 
+import { useQuery } from "@tanstack/react-query";
 import {
   loadSuperConDetails,
   loadSuperConPhononVis,
@@ -23,64 +23,48 @@ import formatIfExists from "../../common/resultFormatter";
 
 import { Link } from "react-router-dom";
 
+const CM1_TO_MEV = 0.12398;
+
+function useSuperconDetails(dataMethod, id) {
+  return useQuery({
+    queryKey: ["supercon", dataMethod, id],
+    queryFn: () => loadSuperConDetails(dataMethod, id),
+    enabled: !!dataMethod && !!id,
+  });
+}
+
+function useSuperconPhononVis(dataMethod, id, matdynUuid) {
+  return useQuery({
+    queryKey: ["supercon-phonon-vis", dataMethod, id],
+    queryFn: () =>
+      loadSuperConPhononVis(dataMethod, id).then((loadedSCPVis) => {
+        if (!loadedSCPVis) return null;
+        return {
+          ...loadedSCPVis,
+          eigenvalues: loadedSCPVis.eigenvalues?.map((bandArray) =>
+            bandArray.map((val) => val * CM1_TO_MEV),
+          ),
+          highsym_qpts: loadedSCPVis.highsym_qpts?.map(prettifyLabels),
+        };
+      }),
+    enabled: !!dataMethod && !!id && !!matdynUuid,
+  });
+}
+
 export default function VibrationalSection({
   params,
   loadedData,
   superconMethod,
 }) {
-  const [scDetails, setScDetails] = useState(null);
-  const [phononVisData, setPhononVisData] = useState(null);
-  const [notAvail, setNotAvail] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const { data: scDetails } = useSuperconDetails(superconMethod, params.id);
+
+  const matdynUuid = scDetails?.phonons?.matdyn_uuid;
+
+  const { data: phononVisData, isPending: visPending } =
+    useSuperconPhononVis(superconMethod, params.id, matdynUuid);
 
   const method = superconMethod;
-
-  // 1. load supercon details (phonon metadata) for this structure
-  useEffect(() => {
-    if (!superconMethod) return;
-
-    let cancelled = false;
-    setScDetails(null);
-
-    loadSuperConDetails(superconMethod, params.id)
-      .then((details) => {
-        if (!cancelled) setScDetails(details ?? null);
-      })
-      .catch(() => {
-        if (!cancelled) setScDetails(null);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [superconMethod, params.id]);
-
-  // 2. load visualizer data once the phonon uuid is known
-  useEffect(() => {
-    if (!scDetails?.phonons?.matdyn_uuid) return;
-
-    setLoading(true);
-
-    loadSuperConPhononVis(method, params.id)
-      .then((loadedSCPVis) => {
-        if (loadedSCPVis) {
-          const CM1_TO_MEV = 0.12398;
-
-          const convertedEigenvalues = loadedSCPVis.eigenvalues?.map(
-            (bandArray) => bandArray.map((val) => val * CM1_TO_MEV),
-          );
-
-          setPhononVisData({
-            ...loadedSCPVis,
-            eigenvalues: convertedEigenvalues,
-            highsym_qpts: loadedSCPVis.highsym_qpts?.map(prettifyLabels),
-          });
-        } else {
-          setNotAvail(true);
-        }
-      })
-      .finally(() => setLoading(false));
-  }, [params.id, method, scDetails]);
+  const loading = visPending;
 
   if (!superconMethod) return null;
   if (!scDetails?.phonons) return null;
@@ -155,7 +139,7 @@ export default function VibrationalSection({
 
   let content;
 
-  if (notAvail) {
+  if (!visPending && !phononVisData) {
     // dont render if something went wrong.
     return null;
   } else if (loading) {

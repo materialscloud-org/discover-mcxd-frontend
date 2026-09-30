@@ -1,24 +1,22 @@
-import { useState, useEffect, useCallback } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 
 import { Link } from "react-router-dom";
 
+import { useQuery } from "@tanstack/react-query";
 import {
-  useAsyncEffect,
-  fetchBands,
-  fetchGapFunc,
-  fetchA2F,
-} from "./fetchLogic";
+  loadAiidaBands,
+  loadXY,
+  loadSuperConDetails,
+} from "../../common/fetchingUtils";
+
+import { normalizeBandsData, prepareSuperConBand } from "@mcxd/shared";
 
 import { CitationBanner } from "@mcxd/shared";
 
 import { SuperconductivityIcon } from "../../assets/sectionIcons";
 
 import { ExploreButton } from "mc-react-library";
-import {
-  EXPLORE_URLS,
-  loadSuperConDetails,
-} from "../../common/fetchingUtils";
+import { EXPLORE_URLS } from "../../common/fetchingUtils";
 
 import SuperconInfoBox from "./InfoBoxes";
 import GapFunction from "./GapFunction";
@@ -33,54 +31,99 @@ import {
 
 import { WarningBox, WarningBoxOtherMethod } from "../../common/WarningBox";
 
+function useSuperconDetails(dataMethod, id) {
+  return useQuery({
+    queryKey: ["supercon", dataMethod, id],
+    queryFn: () => loadSuperConDetails(dataMethod, id),
+    enabled: !!dataMethod && !!id,
+  });
+}
+
+function safePrepareBands(bands, fermi, configName) {
+  if (!bands || typeof fermi !== "number") return null;
+  return prepareSuperConBand(bands, -fermi, configName);
+}
+
+function useSuperconBands(supercon, method) {
+  const queryKey = ["supercon-bands", method, supercon?.structure_uuid];
+  const loaderKey = `${method}-supercon`;
+
+  return useQuery({
+    queryKey,
+    enabled: Boolean(supercon && method),
+    queryFn: async () => {
+      const loadBands = (uuid) =>
+        uuid ? loadAiidaBands(loaderKey, uuid) : null;
+
+      const [epwBands, qeBands, phBands] = await Promise.all([
+        loadBands(supercon.epw_el_band_structure_uuid),
+        loadBands(supercon.qe_el_band_structure_uuid),
+        loadBands(supercon.epw_ph_band_structure_uuid),
+      ]);
+
+      const electronicBands = [
+        safePrepareBands(
+          epwBands,
+          supercon.fermi_energy_coarse,
+          "electronicEPW",
+        ),
+        safePrepareBands(qeBands, supercon.fermi_energy_coarse, "electronicQE"),
+      ].filter(Boolean);
+
+      const phononBands = safePrepareBands(phBands, 0, "phononEPW");
+
+      return {
+        el: normalizeBandsData(electronicBands),
+        ph: phononBands ? [phononBands] : [],
+      };
+    },
+  });
+}
+
+function useSuperconGapFunc(supercon, method) {
+  return useQuery({
+    queryKey: ["supercon-gap", method, supercon?.aniso_gap_function_uuid],
+    queryFn: () => {
+      if (!supercon?.aniso_gap_function_uuid) return null;
+      return loadXY(`${method}-supercon`, supercon.aniso_gap_function_uuid);
+    },
+    enabled: !!supercon && !!method,
+  });
+}
+
+function useSuperconA2F(supercon, method) {
+  return useQuery({
+    queryKey: ["supercon-a2f", method, supercon?.a2f_uuid],
+    queryFn: () => {
+      if (!supercon?.a2f_uuid) return null;
+      return loadXY(`${method}-supercon`, supercon.a2f_uuid);
+    },
+    enabled: !!supercon && !!method,
+  });
+}
+
 // Main component
 export default function SuperConductivitySection({
   params,
   loadedData,
   superconMethod,
 }) {
-  const [scDetails, setScDetails] = useState(null);
-
-  // load supercon details for this structure
-  useEffect(() => {
-    if (!superconMethod) return;
-
-    let cancelled = false;
-    setScDetails(null);
-
-    loadSuperConDetails(superconMethod, params.id)
-      .then((details) => {
-        if (!cancelled) setScDetails(details ?? null);
-      })
-      .catch(() => {
-        if (!cancelled) setScDetails(null);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [superconMethod, params.id]);
+  const { data: scDetails } = useSuperconDetails(superconMethod, params.id);
 
   const method = superconMethod;
   const supercon = scDetails?.supercon;
 
-  // --- Bands ---
-  const { data: bandsResults, loading: bandsLoading } = useAsyncEffect(
-    () => fetchBands(supercon, method),
-    [supercon, method],
-  );
+  const { data: bandsResults, isPending: bandsLoading } = useSuperconBands(
+    supercon,
+    method,
+  ); // bands
 
-  // --- Gap function ---
-  const { data: gapfuncData, loading: gapfuncLoading } = useAsyncEffect(
-    () => fetchGapFunc(supercon, method),
-    [supercon, method],
-  );
+  const { data: gapfuncData, isPending: gapfuncLoading } = useSuperconGapFunc(
+    supercon,
+    method,
+  ); // gap
 
-  // --- A2F ---
-  const { data: a2fData } = useAsyncEffect(
-    () => fetchA2F(supercon, method),
-    [supercon, method],
-  );
+  const { data: a2fData } = useSuperconA2F(supercon, method); // a2f
 
   if (!supercon) return null;
 
@@ -89,10 +132,6 @@ export default function SuperConductivitySection({
 
   const hasElecBands = !!bandsDataArray.length;
   const hasPhBands = !!phononBandsArray.length;
-
-  // fallback if nothing exists.
-
-  console.log("sc", supercon);
 
   return (
     <div id="superconductivity" data-toc-section="superconductivity">

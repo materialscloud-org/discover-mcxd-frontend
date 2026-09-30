@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 import PageLayout from "../Layout";
 
@@ -10,6 +10,7 @@ import { getSymmetryInfo } from "mc-react-library";
 
 import { CitationBanner } from "@mcxd/shared";
 
+import { useQuery } from "@tanstack/react-query";
 import {
   loadMetadata,
   loadDetails,
@@ -61,24 +62,27 @@ async function fetchCompoundData(id) {
   };
 }
 
-function DetailPage() {
-  const [loadedData, setLoadedData] = useState(null);
+function useCompoundData(id) {
+  return useQuery({
+    queryKey: ["compound", id],
+    queryFn: () => fetchCompoundData(id),
+    enabled: !!id,
+  });
+}
 
+function DetailPage() {
   // for routing
   const navigate = useNavigate();
   const params = useParams(); // Route parameters
 
-  useEffect(() => {
-    setLoadedData(null);
-    fetchCompoundData(params.id).then((loadedData) => {
-      console.log("Loaded general data", loadedData);
-      setLoadedData(loadedData);
-    });
-  }, [params.id]);
+  const {
+    data: loadedData,
+    isPending: loading,
+    isError,
+  } = useCompoundData(params.id);
 
   let title = null;
-  let loading = loadedData == null;
-  if (!loading) {
+  if (!loading && !isError && loadedData) {
     title = formatTitle(loadedData.details.general.formula, params.id);
   }
 
@@ -90,6 +94,10 @@ function DetailPage() {
       {loading ? (
         <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
           <McloudSpinner />
+        </div>
+      ) : isError ? (
+        <div style={{ padding: "40px", margin: "0 auto", textAlign: "center" }}>
+          Failed to load data for {params.id}.
         </div>
       ) : (
         <>

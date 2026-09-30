@@ -1,59 +1,35 @@
-import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import { Spinner } from "react-bootstrap";
 
+import { useXrdWavelengths } from "./index.jsx";
+
 const WAVELENGTHS = ["CuKa", "MoKa", "CrKa", "FeKa", "CoKa", "AgKa"];
 
-const S3_BASE_URL = "https://rgw.cscs.ch/matcloud:mc-discover-mcxd-public/mc3d";
+export default function BundleAndDownload({ method, id }) {
+  const results = useXrdWavelengths({ method, id });
 
-export default function BundleAndDownload({ cache, setCache, method, id }) {
-  const [loading, setLoading] = useState(false);
+  const pending = results.some((r) => r.isPending);
 
-  const fetchWavelength = async (wl) => {
-    const url = `${S3_BASE_URL}/${method}_xrd/prod/${id}/${wl}.json.br`;
+  const handleDownload = () => {
+    const full = {};
 
-    const res = await fetch(url);
-    return res.json();
-  };
+    results.forEach((r, i) => {
+      if (r.data) full[WAVELENGTHS[i]] = r.data;
+    });
 
-  const handleDownload = async () => {
-    setLoading(true);
+    // download bundled dataset
+    const blob = new Blob([JSON.stringify(full, null, 2)], {
+      type: "application/json",
+    });
 
-    try {
-      const missing = WAVELENGTHS.filter((wl) => !cache[wl]);
+    const url = URL.createObjectURL(blob);
 
-      const results = await Promise.all(
-        missing.map(async (wl) => {
-          const data = await fetchWavelength(wl);
-          return [wl, data];
-        }),
-      );
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "xrdData.json";
+    a.click();
 
-      const full = { ...cache };
-
-      for (const [wl, data] of results) {
-        full[wl] = data;
-      }
-
-      // download bundled dataset
-      const blob = new Blob([JSON.stringify(full, null, 2)], {
-        type: "application/json",
-      });
-
-      const url = URL.createObjectURL(blob);
-
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "xrdData.json";
-      a.click();
-
-      URL.revokeObjectURL(url);
-
-      // update cache so UI stays in sync
-      setCache(full);
-    } finally {
-      setLoading(false);
-    }
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -61,10 +37,10 @@ export default function BundleAndDownload({ cache, setCache, method, id }) {
       size="sm"
       style={{ margin: "4px", padding: "2px 7px" }}
       onClick={handleDownload}
-      disabled={loading}
+      disabled={pending}
       title="Download full dataset"
     >
-      {loading ? (
+      {pending ? (
         <>
           <Spinner animation="border" size="sm" />
           <span className="visually-hidden">Loading...</span>

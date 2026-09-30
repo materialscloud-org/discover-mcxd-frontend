@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@mcxd/shared": "*",
+    "@tanstack/react-query": "^5.104.0",
     "better-react-mathjax": "^2.0.3",
     "bootstrap": "^5.3.2",
     "mc-react-header": "^0.7.2",
