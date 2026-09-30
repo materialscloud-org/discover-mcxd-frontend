@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Container, Row, Col, Form } from "react-bootstrap";
 import { CitationBanner, McInfoBox } from "@mcxd/shared";
+
+import { MechanicalIcon } from "../../assets/sectionIcons";
 import { EXPLORE_URLS, loadAiidaAttributes } from "../../common/fetchingUtils";
 import { ExploreButton } from "mc-react-library";
 
@@ -104,11 +106,6 @@ export default function MechanicalSection({
   const [scfKpointsData, setScfKpointsData] = useState(null);
   const [scfQpointsData, setScfQpointsData] = useState(null);
   const [scfLoading, setScfLoading] = useState(false);
-
-  // escape on failure
-  if (!elastic || Object.keys(elastic).length === 0) {
-    return null;
-  }
 
   /*
    * --------------------------------------------------------------------------
@@ -258,8 +255,13 @@ export default function MechanicalSection({
         value === "NaN" || (typeof value === "number" && Number.isNaN(value)),
     );
 
+  // escape on failure (after all hooks to preserve hook order across renders)
+  if (!elastic || Object.keys(elastic).length === 0) {
+    return null;
+  }
+
   return (
-    <div>
+    <div id="mechanical" data-toc-section="mechanical">
       <Container fluid className="section-container">
         <div
           style={{
@@ -268,7 +270,10 @@ export default function MechanicalSection({
             borderBottom: "1px solid #c4c4c4",
           }}
         >
-          <div style={{ fontSize: "24px" }}>Mechanical details</div>
+          <div style={{ fontSize: "24px" }}>
+            <MechanicalIcon size={22} className="section-heading-icon" />
+            Mechanical details
+          </div>
 
           <div
             style={{

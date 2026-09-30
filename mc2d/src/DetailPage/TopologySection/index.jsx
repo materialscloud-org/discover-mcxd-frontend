@@ -20,6 +20,8 @@ import {
 
 import { CitationBanner } from "@mcxd/shared";
 
+import { TopologyIcon } from "../../assets/sectionIcons";
+
 import { buildTraceFormat } from "@mcxd/shared";
 
 import { HWCCPlot } from "./hwccPlot";
@@ -135,30 +137,34 @@ const TopologySection = ({ params, loadedData }) => {
   console.log(topologyData);
 
   return (
-    <div>
-      <Container fluid className="section-container">
+    <div id="topology" data-toc-section="topology">
+      <div
+        style={{
+          margin: "10px 0px",
+          padding: "20px 0px 10px",
+          borderBottom: "1px solid #c4c4c4",
+        }}
+      >
+        <div style={{ fontSize: "24px" }}>
+          <TopologyIcon size={22} className="section-heading-icon" />
+          Topological insulators
+        </div>
         <div
           style={{
-            margin: "10px 0px",
-            padding: "20px 0px 10px",
-            borderBottom: "1px solid #c4c4c4",
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "2px",
+            alignItems: "center",
+            padding: "2px 10px",
           }}
         >
-          <div style={{ fontSize: "24px" }}>Topological insulators</div>
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: "2px",
-              alignItems: "center",
-            }}
-          >
-            <CitationBanner
-              citationKeys={["Marrazzo2019", "Grassano2023"]}
-              doiIndices={[0, 1]}
-            />
-          </div>
+          <CitationBanner
+            citationKeys={["Marrazzo2019", "Grassano2023"]}
+            doiIndices={[0, 1]}
+          />
         </div>
+      </div>
+      <Container fluid className="section-container">
         <Row>
           <Col className="flex-column">
             <WarningBox>

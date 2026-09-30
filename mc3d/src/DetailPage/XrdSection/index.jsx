@@ -5,6 +5,8 @@ import { Container, Row, Col } from "react-bootstrap";
 
 import { McloudSpinner } from "mc-react-library";
 
+import { XrdIcon } from "../../assets/sectionIcons";
+
 import { wavelengthName, getFittedCurve, getHistogram } from "./utils.js";
 
 import BundleAndDownload from "./BundleAndDownload.jsx";
@@ -141,8 +143,11 @@ const XrdSection = ({ method, id }) => {
 
   if (error) {
     return (
-      <div>
-        <div className="section-heading">X-ray diffraction pattern</div>
+      <div id="xrd" data-toc-section="xrd">
+        <div className="section-heading">
+          <XrdIcon size={22} className="section-heading-icon" />
+          X-ray diffraction pattern
+        </div>
         <Container fluid className="section-container">
           <Row>
             <div className="xrd-section">
@@ -158,7 +163,12 @@ const XrdSection = ({ method, id }) => {
 
   if (isLoading) {
     return (
-      <div className="section-heading">
+      <div
+        id="xrd"
+        data-toc-section="xrd"
+        className="section-heading"
+      >
+        <XrdIcon size={22} className="section-heading-icon" />
         X-ray diffraction pattern
         <Container fluid className="section-container">
           <Row>
@@ -178,8 +188,11 @@ const XrdSection = ({ method, id }) => {
   }
 
   return (
-    <div>
-      <div className="section-heading">X-ray diffraction pattern</div>
+    <div id="xrd" data-toc-section="xrd">
+      <div className="section-heading">
+        <XrdIcon size={22} className="section-heading-icon" />
+        X-ray diffraction pattern
+      </div>
       <Container fluid className="section-container">
         <Row>
           <div style={{ paddingBottom: "10px" }}>

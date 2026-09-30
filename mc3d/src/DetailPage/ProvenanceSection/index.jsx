@@ -7,6 +7,8 @@ import { EXPLORE_URLS } from "../../common/fetchingUtils";
 import { Container, Row, Col } from "react-bootstrap";
 import { McInfoBox } from "@mcxd/shared";
 
+import { ProvenanceIcon } from "../../assets/sectionIcons";
+
 import { format_aiida_prop } from "../../common/utils";
 
 import { StructDownloadButton } from "mc-react-library";
@@ -20,8 +22,11 @@ export default function ProvenanceSection({ loadedData, params }) {
   let methodLabel = params.method;
   console.log("d", { loadedData, params });
   return (
-    <div>
-      <div className="section-heading">Calculation information</div>
+    <div id="provenance" data-toc-section="provenance">
+      <div className="section-heading">
+        <ProvenanceIcon size={22} className="section-heading-icon" />
+        Calculation information
+      </div>
       {/* <div className="provenance-section"> */}
 
       <Container fluid className="section-container">

@@ -12,6 +12,8 @@ import prettifyLabels from "./prettifyPVlabels";
 import { McloudSpinner } from "mc-react-library";
 
 import { McInfoBox } from "@mcxd/shared";
+
+import { VibrationalIcon } from "../../assets/sectionIcons";
 import { TwoWideInfoBox } from "../../common/TwoWideInfoBox";
 
 import formatIfExists from "../../common/resultFormatter";
@@ -154,7 +156,7 @@ export default function VibrationalSection({ params, loadedData, phononData }) {
   }
 
   return (
-    <div>
+    <div id="vibrational" data-toc-section="vibrational">
       <div
         style={{
           margin: "10px 0px",
@@ -162,7 +164,10 @@ export default function VibrationalSection({ params, loadedData, phononData }) {
           borderBottom: "1px solid #c4c4c4",
         }}
       >
-        <div style={{ fontSize: "24px" }}>Vibrational properties</div>
+        <div style={{ fontSize: "24px" }}>
+          <VibrationalIcon size={22} className="section-heading-icon" />
+          Vibrational properties
+        </div>
         <div
           style={{
             display: "flex",
