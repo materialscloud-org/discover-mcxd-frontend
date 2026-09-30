@@ -12,8 +12,6 @@ import {
   loadMetadata,
   loadDetails,
   loadDatasetIndex,
-  loadSuperConDetails,
-  loadSuperConPhononVis,
   loadMechanicalProps,
   loadAiidaAttributes,
   loadAiidaCif,
@@ -75,29 +73,6 @@ async function fetchCompoundData(method, id) {
   }
 }
 
-async function fetchSuperconSubset(method, id) {
-  try {
-    const [scDetails, scPhonons] = await Promise.all([
-      loadSuperConDetails(method, id),
-      loadSuperConPhononVis(method, id),
-    ]);
-
-    console.log("scDetails", scDetails);
-
-    return {
-      method: method,
-      scDetails: scDetails,
-      scPhonon: scPhonons,
-    };
-  } catch {
-    return {
-      method: method,
-      scDetails: null,
-      scPhonon: null,
-    };
-  }
-}
-
 async function fetchMechanicalSubset(method, id) {
   try {
     const mechDetails = await loadMechanicalProps(method, id);
@@ -133,8 +108,6 @@ function DetailPage() {
   const [resultsObject, setResultsObject] = useState(null);
 
   const [coreData, setCoreData] = useState(null);
-  const [superconPhononData, setSuperconPhononData] = useState(null);
-  const [superconSCData, setSuperconSCData] = useState();
   const [mechanicalData, setMechanicalData] = useState(null);
 
   useEffect(() => {
@@ -142,8 +115,6 @@ function DetailPage() {
     setDatasetIndex(null);
     setResultsObject({});
     setCoreData(null);
-    setSuperconPhononData(null);
-    setSuperconSCData(null);
     setMechanicalData(null);
 
     loadDatasetIndex(params.method, params.id).then((lD) => {
@@ -183,16 +154,6 @@ function DetailPage() {
     fetchCompoundData(params.method, params.id).then((data) => {
       setCoreData(data);
     });
-
-    // Check if supercon entries exist in resultsObject
-    // This should be extended to the other partial methods at somepoint.
-    if (resultsObject.supercon_base) {
-      console.log("supercon exists");
-      fetchSuperconSubset(resultsObject.supercon_base, params.id).then((sc) => {
-        setSuperconSCData(sc); // superconducting details
-        setSuperconPhononData(sc); // phonon/vis data
-      });
-    }
 
     // Check if mechanical entries exist in resultsObject
     // This should be extended to the other partial methods at somepoint.
@@ -274,13 +235,13 @@ function DetailPage() {
       <VibrationalSection
         params={params}
         loadedData={coreData}
-        phononData={superconPhononData}
+        superconMethod={resultsObject?.supercon_base}
       />
 
       <SuperconductivitySection
         params={params}
         loadedData={coreData}
-        superconData={superconSCData}
+        superconMethod={resultsObject?.supercon_base}
       />
 
       <MechanicalSection

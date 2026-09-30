@@ -15,7 +15,10 @@ import { CitationBanner } from "@mcxd/shared";
 import { SuperconductivityIcon } from "../../assets/sectionIcons";
 
 import { ExploreButton } from "mc-react-library";
-import { EXPLORE_URLS } from "../../common/fetchingUtils";
+import {
+  EXPLORE_URLS,
+  loadSuperConDetails,
+} from "../../common/fetchingUtils";
 
 import SuperconInfoBox from "./InfoBoxes";
 import GapFunction from "./GapFunction";
@@ -34,10 +37,32 @@ import { WarningBox, WarningBoxOtherMethod } from "../../common/WarningBox";
 export default function SuperConductivitySection({
   params,
   loadedData,
-  superconData,
+  superconMethod,
 }) {
-  const method = superconData?.method;
-  const supercon = superconData?.scDetails?.supercon;
+  const [scDetails, setScDetails] = useState(null);
+
+  // load supercon details for this structure
+  useEffect(() => {
+    if (!superconMethod) return;
+
+    let cancelled = false;
+    setScDetails(null);
+
+    loadSuperConDetails(superconMethod, params.id)
+      .then((details) => {
+        if (!cancelled) setScDetails(details ?? null);
+      })
+      .catch(() => {
+        if (!cancelled) setScDetails(null);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [superconMethod, params.id]);
+
+  const method = superconMethod;
+  const supercon = scDetails?.supercon;
 
   // --- Bands ---
   const { data: bandsResults, loading: bandsLoading } = useAsyncEffect(
@@ -57,7 +82,7 @@ export default function SuperConductivitySection({
     [supercon, method],
   );
 
-  if (!superconData?.scDetails?.supercon) return null;
+  if (!supercon) return null;
 
   const bandsDataArray = bandsResults?.el ?? [];
   const phononBandsArray = bandsResults?.ph ?? [];

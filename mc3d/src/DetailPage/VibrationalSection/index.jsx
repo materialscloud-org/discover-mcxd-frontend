@@ -4,7 +4,10 @@ import { Row, Col, Container } from "react-bootstrap";
 import { CitationBanner } from "@mcxd/shared";
 import PhononVisualizer from "mc-react-phonon-visualizer";
 
-import { loadSuperConPhononVis } from "../../common/fetchingUtils";
+import {
+  loadSuperConDetails,
+  loadSuperConPhononVis,
+} from "../../common/fetchingUtils";
 
 import { WarningBoxOtherMethod } from "../../common/WarningBox";
 
@@ -20,15 +23,41 @@ import formatIfExists from "../../common/resultFormatter";
 
 import { Link } from "react-router-dom";
 
-export default function VibrationalSection({ params, loadedData, phononData }) {
+export default function VibrationalSection({
+  params,
+  loadedData,
+  superconMethod,
+}) {
+  const [scDetails, setScDetails] = useState(null);
   const [phononVisData, setPhononVisData] = useState(null);
   const [notAvail, setNotAvail] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const method = phononData?.method;
+  const method = superconMethod;
 
+  // 1. load supercon details (phonon metadata) for this structure
   useEffect(() => {
-    if (!phononData?.scDetails?.phonons?.matdyn_uuid) return;
+    if (!superconMethod) return;
+
+    let cancelled = false;
+    setScDetails(null);
+
+    loadSuperConDetails(superconMethod, params.id)
+      .then((details) => {
+        if (!cancelled) setScDetails(details ?? null);
+      })
+      .catch(() => {
+        if (!cancelled) setScDetails(null);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [superconMethod, params.id]);
+
+  // 2. load visualizer data once the phonon uuid is known
+  useEffect(() => {
+    if (!scDetails?.phonons?.matdyn_uuid) return;
 
     setLoading(true);
 
@@ -51,12 +80,13 @@ export default function VibrationalSection({ params, loadedData, phononData }) {
         }
       })
       .finally(() => setLoading(false));
-  }, [params.id, method]);
+  }, [params.id, method, scDetails]);
 
-  if (!phononData || !phononData?.scDetails?.phonons) return null;
-  if (!phononData?.scDetails?.phonons?.matdyn_uuid) return null;
+  if (!superconMethod) return null;
+  if (!scDetails?.phonons) return null;
+  if (!scDetails?.phonons?.matdyn_uuid) return null;
 
-  const pdInfo = phononData?.scDetails?.phonons || null;
+  const pdInfo = scDetails?.phonons || null;
   const vibCalcInfo = [
     {
       key: (
