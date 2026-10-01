@@ -22,7 +22,11 @@ import {
 export const MC2D_TOC_REGISTRY = [
   { id: "overview", label: "General overview", logo: <OverviewIcon /> },
   { id: "structure", label: "Structural details", logo: <StructureIcon /> },
-  { id: "electronic", label: "Electronic properties", logo: <ElectronicIcon /> },
+  {
+    id: "electronic",
+    label: "Electronic properties",
+    logo: <ElectronicIcon />,
+  },
   {
     id: "vibrational",
     label: "Vibrational properties",

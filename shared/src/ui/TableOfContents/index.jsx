@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import "./index.css";
 
+import {
+  FloatingCard,
+  MinimisedFab,
+  MenuFab,
+  MenuOverlay,
+} from "../FloatingPanel/index.jsx";
+
 const SECTION_ATTR = "data-toc-section";
 
 function scrollToSection(id) {
@@ -120,34 +127,15 @@ export default function TableOfContents({ registry }) {
 
   if (minimized) {
     return (
-      <button
-        type="button"
-        className="mcxd-toc-fab-desktop"
-        aria-label="Show table of contents"
-        onClick={() => setMinimizedPersist(false)}
-      >
-        <span className="mcxd-hamburger" aria-hidden="true">
-          <span />
-          <span />
-          <span />
-        </span>
-      </button>
+      <MinimisedFab
+        onExpand={() => setMinimizedPersist(false)}
+        label="Show table of contents"
+      />
     );
   }
 
   return (
-    <nav aria-label="Table of contents" className="mcxd-toc">
-      <div className="mcxd-toc-header">
-        <div className="mcxd-toc-title">Contents</div>
-        <button
-          type="button"
-          className="mcxd-toc-min-btn"
-          aria-label="Minimise table of contents"
-          onClick={() => setMinimizedPersist(true)}
-        >
-          <span aria-hidden="true">–</span>
-        </button>
-      </div>
+    <FloatingCard title="Contents" onMinimise={() => setMinimizedPersist(true)}>
       <ul className="mcxd-toc-list">
         {items.map((item) => (
           <li key={item.id}>
@@ -165,7 +153,7 @@ export default function TableOfContents({ registry }) {
           </li>
         ))}
       </ul>
-    </nav>
+    </FloatingCard>
   );
 }
 
@@ -180,57 +168,38 @@ export function TableOfContentsMenu({ registry }) {
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [open ]);
+  }, [open]);
 
   if (!items.length) return null;
 
   return (
     <>
-      <button
-        type="button"
-        className="mcxd-toc-fab"
-        aria-expanded={open}
-        aria-label={
-          open ? "Close table of contents" : "Open table of contents"
-        }
-        onClick={() => setOpen((v) => !v)}
-      >
-        {open ? (
-          <span aria-hidden="true">✕</span>
-        ) : (
-          <span className="mcxd-hamburger" aria-hidden="true">
-            <span />
-            <span />
-            <span />
-          </span>
-        )}
-      </button>
-      {open && (
-        <>
-          <div className="mcxd-toc-backdrop" onClick={() => setOpen(false)} />
-          <nav aria-label="Table of contents" className="mcxd-toc-panel">
-            <div className="mcxd-toc-title">Contents</div>
-            <ul className="mcxd-toc-list">
-              {items.map((item) => (
-                <li key={item.id}>
-                  <a
-                    href={`#${item.id}`}
-                    className={activeId === item.id ? "active" : ""}
-                    aria-current={activeId === item.id ? "true" : undefined}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      scrollToSection(item.id);
-                      setOpen(false);
-                    }}
-                  >
-                    <TocLabel item={item} />
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </>
-      )}
+      <MenuFab
+        open={open}
+        onToggle={() => setOpen((v) => !v)}
+        openLabel="Open table of contents"
+        closeLabel="Close table of contents"
+      />
+      <MenuOverlay open={open} onClose={() => setOpen(false)} title="Contents">
+        <ul className="mcxd-toc-list">
+          {items.map((item) => (
+            <li key={item.id}>
+              <a
+                href={`#${item.id}`}
+                className={activeId === item.id ? "active" : ""}
+                aria-current={activeId === item.id ? "true" : undefined}
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToSection(item.id);
+                  setOpen(false);
+                }}
+              >
+                <TocLabel item={item} />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </MenuOverlay>
     </>
   );
 }

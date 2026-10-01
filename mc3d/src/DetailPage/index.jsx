@@ -36,6 +36,8 @@ import MechanicalSection from "./MechanicalSection";
 
 import { MC3D_TOC_REGISTRY } from "./tocRegistry";
 
+import { recordVisit } from "../common/recentlyVisited";
+
 import { fromStructureData, getSymmetry } from "matsci-parse";
 
 // contributed sections
@@ -112,8 +114,7 @@ function DetailPage() {
   const coreFailed =
     datasetError ||
     coreError ||
-    (datasetWrapper !== undefined &&
-      resultsObject.core_base !== params.method);
+    (datasetWrapper !== undefined && resultsObject.core_base !== params.method);
 
   useEffect(() => {
     async function runAnalysis() {
@@ -131,6 +132,17 @@ function DetailPage() {
       runAnalysis();
     }
   }, [coreData]);
+
+  // track recently visited entries for the landing page
+  useEffect(() => {
+    if (!coreData?.details) return;
+    recordVisit({
+      id: params.id,
+      method: params.method,
+      formula: coreData.details.general.formula,
+      spacegroup: coreData.details.general.spacegroup_international,
+    });
+  }, [coreData, params.id, params.method]);
 
   // While loading, show spinner
   if (coreData == null && !coreFailed) {

@@ -133,11 +133,7 @@ const XrdSection = ({ method, id }) => {
 
   if (isLoading) {
     return (
-      <div
-        id="xrd"
-        data-toc-section="xrd"
-        className="section-heading"
-      >
+      <div id="xrd" data-toc-section="xrd" className="section-heading">
         <XrdIcon size={22} className="section-heading-icon" />
         X-ray diffraction pattern
         <Container fluid className="section-container">

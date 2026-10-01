@@ -60,8 +60,11 @@ export default function VibrationalSection({
 
   const matdynUuid = scDetails?.phonons?.matdyn_uuid;
 
-  const { data: phononVisData, isPending: visPending } =
-    useSuperconPhononVis(superconMethod, params.id, matdynUuid);
+  const { data: phononVisData, isPending: visPending } = useSuperconPhononVis(
+    superconMethod,
+    params.id,
+    matdynUuid,
+  );
 
   const method = superconMethod;
   const loading = visPending;

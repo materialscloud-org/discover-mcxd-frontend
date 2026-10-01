@@ -19,28 +19,28 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<MainPage />} />
-        <Route path="/about" element={<MainPage tab="about" />} />
-        <Route path="/restapi" element={<MainPage tab="restapi" />} />
-        <Route path="/details/:id" element={<DetailPage />} />
-        <Route
-          path="/contributions/"
-          element={
-            <Suspense fallback={<LoadingPage />}>
-              <ContributionsIndexPage />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/contributions/:page"
-          element={
-            <Suspense fallback={<LoadingPage />}>
-              <ContributionsPage />
-            </Suspense>
-          }
-        />
-      </Routes>
+        <Routes>
+          <Route path="/" element={<MainPage />} />
+          <Route path="/about" element={<MainPage tab="about" />} />
+          <Route path="/restapi" element={<MainPage tab="restapi" />} />
+          <Route path="/details/:id" element={<DetailPage />} />
+          <Route
+            path="/contributions/"
+            element={
+              <Suspense fallback={<LoadingPage />}>
+                <ContributionsIndexPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/contributions/:page"
+            element={
+              <Suspense fallback={<LoadingPage />}>
+                <ContributionsPage />
+              </Suspense>
+            }
+          />
+        </Routes>
       </BrowserRouter>
     </QueryClientProvider>
   );

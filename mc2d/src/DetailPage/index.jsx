@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import PageLayout from "../Layout";
 
@@ -32,6 +32,8 @@ import StructureSection from "./StructureSection";
 import TopologySection from "./TopologySection";
 
 import { MC2D_TOC_REGISTRY } from "./tocRegistry";
+
+import { recordVisit } from "../common/recentlyVisited";
 
 async function fetchCompoundData(id) {
   let datasetIndex = await loadDatasetIndex(id);
@@ -85,6 +87,16 @@ function DetailPage() {
   if (!loading && !isError && loadedData) {
     title = formatTitle(loadedData.details.general.formula, params.id);
   }
+
+  // track recently visited entries for the landing page
+  useEffect(() => {
+    if (!loadedData?.details) return;
+    recordVisit({
+      id: params.id,
+      formula: loadedData.details.general.formula,
+      spacegroup: loadedData.symmetryInfo?.space_group_symbol,
+    });
+  }, [loadedData, params.id]);
 
   return (
     <PageLayout

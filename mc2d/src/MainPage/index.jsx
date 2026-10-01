@@ -16,6 +16,8 @@ import { MethodSelectionBox } from "./MethodSelectionBox";
 
 import { DownloadButton } from "./DownloadButton";
 
+import RecentlyVisited from "./RecentlyVisited";
+
 import { CitationBanner } from "@mcxd/shared";
 
 import {
@@ -140,6 +142,7 @@ const MainPage = ({ tab }) => {
             rows={rows}
             columnFilters={columnFilters}
           />
+          <RecentlyVisited />
           <DownloadButton
             materialSelectorRef={materialSelectorRef}
             disabled={rows.length == 0}

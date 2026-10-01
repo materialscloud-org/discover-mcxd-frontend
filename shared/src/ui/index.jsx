@@ -32,3 +32,11 @@ export {
   default as TableOfContents,
   TableOfContentsMenu,
 } from "./TableOfContents/index.jsx";
+
+export {
+  BurgerIcon,
+  FloatingCard,
+  MinimisedFab,
+  MenuFab,
+  MenuOverlay,
+} from "./FloatingPanel/index.jsx";

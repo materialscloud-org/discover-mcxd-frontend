@@ -2,7 +2,11 @@ import { Container } from "react-bootstrap";
 
 import MaterialsCloudHeader from "mc-react-header";
 
-import { TitleAndLogo, TableOfContents, TableOfContentsMenu } from "@mcxd/shared";
+import {
+  TitleAndLogo,
+  TableOfContents,
+  TableOfContentsMenu,
+} from "@mcxd/shared";
 
 import Mc3dLogo from "../assets/mc3d.png";
 
