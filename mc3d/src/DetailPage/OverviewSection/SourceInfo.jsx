@@ -22,6 +22,12 @@ function sourceUrl(source) {
   return null;
 }
 
+const logos = {
+  ICSD: IcsdLogo,
+  COD: CodLogo,
+  MPDS: MpdsLogo,
+};
+
 function SourceInfoText({ sources, metadata }) {
   if (!("info" in metadata)) {
     console.warn("metadata['info'] not present.");
@@ -144,29 +150,25 @@ export default function SourceInfo({ sources, metadata }) {
         }}
       >
         {visibleSources.map((s) => {
-          let logo = null;
-          if (s.database == "ICSD") logo = IcsdLogo;
-          if (s.database == "COD") logo = CodLogo;
-          if (s.database == "MPDS") logo = MpdsLogo;
+          const logo = logos[s.database];
+
           return (
-            <span key={`${s.database}-${s["id"]}`}>
-              <a
-                className="source-a"
-                href={sourceUrl(s)}
-                title={"Go to source data"}
-              >
-                <span
-                  style={{
-                    display: "inline-flex",
-                    gap: "5px",
-                    alignItems: "center",
-                  }}
-                >
-                  {logo && <img src={logo} style={{ height: "20px" }}></img>}
-                  {s.database} ID: {s["id"]}
-                </span>
-              </a>
-            </span>
+            <a
+              key={`${s.database}-${s.id}`}
+              className="source-a"
+              href={sourceUrl(s)}
+              title="Go to source data"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: "inline-flex",
+                gap: "5px",
+                alignItems: "center",
+              }}
+            >
+              {logo && <img src={logo} style={{ height: "20px" }} />}
+              {s.database} ID: {s.id}
+            </a>
           );
         })}
       </div>

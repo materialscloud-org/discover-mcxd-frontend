@@ -38,10 +38,6 @@ function GeneralInfoBox({
 }) {
   const crystalStructure = crystals[cellMode.selectedCell];
 
-  console.log(crystals);
-
-  console.log(crystals?.calculationResults?.hm_symbol);
-
   const symbol = crystals?.calculationResults?.hm_symbol ?? "";
 
   const cleanSymbol =
@@ -59,18 +55,7 @@ function GeneralInfoBox({
             Hill formula (full):{" "}
             {formatChemicalFormula(details.general.formula_hill)}{" "}
           </li>
-          {/* <li>
-            Formula (IUPAC): {formatChemicalFormula(details.general.formula)}
-          </li>
-          <li>
-            Hill formula (full):{" "}
-            {formatChemicalFormula(details.general.formula_hill)}
-          </li> */}
           <li>Bravais lattice: {details.general.bravais_lattice}</li>
-          {/* <li>
-            Space group symbol:{" "}
-            {formatSpaceGroupSymbol(details.general.spacegroup_international)}
-          </li> */}
           <li>
             Space group info:{" "}
             {crystalStructure?.lattice ? (
@@ -87,7 +72,6 @@ function GeneralInfoBox({
               "—"
             )}
           </li>
-          {/* <li>Space group number: {details.general.spacegroup_number}</li> */}
           <li>
             Volume:{" "}
             {crystalStructure?.lattice
@@ -112,43 +96,7 @@ function GeneralInfoBox({
         <SourceInfo sources={details.source} metadata={metadata} />
       </div>
       <div>
-        <ul className="no-bullets">
-          {/* <li>
-            Density:{" "}
-            {formula.calculateDensity(
-              details.general.formula_hill,
-              details.properties.cell_volume,
-            )}{" "}
-            kg/m<sup>3</sup>
-          </li> */}
-          {/* <li>
-            Cell volume:{" "}
-            {format_aiida_prop(
-              details.properties.cell_volume,
-              metadata.info.properties.cell_volume,
-              methodLabel,
-              2,
-            )}
-          </li> */}
-          {/* <li>
-            Total magnetization:{" "}
-            {format_aiida_prop(
-              details.properties.total_magnetization,
-              metadata.info.properties.total_magnetization,
-              methodLabel,
-              2,
-            )}
-          </li>
-          <li>
-            Absolute magnetization:{" "}
-            {format_aiida_prop(
-              details.properties.absolute_magnetization,
-              metadata.info.properties.absolute_magnetization,
-              methodLabel,
-              2,
-            )}
-          </li> */}
-        </ul>
+        <ul className="no-bullets"></ul>
       </div>
     </McInfoBox>
   );
