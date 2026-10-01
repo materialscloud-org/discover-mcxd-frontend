@@ -44,7 +44,7 @@ function GeneralInfoBox({
     typeof symbol === "string" ? symbol.replace(/\s+/g, "") : "";
 
   return (
-    <McInfoBox style={{ height: "420px" }}>
+    <McInfoBox style={{ maxHeight: "420px" }}>
       <div>
         <b>Info</b>
         <ul className="no-bullets">
