@@ -1,35 +1,51 @@
+import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import { Spinner } from "react-bootstrap";
 
-import { useXrdWavelengths } from "./index.jsx";
+import { useQueryClient } from "@tanstack/react-query";
+
+import { loadXrdWavelength } from "../../common/fetchingUtils.js";
 
 const WAVELENGTHS = ["CuKa", "MoKa", "CrKa", "FeKa", "CoKa", "AgKa"];
 
 export default function BundleAndDownload({ method, id }) {
-  const results = useXrdWavelengths({ method, id });
+  const queryClient = useQueryClient();
+  const [pending, setPending] = useState(false);
 
-  const pending = results.some((r) => r.isPending);
+  // Fetch the remaining wavelengths on demand; the currently selected one
+  // is served from the react-query cache shared with the plot.
+  const handleDownload = async () => {
+    setPending(true);
+    try {
+      const entries = await Promise.all(
+        WAVELENGTHS.map((wavelength) =>
+          queryClient.fetchQuery({
+            queryKey: ["xrd", method, id, wavelength],
+            queryFn: () => loadXrdWavelength({ method, id, wavelength }),
+          }),
+        ),
+      );
 
-  const handleDownload = () => {
-    const full = {};
+      const full = Object.fromEntries(
+        WAVELENGTHS.map((wavelength, i) => [wavelength, entries[i]]),
+      );
 
-    results.forEach((r, i) => {
-      if (r.data) full[WAVELENGTHS[i]] = r.data;
-    });
+      // download bundled dataset
+      const blob = new Blob([JSON.stringify(full, null, 2)], {
+        type: "application/json",
+      });
 
-    // download bundled dataset
-    const blob = new Blob([JSON.stringify(full, null, 2)], {
-      type: "application/json",
-    });
+      const url = URL.createObjectURL(blob);
 
-    const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "xrdData.json";
+      a.click();
 
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "xrdData.json";
-    a.click();
-
-    URL.revokeObjectURL(url);
+      URL.revokeObjectURL(url);
+    } finally {
+      setPending(false);
+    }
   };
 
   return (

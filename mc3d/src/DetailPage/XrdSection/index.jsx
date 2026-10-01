@@ -7,7 +7,7 @@ import { McloudSpinner } from "mc-react-library";
 
 import { XrdIcon } from "../../assets/sectionIcons";
 
-import { useQuery, useQueries, keepPreviousData } from "@tanstack/react-query";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 
 import { wavelengthName, getFittedCurve, getHistogram } from "./utils.js";
 
@@ -23,16 +23,6 @@ export function useXrdWavelength({ method, id, wavelength }) {
     queryFn: () => loadXrdWavelength({ method, id, wavelength }),
     enabled: !!method && !!id && !!wavelength,
     placeholderData: keepPreviousData,
-  });
-}
-
-export function useXrdWavelengths({ method, id }) {
-  return useQueries({
-    queries: WAVELENGTHS.map((wavelength) => ({
-      queryKey: ["xrd", method, id, wavelength],
-      queryFn: () => loadXrdWavelength({ method, id, wavelength }),
-      enabled: !!method && !!id,
-    })),
   });
 }
 

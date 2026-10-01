@@ -26,8 +26,6 @@ import SourceInfo from "./SourceInfo";
 
 import { AIIDA_API_URLS, EXPLORE_URLS } from "../../common/fetchingUtils";
 
-import { ToggleSwitch } from "mc-react-library";
-
 import { toCIF, volume, density } from "matsci-parse";
 import CellSelector from "../../common/CellSelector";
 
@@ -50,7 +48,7 @@ function GeneralInfoBox({
     typeof symbol === "string" ? symbol.replace(/\s+/g, "") : "";
 
   return (
-    <McInfoBox style={{ height: "350px" }}>
+    <McInfoBox style={{ height: "420px" }}>
       <div>
         <b>Info</b>
         <ul className="no-bullets">
@@ -91,18 +89,18 @@ function GeneralInfoBox({
           </li>
           {/* <li>Space group number: {details.general.spacegroup_number}</li> */}
           <li>
-            <li>
-              Volume:{" "}
-              {crystalStructure?.lattice
-                ? `${volume(crystalStructure).toFixed(2)} Å³`
-                : "—"}
-            </li>
-            <li>
-              Atoms per cell:{" "}
-              {crystalStructure?.sites?.length
-                ? `${crystalStructure.sites.length}`
-                : "—"}
-            </li>
+            Volume:{" "}
+            {crystalStructure?.lattice
+              ? `${volume(crystalStructure).toFixed(2)} Å³`
+              : "—"}
+          </li>
+          <li>
+            Atoms per cell:{" "}
+            {crystalStructure?.sites?.length
+              ? `${crystalStructure.sites.length}`
+              : "—"}
+          </li>
+          <li>
             Density:{" "}
             {crystalStructure?.lattice // inlined kg/m3 conversion
               ? `${(density(crystalStructure) * 1660.5390666).toFixed(0)} kg/m³`
@@ -111,7 +109,6 @@ function GeneralInfoBox({
         </ul>
       </div>
       <div>
-        <b>Source</b>
         <SourceInfo sources={details.source} metadata={metadata} />
       </div>
       <div>

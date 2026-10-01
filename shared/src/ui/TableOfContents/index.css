@@ -10,7 +10,7 @@
   left: 12px;
   top: 150px;
   z-index: 1020;
-  width: 208px;
+  width: 220px;
   max-height: calc(100vh - 220px);
   overflow-y: auto;
   background: rgba(255, 255, 255, 0.97);

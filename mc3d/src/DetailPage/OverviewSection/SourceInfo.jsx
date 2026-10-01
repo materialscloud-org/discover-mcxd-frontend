@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Popover from "react-bootstrap/Popover";
 
 import IcsdLogo from "../../assets/icsd.png";
@@ -21,18 +22,13 @@ function sourceUrl(source) {
   return null;
 }
 
-function SourceInfoText({ source, metadata }) {
-  if (!("info" in source)) {
-    console.warn("source['info'] not present.");
-    return null;
-  }
-
+function SourceInfoText({ sources, metadata }) {
   if (!("info" in metadata)) {
     console.warn("metadata['info'] not present.");
     return null;
   }
 
-  // determine extra info label and popup
+  // aggregate flags over ALL sources: warn if any of them reports it
   let infoTextList = [];
   let infoPopupList = [];
 
@@ -40,19 +36,23 @@ function SourceInfoText({ source, metadata }) {
   let hpThresh = metadata?.info?.source?.high_pressure_threshold;
   let htThresh = metadata?.info?.source?.high_temperature_threshold;
 
-  if (source?.info?.is_theoretical) {
+  const hasTheoretical = sources.some((s) => s?.info?.is_theoretical);
+  const hasHighPressure = sources.some((s) => s?.info?.is_high_pressure);
+  const hasHighTemperature = sources.some((s) => s?.info?.is_high_temperature);
+
+  if (hasTheoretical) {
     infoTextList.push("theoretical origin");
     infoPopupList.push("is of theoretical origin");
   }
 
-  if (source?.info?.is_high_pressure && hpThresh) {
+  if (hasHighPressure && hpThresh) {
     infoTextList.push("high pressure");
     infoPopupList.push(
       `was characterized at a pressure higher than ${hpThresh.value} ${hpThresh.unit}`,
     );
   }
 
-  if (source?.info?.is_high_temperature && htThresh) {
+  if (hasHighTemperature && htThresh) {
     infoTextList.push("high temperature");
     infoPopupList.push(
       `was characterized at a temperature higher than ${htThresh.value} ${htThresh.unit}`,
@@ -61,7 +61,7 @@ function SourceInfoText({ source, metadata }) {
 
   let infoText = "";
   if (infoTextList.length > 0) {
-    infoText = infoTextList.join("; ");
+    infoText = infoTextList.join(" ");
     infoText = `(${infoText})`;
   }
 
@@ -71,7 +71,7 @@ function SourceInfoText({ source, metadata }) {
 
   for (let i = 0; i < infoPopupList.length; i++) {
     if (i < infoPopupList.length - 1) {
-      infoPopupList[i] = infoPopupList[i] + ";";
+      infoPopupList[i] = infoPopupList[i] + " ";
     } else {
       infoPopupList[i] = infoPopupList[i] + ".";
     }
@@ -80,7 +80,7 @@ function SourceInfoText({ source, metadata }) {
   const sourcePopover = (
     <Popover id="popover-basic">
       <Popover.Body>
-        The source database reported that the source crystal
+        The primary source database reported that the source crystal
         <ul style={{ margin: "0" }}>
           {infoPopupList.map((e) => (
             <li key={e}>{e}</li>
@@ -91,16 +91,15 @@ function SourceInfoText({ source, metadata }) {
   );
 
   return (
-    <div
+    <span
       style={{
-        display: "flex",
+        display: "inline-flex",
         gap: "5px",
-        marginLeft: "10px",
         alignItems: "center",
       }}
     >
       {infoText}
-      <div
+      <span
         style={{
           width: "20px",
           height: "20px",
@@ -108,44 +107,88 @@ function SourceInfoText({ source, metadata }) {
         }}
       >
         <HelpButton popover={sourcePopover} placement="top" />
-      </div>
-    </div>
+      </span>
+    </span>
   );
 }
 
+// How many equivalent sources to show before collapsing the rest.
+const MAX_VISIBLE_SOURCES = 9;
+
 export default function SourceInfo({ sources, metadata }) {
-  // currently assume that only one source exists
-  const source = sources[0];
+  const [expanded, setExpanded] = useState(false);
+
+  if (!sources || sources.length === 0) {
+    return null;
+  }
+
+  const visibleSources = expanded
+    ? sources
+    : sources.slice(0, MAX_VISIBLE_SOURCES);
+  const nHidden = sources.length - visibleSources.length;
 
   return (
-    <ul className="no-bullets">
-      {sources.map((s) => {
-        let logo = null;
-        if (s.database == "ICSD") logo = IcsdLogo;
-        if (s.database == "COD") logo = CodLogo;
-        if (s.database == "MPDS") logo = MpdsLogo;
-        return (
-          <li key={s["id"]}>
-            <a
-              className="source-a"
-              href={sourceUrl(s)}
-              title={"Go to source data"}
-            >
-              <div
-                style={{
-                  display: "inline-flex",
-                  gap: "5px",
-                  alignItems: "center",
-                }}
+    <>
+      <span>
+        <b>Sources</b> <SourceInfoText sources={sources} metadata={metadata} />
+      </span>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(3, max-content)",
+          columnGap: "20px",
+          rowGap: "2px",
+          justifyContent: "start",
+          alignItems: "center",
+          padding: "8px 0px 0px 8px",
+        }}
+      >
+        {visibleSources.map((s) => {
+          let logo = null;
+          if (s.database == "ICSD") logo = IcsdLogo;
+          if (s.database == "COD") logo = CodLogo;
+          if (s.database == "MPDS") logo = MpdsLogo;
+          return (
+            <span key={`${s.database}-${s["id"]}`}>
+              <a
+                className="source-a"
+                href={sourceUrl(s)}
+                title={"Go to source data"}
               >
-                <img src={logo} style={{ height: "20px" }}></img>
-                {s.database} ID: {s["id"]}
-              </div>
-            </a>
-            <SourceInfoText source={source} metadata={metadata} />
-          </li>
-        );
-      })}
-    </ul>
+                <span
+                  style={{
+                    display: "inline-flex",
+                    gap: "5px",
+                    alignItems: "center",
+                  }}
+                >
+                  {logo && <img src={logo} style={{ height: "20px" }}></img>}
+                  {s.database} ID: {s["id"]}
+                </span>
+              </a>
+            </span>
+          );
+        })}
+      </div>
+      <div
+        style={{
+          display: "flex",
+          gap: "15px",
+          alignItems: "center",
+          flexWrap: "wrap",
+        }}
+      >
+        {nHidden > 0 && (
+          <button className="source-toggle" onClick={() => setExpanded(true)}>
+            Show all {sources.length} equivalent sources...
+          </button>
+        )}
+        {expanded && sources.length > MAX_VISIBLE_SOURCES && (
+          <button className="source-toggle" onClick={() => setExpanded(false)}>
+            Show fewer
+          </button>
+        )}
+      </div>
+    </>
   );
 }
