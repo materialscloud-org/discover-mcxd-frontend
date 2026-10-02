@@ -1,5 +1,3 @@
-import { useMemo } from "react";
-
 import "./index.css";
 
 import StructureVisualizer from "mc-react-structure-visualizer";
@@ -26,7 +24,7 @@ import SourceInfo from "./SourceInfo";
 
 import { AIIDA_API_URLS, EXPLORE_URLS } from "../../common/fetchingUtils";
 
-import { toCIF, volume, density } from "matsci-parse";
+import { volume, density } from "matsci-parse";
 import CellSelector from "../../common/CellSelector";
 
 function GeneralInfoBox({
@@ -37,6 +35,8 @@ function GeneralInfoBox({
   cellMode,
 }) {
   const crystalStructure = crystals[cellMode.selectedCell];
+
+  console.log("c", crystalStructure);
 
   const symbol = crystals?.calculationResults?.hm_symbol ?? "";
 
@@ -116,28 +116,6 @@ const StructureViewerBox = ({
 
   const crystalStructure = crystals[cellMode.selectedCell];
 
-  const primitiveCif = useMemo(
-    () => (crystals.primitive ? toCIF(crystals.primitive) : null),
-    [crystals.primitive],
-  );
-
-  const conventionalCif = useMemo(
-    () => (crystals.conventional ? toCIF(crystals.conventional) : null),
-    [crystals.conventional],
-  );
-
-  const aiidaCif = useMemo(
-    () => (crystals.aiida ? toCIF(crystals.aiida) : null),
-    [crystals.aiida],
-  );
-
-  const cifMap = {
-    primitive: primitiveCif,
-    conventional: conventionalCif,
-    aiida: aiidaCif,
-  };
-
-  const cifText = cifMap[cellMode.selectedCell];
   const filenamePrefix = `${id}_${cellMode.selectedCell}`;
 
   return (
@@ -165,8 +143,11 @@ const StructureViewerBox = ({
           />
         </div>
 
-        {cifText && (
-          <StructureVisualizer cifText={cifText} initSupercell={[2, 2, 2]} />
+        {crystalStructure && (
+          <StructureVisualizer
+            structure={crystalStructure}
+            initSupercell={[2, 2, 2]}
+          />
         )}
 
         <div className="download-button-container px-1">

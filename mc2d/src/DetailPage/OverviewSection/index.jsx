@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useMemo } from "react";
 
 import "./index.css";
 
 import StructureVisualizer from "mc-react-structure-visualizer";
+
+import { fromStructureData } from "matsci-parse";
 
 import { Container, Row, Col } from "react-bootstrap";
 
@@ -155,16 +157,26 @@ function GeneralInfoBox({
 }
 
 const StructureViewerBox = ({ uuid, structureInfo }) => {
+  const crystalStructure = useMemo(
+    () =>
+      structureInfo?.aiidaAttributes
+        ? fromStructureData(structureInfo.aiidaAttributes)
+        : null,
+    [structureInfo],
+  );
+
   return (
     <>
       <div className="subsection-title">
         Structure <ExploreButton explore_url={EXPLORE_URL} uuid={uuid} />
       </div>
       <div className="structure-view-box subsection-shadow">
-        <StructureVisualizer
-          cifText={structureInfo.cif}
-          initSupercell={[3, 3, 1]}
-        />
+        {crystalStructure && (
+          <StructureVisualizer
+            structure={crystalStructure}
+            initSupercell={[3, 3, 1]}
+          />
+        )}
         <div className="download-button-container">
           <StructDownloadButton
             aiida_rest_url={AIIDA_REST_API_URL}

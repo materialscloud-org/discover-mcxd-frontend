@@ -15,7 +15,6 @@ import {
   loadMetadata,
   loadDetails,
   loadAiidaAttributes,
-  loadAiidaCif,
   loadDatasetIndex,
   loadTopologyDetails,
 } from "../common/restApiUtils";
@@ -46,7 +45,6 @@ async function fetchCompoundData(id) {
   let structureUuid = details.general.structure_relaxed_uuid;
 
   let aiidaAttributes = await loadAiidaAttributes(structureUuid);
-  let structureCif = await loadAiidaCif(structureUuid);
 
   // fetch and bundle topology metadata.
   let topologyInfo = {};
@@ -58,7 +56,7 @@ async function fetchCompoundData(id) {
     metadata: metadata,
     details: details,
     symmetryInfo: symmetryInfo,
-    structureInfo: { aiidaAttributes: aiidaAttributes, cif: structureCif },
+    structureInfo: { aiidaAttributes: aiidaAttributes },
     datasetIndex: datasetIndex,
     topologyInfo: topologyInfo,
   };

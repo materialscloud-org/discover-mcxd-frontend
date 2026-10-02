@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 
 import { McloudSpinner } from "mc-react-library";
 
@@ -23,10 +23,11 @@ import {
   AIIDA_REST_API_URL,
   EXPLORE_URL,
   loadAiidaAttributes,
-  loadAiidaCif,
 } from "../../common/restApiUtils";
 
 import { getSymmetryInfo } from "mc-react-library";
+
+import { fromStructureData } from "matsci-parse";
 
 import Form from "react-bootstrap/Form";
 
@@ -85,16 +86,26 @@ function ParentInfoBox({ parentInfo, symmetryInfo }) {
 }
 
 const StructureViewerBox = ({ uuid, structureInfo }) => {
+  const crystalStructure = useMemo(
+    () =>
+      structureInfo?.aiidaAttributes
+        ? fromStructureData(structureInfo.aiidaAttributes)
+        : null,
+    [structureInfo],
+  );
+
   return (
     <>
       <div className="subsection-title">
         Structure <ExploreButton explore_url={EXPLORE_URL} uuid={uuid} />
       </div>
       <div className="structure-view-box subsection-shadow">
-        <StructureVisualizer
-          cifText={structureInfo.cif}
-          initSupercell={[2, 2, 2]}
-        />
+        {crystalStructure && (
+          <StructureVisualizer
+            structure={crystalStructure}
+            initSupercell={[2, 2, 2]}
+          />
+        )}
         <div className="download-button-container">
           <StructDownloadButton
             aiida_rest_url={AIIDA_REST_API_URL}
@@ -108,8 +119,7 @@ const StructureViewerBox = ({ uuid, structureInfo }) => {
 
 async function fetchParentStructure(uuid) {
   let aiidaAttributes = await loadAiidaAttributes(uuid);
-  let structureCif = await loadAiidaCif(uuid);
-  return { aiidaAttributes: aiidaAttributes, cif: structureCif };
+  return { aiidaAttributes: aiidaAttributes };
 }
 
 function useParentStructure(uuid) {
