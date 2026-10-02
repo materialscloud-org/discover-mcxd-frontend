@@ -14,8 +14,6 @@ import { WarningBoxOtherMethod } from "../../common/WarningBox";
 import prettifyLabels from "./prettifyPVlabels";
 import { McloudSpinner } from "mc-react-library";
 
-import { McInfoBox } from "@mcxd/shared";
-
 import { VibrationalIcon } from "../../assets/sectionIcons";
 import { TwoWideInfoBox } from "../../common/TwoWideInfoBox";
 

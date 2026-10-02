@@ -17,7 +17,7 @@ const WAVELENGTHS = ["CuKa", "MoKa", "CrKa", "FeKa", "CoKa", "AgKa"];
 
 import { loadXrdWavelength } from "../../common/fetchingUtils.js";
 
-export function useXrdWavelength({ method, id, wavelength }) {
+function useXrdWavelength({ method, id, wavelength }) {
   return useQuery({
     queryKey: ["xrd", method, id, wavelength],
     queryFn: () => loadXrdWavelength({ method, id, wavelength }),
@@ -62,10 +62,14 @@ const XrdSection = ({ method, id }) => {
     return traces;
   }, [current, showHistogram, showCurve, fwhm, fitType]);
 
-  const xRange = current?.angular_range?.slice() || [];
+  const xRange = useMemo(
+    () => current?.angular_range?.slice() ?? [],
+    [current],
+  );
 
   useEffect(() => {
-    if (!plotRef.current || !current) return;
+    const node = plotRef.current;
+    if (!node || !current) return;
 
     const layout = {
       showlegend: false,
@@ -100,14 +104,12 @@ const XrdSection = ({ method, id }) => {
       },
     };
 
-    Plotly.react(plotRef.current, plotData, layout, {
+    Plotly.react(node, plotData, layout, {
       responsive: true,
     });
 
     return () => {
-      if (plotRef.current) {
-        Plotly.purge(plotRef.current);
-      }
+      Plotly.purge(node);
     };
   }, [current, plotData, xRange]);
 

@@ -56,7 +56,7 @@ export default function SimilaritySection({ params, loadedData }) {
     return [
       comp.rms.toFixed(4),
       comp.max.toFixed(4),
-      <a href={url} rel="noopener noreferrer">
+      <a key={label} href={url} rel="noopener noreferrer">
         {label}
       </a>,
     ];

@@ -6,7 +6,6 @@ import PhononVisualizer from "mc-react-phonon-visualizer";
 import {
   BandStructure,
   COMMON_LAYOUT_CONFIG,
-  SUPERCON_BANDS_LAYOUT_CONFIG,
 } from "@mcxd/shared";
 import {
   loadAiidaBands,

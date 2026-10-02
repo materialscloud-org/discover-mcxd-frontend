@@ -13,7 +13,6 @@ import {
   StructDownloadButton,
   formatChemicalFormula,
   formatSpaceGroupSymbol,
-  getSymmetryInfo,
 } from "mc-react-library";
 
 import { McInfoBox } from "@mcxd/shared";

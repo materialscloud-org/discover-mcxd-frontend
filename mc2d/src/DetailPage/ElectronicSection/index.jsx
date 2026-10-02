@@ -1,6 +1,6 @@
 import React from "react";
 
-import { McloudSpinner, ExploreButton } from "mc-react-library";
+import { ExploreButton } from "mc-react-library";
 
 import { splitBandsData } from "@mcxd/shared";
 
@@ -11,7 +11,7 @@ import { Container, Row, Col } from "react-bootstrap";
 import { useQuery } from "@tanstack/react-query";
 import { loadAiidaBands } from "../../common/restApiUtils";
 
-import { AIIDA_REST_API_URL, EXPLORE_URL } from "../../common/restApiUtils";
+import { EXPLORE_URL } from "../../common/restApiUtils";
 
 import {
   BandStructure,

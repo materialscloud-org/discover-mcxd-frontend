@@ -1,17 +1,10 @@
-import { ExploreButton, StructDownloadButton } from "mc-react-library";
-
 import { CellInfoBox } from "./CellInfo";
 import { AtomicSitesInfoBox } from "./AtomicSitesInfo";
 
 import { Container, Row, Col } from "react-bootstrap";
-import { McInfoBox } from "@mcxd/shared";
 
 import { StructureIcon } from "../../assets/sectionIcons";
 
-import { AIIDA_API_URLS, EXPLORE_URLS } from "../../common/fetchingUtils";
-import { format_aiida_prop } from "../../common/utils";
-
-import { ToggleSwitch } from "mc-react-library";
 import CellSelector from "../../common/CellSelector";
 
 export default function StructureSection({
@@ -22,9 +15,6 @@ export default function StructureSection({
 }) {
   let details = loadedData.details;
   let structureInfo = loadedData.structureInfo;
-
-  const metadata = loadedData.metadata;
-  const methodLabel = params.method;
 
   return (
     <div id="structure" data-toc-section="structure">

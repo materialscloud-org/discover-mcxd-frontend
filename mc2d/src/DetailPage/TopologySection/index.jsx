@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ExploreButton, StructDownloadButton } from "mc-react-library";
+import { ExploreButton } from "mc-react-library";
 
 import { Tooltip, OverlayTrigger } from "react-bootstrap";
 import { Container, Row, Col } from "react-bootstrap";
@@ -12,7 +12,6 @@ import { Link } from "react-router-dom";
 import {
   BandStructure,
   COMMON_LAYOUT_CONFIG,
-  standardTraceConfigs,
   topologyTraceConfigs,
 } from "@mcxd/shared";
 

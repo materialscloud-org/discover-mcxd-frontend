@@ -6,23 +6,19 @@ import { StructureDownload } from "../../common/StructureDownload";
 
 import { Container, Row, Col } from "react-bootstrap";
 
-import { formula } from "mc-react-library";
-
 import {
   ExploreButton,
-  StructDownloadButton,
   formatChemicalFormula,
   formatSpaceGroupSymbol,
 } from "mc-react-library";
 
-import { format_aiida_prop } from "../../common/utils";
 import { McInfoBox } from "@mcxd/shared";
 
 import { OverviewIcon } from "../../assets/sectionIcons";
 
 import SourceInfo from "./SourceInfo";
 
-import { AIIDA_API_URLS, EXPLORE_URLS } from "../../common/fetchingUtils";
+import { EXPLORE_URLS } from "../../common/fetchingUtils";
 
 import { volume, density } from "matsci-parse";
 import CellSelector from "../../common/CellSelector";
@@ -35,13 +31,7 @@ function GeneralInfoBox({
   cellMode,
 }) {
   const crystalStructure = crystals[cellMode.selectedCell];
-
-  console.log("c", crystalStructure);
-
   const symbol = crystals?.calculationResults?.hm_symbol ?? "";
-
-  const cleanSymbol =
-    typeof symbol === "string" ? symbol.replace(/\s+/g, "") : "";
 
   return (
     <McInfoBox style={{ maxHeight: "420px" }}>

@@ -50,7 +50,7 @@ const StructureSection = ({ params, loadedData }) => {
               <McTable
                 headerRow={["", "x [Å]", "y [Å]", "z [Å]"]}
                 contents={structureInfo.aiidaAttributes.cell.map((v, i) => [
-                  <span>
+                  <span key={`v${i + 1}`}>
                     v<sub>{i + 1}</sub>
                   </span>,
                   v[0],

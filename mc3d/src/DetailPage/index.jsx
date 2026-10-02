@@ -30,7 +30,6 @@ import SuperconductivitySection from "./SuperconductivitySection";
 // if fetching fails we use this.
 import MissingDataWarning from "./MissingDataWarning";
 
-import { CitationBanner } from "@mcxd/shared";
 import PageLayout from "../Layout";
 import MechanicalSection from "./MechanicalSection";
 
@@ -82,7 +81,6 @@ function DetailPage() {
   const params = useParams(); // Route parameters
   const [crystals, setCrystals] = useState({});
   const [selectedCell, setSelectedCell] = useState("aiida");
-  const [usePrimitive, setUsePrimitive] = useState(true);
 
   const cellMode = {
     selectedCell,
