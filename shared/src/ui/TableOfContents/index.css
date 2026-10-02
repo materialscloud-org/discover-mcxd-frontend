@@ -1,0 +1,47 @@
+/* Anchor offset for ToC scrolling (applies to existing section divs). */
+[data-toc-section] {
+  scroll-margin-top: 90px;
+}
+
+/* Card chrome, fabs, overlay and breakpoints live in shared FloatingPanel;
+   only ToC content styling stays here. */
+.mcxd-toc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mcxd-toc-list a {
+  display: block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: #495057;
+  text-decoration: none;
+  line-height: 1.35;
+}
+
+.mcxd-toc-list a:hover {
+  background-color: #f1f3f5;
+  color: #212529;
+  text-decoration: none;
+}
+
+.mcxd-toc-list a.active {
+  background-color: #e7f1ff;
+  color: #0b5ed7;
+  /* font-weight: 600; */
+}
+
+.mcxd-toc-icon {
+  display: inline-flex;
+  margin-right: 6px;
+  vertical-align: -2px;
+}
+
+/* Custom stroke icons follow the active link colour. */
+.mcxd-toc-list a.active .mcxd-toc-icon svg {
+  stroke: #0b5ed7;
+}

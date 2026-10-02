@@ -1,60 +1,77 @@
-import { useEffect, useState } from "react";
 import { Row, Col, Container } from "react-bootstrap";
 
 import { CitationBanner } from "@mcxd/shared";
 import PhononVisualizer from "mc-react-phonon-visualizer";
 
-import { loadSuperConPhononVis } from "../../common/fetchingUtils";
+import { useQuery } from "@tanstack/react-query";
+import {
+  loadSuperConDetails,
+  loadSuperConPhononVis,
+} from "../../common/fetchingUtils";
 
 import { WarningBoxOtherMethod } from "../../common/WarningBox";
 
 import prettifyLabels from "./prettifyPVlabels";
 import { McloudSpinner } from "mc-react-library";
 
-import { McInfoBox } from "@mcxd/shared";
+import { VibrationalIcon } from "../../assets/sectionIcons";
 import { TwoWideInfoBox } from "../../common/TwoWideInfoBox";
 
 import formatIfExists from "../../common/resultFormatter";
 
 import { Link } from "react-router-dom";
 
-export default function VibrationalSection({ params, loadedData, phononData }) {
-  const [phononVisData, setPhononVisData] = useState(null);
-  const [notAvail, setNotAvail] = useState(false);
-  const [loading, setLoading] = useState(true);
+const CM1_TO_MEV = 0.12398;
 
-  const method = phononData?.method;
+function useSuperconDetails(dataMethod, id) {
+  return useQuery({
+    queryKey: ["supercon", dataMethod, id],
+    queryFn: () => loadSuperConDetails(dataMethod, id),
+    enabled: !!dataMethod && !!id,
+  });
+}
 
-  useEffect(() => {
-    if (!phononData?.scDetails?.phonons?.matdyn_uuid) return;
+function useSuperconPhononVis(dataMethod, id, matdynUuid) {
+  return useQuery({
+    queryKey: ["supercon-phonon-vis", dataMethod, id],
+    queryFn: () =>
+      loadSuperConPhononVis(dataMethod, id).then((loadedSCPVis) => {
+        if (!loadedSCPVis) return null;
+        return {
+          ...loadedSCPVis,
+          eigenvalues: loadedSCPVis.eigenvalues?.map((bandArray) =>
+            bandArray.map((val) => val * CM1_TO_MEV),
+          ),
+          highsym_qpts: loadedSCPVis.highsym_qpts?.map(prettifyLabels),
+        };
+      }),
+    enabled: !!dataMethod && !!id && !!matdynUuid,
+  });
+}
 
-    setLoading(true);
+export default function VibrationalSection({
+  params,
+  loadedData,
+  superconMethod,
+}) {
+  const { data: scDetails } = useSuperconDetails(superconMethod, params.id);
 
-    loadSuperConPhononVis(method, params.id)
-      .then((loadedSCPVis) => {
-        if (loadedSCPVis) {
-          const CM1_TO_MEV = 0.12398;
+  const matdynUuid = scDetails?.phonons?.matdyn_uuid;
 
-          const convertedEigenvalues = loadedSCPVis.eigenvalues?.map(
-            (bandArray) => bandArray.map((val) => val * CM1_TO_MEV),
-          );
+  const { data: phononVisData, isPending: visPending } = useSuperconPhononVis(
+    superconMethod,
+    params.id,
+    matdynUuid,
+  );
 
-          setPhononVisData({
-            ...loadedSCPVis,
-            eigenvalues: convertedEigenvalues,
-            highsym_qpts: loadedSCPVis.highsym_qpts?.map(prettifyLabels),
-          });
-        } else {
-          setNotAvail(true);
-        }
-      })
-      .finally(() => setLoading(false));
-  }, [params.id, method]);
+  const method = superconMethod;
+  const loading = visPending;
 
-  if (!phononData || !phononData?.scDetails?.phonons) return null;
-  if (!phononData?.scDetails?.phonons?.matdyn_uuid) return null;
+  if (!superconMethod) return null;
+  if (!scDetails?.phonons) return null;
+  if (!scDetails?.phonons?.matdyn_uuid) return null;
 
-  const pdInfo = phononData?.scDetails?.phonons || null;
+  const pdInfo = scDetails?.phonons || null;
   const vibCalcInfo = [
     {
       key: (
@@ -123,7 +140,7 @@ export default function VibrationalSection({ params, loadedData, phononData }) {
 
   let content;
 
-  if (notAvail) {
+  if (!visPending && !phononVisData) {
     // dont render if something went wrong.
     return null;
   } else if (loading) {
@@ -154,7 +171,7 @@ export default function VibrationalSection({ params, loadedData, phononData }) {
   }
 
   return (
-    <div>
+    <div id="vibrational" data-toc-section="vibrational">
       <div
         style={{
           margin: "10px 0px",
@@ -162,7 +179,10 @@ export default function VibrationalSection({ params, loadedData, phononData }) {
           borderBottom: "1px solid #c4c4c4",
         }}
       >
-        <div style={{ fontSize: "24px" }}>Vibrational properties</div>
+        <div style={{ fontSize: "24px" }}>
+          <VibrationalIcon size={22} className="section-heading-icon" />
+          Vibrational properties
+        </div>
         <div
           style={{
             display: "flex",

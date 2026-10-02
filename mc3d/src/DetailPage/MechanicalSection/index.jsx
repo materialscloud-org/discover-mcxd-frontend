@@ -1,7 +1,14 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Container, Row, Col, Form } from "react-bootstrap";
 import { CitationBanner, McInfoBox } from "@mcxd/shared";
-import { EXPLORE_URLS, loadAiidaAttributes } from "../../common/fetchingUtils";
+import { useQuery } from "@tanstack/react-query";
+
+import { MechanicalIcon } from "../../assets/sectionIcons";
+import {
+  EXPLORE_URLS,
+  loadAiidaAttributes,
+  loadMechanicalProps,
+} from "../../common/fetchingUtils";
 import { ExploreButton } from "mc-react-library";
 
 import MECHANICAL_PROPERTY_META from "./metadata";
@@ -12,6 +19,33 @@ import { WarningBoxOtherMethod } from "../../common/WarningBox";
 import { WarningBox } from "../../common/WarningBox";
 
 import { MechanicalMethodButton } from "./InfoPopover";
+
+function useMechanicalDetails(dataMethod, id) {
+  return useQuery({
+    queryKey: ["mechanical", dataMethod, id],
+    queryFn: () => loadMechanicalProps(dataMethod, id),
+    enabled: !!dataMethod && !!id,
+  });
+}
+
+function useScfAttributes(apiMethod, paramsUuid, kpointsUuid, qpointsUuid) {
+  return useQuery({
+    queryKey: ["scf-attrs", apiMethod, paramsUuid, kpointsUuid, qpointsUuid],
+    queryFn: () =>
+      Promise.all([
+        loadAiidaAttributes(apiMethod, paramsUuid),
+        loadAiidaAttributes(apiMethod, kpointsUuid),
+        qpointsUuid
+          ? loadAiidaAttributes(apiMethod, qpointsUuid)
+          : Promise.resolve(null),
+      ]).then(([params, kpoints, qpoints]) => ({
+        params: params ?? null,
+        kpoints: kpoints ?? null,
+        qpoints: qpoints ?? null,
+      })),
+    enabled: !!paramsUuid && !!kpointsUuid,
+  });
+}
 
 const AVERAGES = ["voigt_average", "VRH_average", "reuss_average"];
 
@@ -90,25 +124,20 @@ function Selector({ label, value, options, onChange }) {
 export default function MechanicalSection({
   params,
   loadedData,
-  mechanicalData,
+  mechanicalMethod,
 }) {
-  const elastic = mechanicalData?.mechDetails?.elastic;
-  const method = mechanicalData?.method;
+  const { data: mechDetails } = useMechanicalDetails(
+    mechanicalMethod,
+    params.id,
+  );
+
+  const elastic = mechDetails?.elastic;
+  const method = mechanicalMethod;
 
   const [subMethod, setSubMethod] = useState(null);
   const [pseudopotential, setPseudopotential] = useState(null);
   const [intermediateSelections, setIntermediateSelections] = useState({});
   const [average, setAverage] = useState(null);
-
-  const [scfParamsData, setScfParamsData] = useState(null);
-  const [scfKpointsData, setScfKpointsData] = useState(null);
-  const [scfQpointsData, setScfQpointsData] = useState(null);
-  const [scfLoading, setScfLoading] = useState(false);
-
-  // escape on failure
-  if (!elastic || Object.keys(elastic).length === 0) {
-    return null;
-  }
 
   /*
    * --------------------------------------------------------------------------
@@ -199,39 +228,16 @@ export default function MechanicalSection({
    * --------------------------------------------------------------------------
    */
 
-  useEffect(() => {
-    setScfParamsData(null);
-    setScfKpointsData(null);
-    setScfQpointsData(null);
+  const { data: scfData, isFetching: scfLoading } = useScfAttributes(
+    "pbesol-v1-mechanical",
+    scfParamsUuid,
+    scfKpointsUuid,
+    scfQpointsUuid,
+  );
 
-    if (!scfParamsUuid || !scfKpointsUuid) {
-      setScfLoading(false);
-      return;
-    }
-
-    let cancelled = false;
-
-    setScfLoading(true);
-
-    Promise.all([
-      loadAiidaAttributes("pbesol-v1-mechanical", scfParamsUuid),
-      loadAiidaAttributes("pbesol-v1-mechanical", scfKpointsUuid),
-      scfQpointsUuid
-        ? loadAiidaAttributes("pbesol-v1-mechanical", scfQpointsUuid)
-        : Promise.resolve(null),
-    ]).then(([paramsData, kpointsData, qpointsData]) => {
-      if (!cancelled) {
-        setScfParamsData(paramsData ?? null);
-        setScfKpointsData(kpointsData ?? null);
-        setScfQpointsData(qpointsData ?? null);
-        setScfLoading(false);
-      }
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [scfParamsUuid, scfKpointsUuid, scfQpointsUuid]);
+  const scfParamsData = scfData?.params ?? null;
+  const scfKpointsData = scfData?.kpoints ?? null;
+  const scfQpointsData = scfData?.qpoints ?? null;
 
   /*
    * --------------------------------------------------------------------------
@@ -258,8 +264,13 @@ export default function MechanicalSection({
         value === "NaN" || (typeof value === "number" && Number.isNaN(value)),
     );
 
+  // escape on failure (after all hooks to preserve hook order across renders)
+  if (!elastic || Object.keys(elastic).length === 0) {
+    return null;
+  }
+
   return (
-    <div>
+    <div id="mechanical" data-toc-section="mechanical">
       <Container fluid className="section-container">
         <div
           style={{
@@ -268,7 +279,10 @@ export default function MechanicalSection({
             borderBottom: "1px solid #c4c4c4",
           }}
         >
-          <div style={{ fontSize: "24px" }}>Mechanical details</div>
+          <div style={{ fontSize: "24px" }}>
+            <MechanicalIcon size={22} className="section-heading-icon" />
+            Mechanical details
+          </div>
 
           <div
             style={{

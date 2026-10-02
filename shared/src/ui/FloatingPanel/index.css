@@ -1,0 +1,165 @@
+/* Shared floating-panel language (table of contents, recently visited).
+   Fixed to the left viewport edge, out of document flow so page content
+   keeps its full width. Visibility per breakpoint keeps the three pieces
+   (card, minimised button, mobile menu) mutually exclusive. */
+
+/* Wide screens: floating card. */
+.mcxd-fp-card {
+  position: fixed;
+  left: 12px;
+  top: 140px;
+  z-index: 1020;
+  width: 264px;
+  max-height: calc(100vh - 220px);
+  overflow-y: auto;
+  background: rgba(255, 255, 255, 0.97);
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  padding: 12px;
+  font-size: 14px;
+}
+
+.mcxd-fp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.mcxd-fp-title {
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #6c757d;
+  margin: 0;
+}
+
+.mcxd-fp-min-btn {
+  border: none;
+  background: transparent;
+  color: #6c757d;
+  font-size: 18px;
+  line-height: 1;
+  padding: 2px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.mcxd-fp-min-btn:hover {
+  background-color: #f1f3f5;
+  color: #212529;
+}
+
+/* Wide screens: hamburger in the card's place when minimised. */
+.mcxd-fp-fab-desktop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  left: 12px;
+  bottom: 16px;
+  z-index: 30;
+  width: 40px;
+  height: 40px;
+  border-radius: 10%;
+  border: 1px solid #767575;
+  background: #dde8f3;
+  color: #999;
+  font-size: 22px;
+  line-height: 1;
+  box-shadow: 0 4px 12px rgba(124, 123, 123, 0.25);
+  cursor: pointer;
+  padding: 0px;
+}
+
+.mcxd-fp-fab-desktop:hover {
+  background: #bfd4e9;
+  border: 1px solid #454444;
+}
+
+@media (max-width: 1755.98px) {
+  .mcxd-fp-card,
+  .mcxd-fp-fab-desktop {
+    display: none;
+  }
+}
+
+/* CSS-drawn burger: exactly centred, unlike text glyphs. */
+.mcxd-fp-burger {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  width: 20px;
+  height: 20px;
+}
+
+.mcxd-fp-burger > span {
+  display: block;
+  width: 20px;
+  height: 3px;
+  border-radius: 2px;
+  background: #575757;
+}
+
+/* Small screens: floating hamburger button + expandable overlay panel. */
+.mcxd-fp-fab {
+  display: none;
+}
+
+@media (max-width: 1755.98px) {
+  .mcxd-fp-fab {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    left: 12px;
+    bottom: 16px;
+    z-index: 30;
+    width: 40px;
+    height: 40px;
+    border-radius: 10%;
+    border: 1px solid #767575;
+    background: #dde8f3;
+    color: #999;
+    font-size: 22px;
+    line-height: 1;
+    box-shadow: 0 4px 12px rgba(124, 123, 123, 0.25);
+    cursor: pointer;
+    padding: 0px;
+  }
+}
+
+.mcxd-fp-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1029;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.mcxd-fp-panel {
+  position: fixed;
+  left: 12px;
+  bottom: 72px;
+  z-index: 1030;
+  width: min(280px, calc(100vw - 24px));
+  max-height: 60vh;
+  overflow-y: auto;
+  background: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  padding: 12px;
+  font-size: 14px;
+}
+
+@media (min-width: 1756px) {
+  .mcxd-fp-fab,
+  .mcxd-fp-backdrop,
+  .mcxd-fp-panel {
+    display: none;
+  }
+}

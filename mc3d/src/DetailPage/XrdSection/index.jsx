@@ -5,6 +5,10 @@ import { Container, Row, Col } from "react-bootstrap";
 
 import { McloudSpinner } from "mc-react-library";
 
+import { XrdIcon } from "../../assets/sectionIcons";
+
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
+
 import { wavelengthName, getFittedCurve, getHistogram } from "./utils.js";
 
 import BundleAndDownload from "./BundleAndDownload.jsx";
@@ -13,12 +17,17 @@ const WAVELENGTHS = ["CuKa", "MoKa", "CrKa", "FeKa", "CoKa", "AgKa"];
 
 import { loadXrdWavelength } from "../../common/fetchingUtils.js";
 
+function useXrdWavelength({ method, id, wavelength }) {
+  return useQuery({
+    queryKey: ["xrd", method, id, wavelength],
+    queryFn: () => loadXrdWavelength({ method, id, wavelength }),
+    enabled: !!method && !!id && !!wavelength,
+    placeholderData: keepPreviousData,
+  });
+}
+
 const XrdSection = ({ method, id }) => {
   const plotRef = useRef(null);
-  const previous = useRef(null);
-
-  const [cache, setCache] = useState({});
-  const [error, setError] = useState(null);
 
   const [wavelength, setWavelength] = useState(WAVELENGTHS[0]);
 
@@ -28,51 +37,14 @@ const XrdSection = ({ method, id }) => {
   const [showCurve, setShowCurve] = useState(true);
   const [showHistogram, setShowHistogram] = useState(true);
 
-  const current = cache[wavelength];
+  const {
+    data: current,
+    isPending,
+    isError,
+  } = useXrdWavelength({ method, id, wavelength });
 
-  const isLoading = !error && Object.keys(cache).length === 0;
-
-  // Fetch missing wavelength
-  useEffect(() => {
-    if (!wavelength || cache[wavelength]) return;
-
-    let cancelled = false;
-
-    const fetchData = async () => {
-      try {
-        setError(null);
-
-        const data = await loadXrdWavelength({
-          method: method,
-          id: id,
-          wavelength,
-        });
-
-        if (cancelled) return;
-
-        setCache((prev) => ({
-          ...prev,
-          [wavelength]: data,
-        }));
-      } catch (err) {
-        if (!cancelled) {
-          setError("Data not available for this material.");
-        }
-      }
-    };
-
-    fetchData();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [wavelength, cache, id, method]);
-
-  useEffect(() => {
-    if (current) {
-      previous.current = current;
-    }
-  }, [current]);
+  const isLoading = isPending && !current;
+  const error = isError ? "Data not available for this material." : null;
 
   const plotData = useMemo(() => {
     if (!current) return [];
@@ -90,10 +62,14 @@ const XrdSection = ({ method, id }) => {
     return traces;
   }, [current, showHistogram, showCurve, fwhm, fitType]);
 
-  const xRange = current?.angular_range?.slice() || [];
+  const xRange = useMemo(
+    () => current?.angular_range?.slice() ?? [],
+    [current],
+  );
 
   useEffect(() => {
-    if (!plotRef.current || !current) return;
+    const node = plotRef.current;
+    if (!node || !current) return;
 
     const layout = {
       showlegend: false,
@@ -128,21 +104,22 @@ const XrdSection = ({ method, id }) => {
       },
     };
 
-    Plotly.react(plotRef.current, plotData, layout, {
+    Plotly.react(node, plotData, layout, {
       responsive: true,
     });
 
     return () => {
-      if (plotRef.current) {
-        Plotly.purge(plotRef.current);
-      }
+      Plotly.purge(node);
     };
   }, [current, plotData, xRange]);
 
   if (error) {
     return (
-      <div>
-        <div className="section-heading">X-ray diffraction pattern</div>
+      <div id="xrd" data-toc-section="xrd">
+        <div className="section-heading">
+          <XrdIcon size={22} className="section-heading-icon" />
+          X-ray diffraction pattern
+        </div>
         <Container fluid className="section-container">
           <Row>
             <div className="xrd-section">
@@ -158,7 +135,8 @@ const XrdSection = ({ method, id }) => {
 
   if (isLoading) {
     return (
-      <div className="section-heading">
+      <div id="xrd" data-toc-section="xrd" className="section-heading">
+        <XrdIcon size={22} className="section-heading-icon" />
         X-ray diffraction pattern
         <Container fluid className="section-container">
           <Row>
@@ -178,8 +156,11 @@ const XrdSection = ({ method, id }) => {
   }
 
   return (
-    <div>
-      <div className="section-heading">X-ray diffraction pattern</div>
+    <div id="xrd" data-toc-section="xrd">
+      <div className="section-heading">
+        <XrdIcon size={22} className="section-heading-icon" />
+        X-ray diffraction pattern
+      </div>
       <Container fluid className="section-container">
         <Row>
           <div style={{ paddingBottom: "10px" }}>
@@ -251,12 +232,7 @@ const XrdSection = ({ method, id }) => {
 
                 <div>
                   Download X-ray data
-                  <BundleAndDownload
-                    cache={cache}
-                    setCache={setCache}
-                    method={method}
-                    id={id}
-                  />
+                  <BundleAndDownload method={method} id={id} />
                 </div>
               </Col>
 

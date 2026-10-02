@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 
 import { McloudSpinner } from "mc-react-library";
 
 import { McInfoBox } from "@mcxd/shared";
+
+import { ParentsIcon } from "../../assets/sectionIcons";
+
+import { useQuery } from "@tanstack/react-query";
 
 import { Container, Row, Col } from "react-bootstrap";
 
@@ -19,10 +23,11 @@ import {
   AIIDA_REST_API_URL,
   EXPLORE_URL,
   loadAiidaAttributes,
-  loadAiidaCif,
 } from "../../common/restApiUtils";
 
 import { getSymmetryInfo } from "mc-react-library";
+
+import { fromStructureData } from "matsci-parse";
 
 import Form from "react-bootstrap/Form";
 
@@ -81,16 +86,26 @@ function ParentInfoBox({ parentInfo, symmetryInfo }) {
 }
 
 const StructureViewerBox = ({ uuid, structureInfo }) => {
+  const crystalStructure = useMemo(
+    () =>
+      structureInfo?.aiidaAttributes
+        ? fromStructureData(structureInfo.aiidaAttributes)
+        : null,
+    [structureInfo],
+  );
+
   return (
     <>
       <div className="subsection-title">
         Structure <ExploreButton explore_url={EXPLORE_URL} uuid={uuid} />
       </div>
       <div className="structure-view-box subsection-shadow">
-        <StructureVisualizer
-          cifText={structureInfo.cif}
-          initSupercell={[2, 2, 2]}
-        />
+        {crystalStructure && (
+          <StructureVisualizer
+            structure={crystalStructure}
+            initSupercell={[2, 2, 2]}
+          />
+        )}
         <div className="download-button-container">
           <StructDownloadButton
             aiida_rest_url={AIIDA_REST_API_URL}
@@ -104,36 +119,34 @@ const StructureViewerBox = ({ uuid, structureInfo }) => {
 
 async function fetchParentStructure(uuid) {
   let aiidaAttributes = await loadAiidaAttributes(uuid);
-  let structureCif = await loadAiidaCif(uuid);
-  return { aiidaAttributes: aiidaAttributes, cif: structureCif };
+  return { aiidaAttributes: aiidaAttributes };
+}
+
+function useParentStructure(uuid) {
+  return useQuery({
+    queryKey: ["parent-structure", uuid],
+    queryFn: () => fetchParentStructure(uuid),
+    enabled: !!uuid,
+  });
 }
 
 const ParentsSection = (props) => {
   const [selectedParentIndex, setSelectedParentIndex] = useState(0);
-  const [parentStructureInfo, setParentStructureInfo] = useState(null);
   // const [selectedParent, setSelectedParent] = useState(parentsList[0]);
 
   let parentsList = props.loadedData.details.parents_3d;
   let selectedParentUuid =
     parentsList[selectedParentIndex].initial_structure_uuid;
 
+  const { data: parentStructureInfo, isPending: parentPending } =
+    useParentStructure(selectedParentUuid);
+
   let symmetryInfoList = [];
   parentsList.forEach((parent) => {
     symmetryInfoList.push(getSymmetryInfo(parent.space_group_number));
   });
 
-  useEffect(() => {
-    if (selectedParentUuid) {
-      fetchParentStructure(selectedParentUuid).then((loaded) => {
-        setParentStructureInfo(loaded);
-      });
-    } else {
-      setParentStructureInfo(null);
-    }
-  }, [selectedParentIndex]);
-
-  let loadingStructure =
-    selectedParentUuid != null && parentStructureInfo == null;
+  let loadingStructure = selectedParentUuid != null && parentPending;
 
   let naMsg = "Parent structure not available.";
   if (
@@ -174,8 +187,9 @@ const ParentsSection = (props) => {
   }
 
   return (
-    <div>
-      <div id="parents-section" className="section-heading">
+    <div id="parents-section" data-toc-section="parents-section">
+      <div className="section-heading">
+        <ParentsIcon size={22} className="section-heading-icon" />
         3D parent crystals
       </div>
       <Container fluid className="section-container">

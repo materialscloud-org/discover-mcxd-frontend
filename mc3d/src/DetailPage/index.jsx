@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 import "./index.css";
 
@@ -8,15 +8,12 @@ import { McloudSpinner } from "mc-react-library";
 
 import { formatTitle } from "@mcxd/shared";
 
+import { useQuery } from "@tanstack/react-query";
 import {
   loadMetadata,
   loadDetails,
   loadDatasetIndex,
-  loadSuperConDetails,
-  loadSuperConPhononVis,
-  loadMechanicalProps,
   loadAiidaAttributes,
-  loadAiidaCif,
 } from "../common/fetchingUtils";
 
 import AlternativeMethodsList from "./AlternativeMethodsList";
@@ -30,92 +27,53 @@ import XrdSection from "./XrdSection";
 import VibrationalSection from "./VibrationalSection";
 import SuperconductivitySection from "./SuperconductivitySection";
 
-import SimilaritySection from "./SimilaritySection";
-import ElectronicStructureSection from "./ElectronicStructureSection";
-
 // if fetching fails we use this.
 import MissingDataWarning from "./MissingDataWarning";
 
-import { CitationBanner } from "@mcxd/shared";
 import PageLayout from "../Layout";
 import MechanicalSection from "./MechanicalSection";
+
+import { MC3D_TOC_REGISTRY } from "./tocRegistry";
+
+import { recordVisit } from "../common/recentlyVisited";
 
 import { fromStructureData, getSymmetry } from "matsci-parse";
 
 // contributed sections
 // import RelatedSection from "./RelatedSection";
 
-async function fetchCompoundData(method, id) {
-  try {
-    const [metadata, details] = await Promise.all([
-      loadMetadata(method, id),
-      loadDetails(method, id),
-    ]);
+async function fetchCoreData(method, id) {
+  const [metadata, details] = await Promise.all([
+    loadMetadata(method, id),
+    loadDetails(method, id),
+  ]);
 
-    const structureUuid = details?.general?.structure_uuid;
-    if (!structureUuid) throw new Error("Missing structure UUID");
+  const structureUuid = details?.general?.structure_uuid;
+  if (!structureUuid) throw new Error("Missing structure UUID");
 
-    const [aiidaAttributes, structureCif] = await Promise.all([
-      loadAiidaAttributes(method, structureUuid),
-      // loadAiidaCif(method, structureUuid),
-    ]);
+  const aiidaAttributes = await loadAiidaAttributes(method, structureUuid);
 
-    return {
-      metadata,
-      details,
-      structureInfo: { aiidaAttributes, cif: structureCif },
-      missingStructureWarning: null,
-    };
-  } catch {
-    return {
-      metadata: null,
-      details: null,
-      structureInfo: { aiidaAttributes: null, cif: null },
-      missingStructureWarning: true,
-    };
-  }
+  return {
+    metadata,
+    details,
+    structureInfo: { aiidaAttributes, cif: null },
+  };
 }
 
-async function fetchSuperconSubset(method, id) {
-  try {
-    const [scDetails, scPhonons] = await Promise.all([
-      loadSuperConDetails(method, id),
-      loadSuperConPhononVis(method, id),
-    ]);
-
-    console.log("scDetails", scDetails);
-
-    return {
-      method: method,
-      scDetails: scDetails,
-      scPhonon: scPhonons,
-    };
-  } catch {
-    return {
-      method: method,
-      scDetails: null,
-      scPhonon: null,
-    };
-  }
+function useDatasetIndex(method, id) {
+  return useQuery({
+    queryKey: ["dataset-index", method, id],
+    queryFn: () => loadDatasetIndex(method, id),
+    enabled: !!method && !!id,
+  });
 }
 
-async function fetchMechanicalSubset(method, id) {
-  try {
-    const mechDetails = await loadMechanicalProps(method, id);
-
-    console.log("loaded", mechDetails);
-
-    return {
-      method,
-      mechDetails,
-    };
-  } catch (err) {
-    console.error(err);
-    return {
-      method,
-      mechDetails: null,
-    };
-  }
+function useCoreData(method, id, enabled = true) {
+  return useQuery({
+    queryKey: ["core", method, id],
+    queryFn: () => fetchCoreData(method, id),
+    enabled: !!method && !!id && enabled,
+  });
 }
 
 function DetailPage() {
@@ -123,36 +81,38 @@ function DetailPage() {
   const params = useParams(); // Route parameters
   const [crystals, setCrystals] = useState({});
   const [selectedCell, setSelectedCell] = useState("aiida");
-  const [usePrimitive, setUsePrimitive] = useState(true);
 
   const cellMode = {
     selectedCell,
     setSelectedCell,
   };
 
-  const [datasetIndex, setDatasetIndex] = useState(null);
-  const [resultsObject, setResultsObject] = useState(null);
+  const { data: datasetWrapper, isError: datasetError } = useDatasetIndex(
+    params.method,
+    params.id,
+  );
 
-  const [coreData, setCoreData] = useState(null);
-  const [superconPhononData, setSuperconPhononData] = useState(null);
-  const [superconSCData, setSuperconSCData] = useState();
-  const [mechanicalData, setMechanicalData] = useState(null);
+  const datasetIndex = datasetWrapper?.index ?? null;
 
-  useEffect(() => {
-    // Reset all dependent state so stale data never appears
-    setDatasetIndex(null);
-    setResultsObject({});
-    setCoreData(null);
-    setSuperconPhononData(null);
-    setSuperconSCData(null);
-    setMechanicalData(null);
+  const resultsObject = useMemo(
+    () => buildResultsObject(datasetWrapper?.index, params.method),
+    [datasetWrapper, params.method],
+  );
 
-    loadDatasetIndex(params.method, params.id).then((lD) => {
-      setDatasetIndex(lD.index);
+  const coreEnabled =
+    !!resultsObject && resultsObject.core_base === params.method;
 
-      setResultsObject(buildResultsObject(lD.index, params.method));
-    });
-  }, [params.id, params.method]);
+  const { data: coreData, isError: coreError } = useCoreData(
+    params.method,
+    params.id,
+    coreEnabled,
+  );
+
+  // fetching failed, or the dataset index has no core entry for this method
+  const coreFailed =
+    datasetError ||
+    coreError ||
+    (datasetWrapper !== undefined && resultsObject.core_base !== params.method);
 
   useEffect(() => {
     async function runAnalysis() {
@@ -171,43 +131,19 @@ function DetailPage() {
     }
   }, [coreData]);
 
+  // track recently visited entries for the landing page
   useEffect(() => {
-    if (!resultsObject) return;
-
-    // check if the core props exist in the resultsObject...
-    // if it doesnt something has gone very wrong.
-    if (resultsObject.core_base !== params.method) {
-      return;
-    }
-
-    setCoreData(null);
-    fetchCompoundData(params.method, params.id).then((data) => {
-      setCoreData(data);
+    if (!coreData?.details) return;
+    recordVisit({
+      id: params.id,
+      method: params.method,
+      formula: coreData.details.general.formula,
+      spacegroup: coreData.details.general.spacegroup_international,
     });
-
-    // Check if supercon entries exist in resultsObject
-    // This should be extended to the other partial methods at somepoint.
-    if (resultsObject.supercon_base) {
-      console.log("supercon exists");
-      fetchSuperconSubset(resultsObject.supercon_base, params.id).then((sc) => {
-        setSuperconSCData(sc); // superconducting details
-        setSuperconPhononData(sc); // phonon/vis data
-      });
-    }
-
-    // Check if mechanical entries exist in resultsObject
-    // This should be extended to the other partial methods at somepoint.
-    if (resultsObject.mechanical_base) {
-      fetchMechanicalSubset(resultsObject.mechanical_base, params.id).then(
-        (mc) => {
-          setMechanicalData(mc);
-        },
-      );
-    }
-  }, [resultsObject, params.id, params.method]);
+  }, [coreData, params.id, params.method]);
 
   // While loading, show spinner
-  if (coreData === null) {
+  if (coreData == null && !coreFailed) {
     return (
       <PageLayout
         breadcrumbs={[{ name: `${params.id}/${params.method}`, link: null }]}
@@ -220,7 +156,7 @@ function DetailPage() {
   }
 
   // if Data is missing we show the Error.
-  if (coreData?.missingStructureWarning) {
+  if (coreFailed) {
     return <MissingDataWarning params={params} navigate={navigate} />;
   }
 
@@ -231,11 +167,10 @@ function DetailPage() {
     params.method,
   );
 
-  console.log("mech", mechanicalData);
-
   return (
     <PageLayout
       breadcrumbs={[{ name: `${params.id}/${params.method}`, link: null }]}
+      tocRegistry={MC3D_TOC_REGISTRY}
     >
       <div className="detail-page-heading">{title}</div>
 
@@ -274,19 +209,19 @@ function DetailPage() {
       <VibrationalSection
         params={params}
         loadedData={coreData}
-        phononData={superconPhononData}
+        superconMethod={resultsObject?.supercon_base}
       />
 
       <SuperconductivitySection
         params={params}
         loadedData={coreData}
-        superconData={superconSCData}
+        superconMethod={resultsObject?.supercon_base}
       />
 
       <MechanicalSection
         params={params}
         loadedData={coreData}
-        mechanicalData={mechanicalData}
+        mechanicalMethod={resultsObject?.mechanical_base}
       />
 
       {/* <SimilaritySection params={params} /> */}

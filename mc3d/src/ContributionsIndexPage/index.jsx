@@ -7,11 +7,8 @@ import remarkGfm from "remark-gfm";
 import remarkFootnotes from "remark-footnotes";
 
 import "katex/dist/katex.min.css";
-import { Container, Table } from "react-bootstrap";
+import { Table } from "react-bootstrap";
 import { McloudSpinner } from "mc-react-library";
-
-import { TitleAndLogo } from "@mcxd/shared";
-import MaterialsCloudHeader from "mc-react-header";
 
 import "../ContributionsPage/index.css";
 
