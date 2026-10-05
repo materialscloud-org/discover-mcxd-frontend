@@ -13,7 +13,29 @@ import { WarningBox } from "../../common/WarningBox";
 
 import { MechanicalMethodButton } from "./InfoPopover";
 
-const AVERAGES = ["voigt_average", "VRH_average", "reuss_average"];
+const METHOD_ORDER = ["FD", "Born"];
+const PSEUDOPOTENTIAL_ORDER = ["PseudoDojo", "SSSP"];
+const AVERAGES = ["VRH_average", "voigt_average", "reuss_average"];
+
+function sortByPriority(keys, priority) {
+  return [...keys].sort((a, b) => {
+    const indexA = priority.indexOf(a);
+    const indexB = priority.indexOf(b);
+    const rankA = indexA === -1 ? Infinity : indexA;
+    const rankB = indexB === -1 ? Infinity : indexB;
+    if (rankA !== rankB) return rankA - rankB;
+    const numA = Number(a);
+    const numB = Number(b);
+    if (!Number.isNaN(numA) && !Number.isNaN(numB)) return numA - numB;
+    return String(a).localeCompare(String(b));
+  });
+}
+
+function pickDefault(current, options, priority) {
+  if (current && options.includes(current)) return current;
+  const ordered = sortByPriority(options, priority);
+  return ordered[0] ?? null;
+}
 
 function formatValue(value, key) {
   if (
@@ -116,14 +138,11 @@ export default function MechanicalSection({
    * --------------------------------------------------------------------------
    */
 
-  const methods = elastic ? Object.keys(elastic) : [];
+  const methods = elastic
+    ? sortByPriority(Object.keys(elastic), METHOD_ORDER)
+    : [];
 
-  const selectedMethod =
-    subMethod && methods.includes(subMethod)
-      ? subMethod
-      : methods.includes("FD")
-        ? "FD"
-        : (methods[0] ?? null);
+  const selectedMethod = pickDefault(subMethod, methods, METHOD_ORDER);
 
   const methodData = selectedMethod ? elastic?.[selectedMethod] : null;
 
@@ -133,12 +152,15 @@ export default function MechanicalSection({
    * --------------------------------------------------------------------------
    */
 
-  const pseudopotentials = methodData ? Object.keys(methodData) : [];
+  const pseudopotentials = methodData
+    ? sortByPriority(Object.keys(methodData), PSEUDOPOTENTIAL_ORDER)
+    : [];
 
-  const selectedPseudopotential =
-    pseudopotential && pseudopotentials.includes(pseudopotential)
-      ? pseudopotential
-      : (pseudopotentials[0] ?? null);
+  const selectedPseudopotential = pickDefault(
+    pseudopotential,
+    pseudopotentials,
+    PSEUDOPOTENTIAL_ORDER,
+  );
 
   /*
    * --------------------------------------------------------------------------
@@ -160,15 +182,18 @@ export default function MechanicalSection({
     }
 
     const levelIndex = intermediateLevels.length;
-    const value = intermediateSelections[levelIndex] ?? keys[0];
+    const options = sortByPriority(keys, []);
+    const stored = intermediateSelections[levelIndex];
+    const value =
+      stored && options.includes(stored) ? stored : (options[0] ?? null);
 
     intermediateLevels.push({
       levelIndex,
-      options: keys,
+      options,
       value,
     });
 
-    currentData = currentData[value];
+    currentData = value ? currentData[value] : null;
   }
 
   /*
@@ -176,7 +201,12 @@ export default function MechanicalSection({
    * Selected Average
    * --------------------------------------------------------------------------
    */
-  const selectedAverage = AVERAGES.includes(average) ? average : AVERAGES[0];
+  const availableAverages = currentData
+    ? AVERAGES.filter((key) => currentData[key] != null)
+    : [];
+  const averageOptions =
+    availableAverages.length > 0 ? availableAverages : [...AVERAGES];
+  const selectedAverage = pickDefault(average, averageOptions, AVERAGES);
   const averageData = currentData?.[selectedAverage] ?? null;
 
   /*
@@ -256,6 +286,16 @@ export default function MechanicalSection({
     Object.values(scalarData).some(
       (value) =>
         value === "NaN" || (typeof value === "number" && Number.isNaN(value)),
+    );
+
+  const hasNegativeModulus =
+    scalarData &&
+    Object.entries(scalarData).some(
+      ([key, value]) =>
+        key.includes("modulus") &&
+        typeof value === "number" &&
+        !Number.isNaN(value) &&
+        value < 0,
     );
 
   return (
@@ -365,7 +405,7 @@ export default function MechanicalSection({
             <Selector
               label="Average"
               value={selectedAverage}
-              options={AVERAGES}
+              options={averageOptions}
               onChange={(event) => setAverage(event.target.value)}
             />
           </Col>
@@ -389,6 +429,13 @@ export default function MechanicalSection({
                   <WarningBox style={{ margin: "2px 10px 10px 10px" }}>
                     Warning: Some properties were calculated to be unphysical
                     for this q-points distance.
+                  </WarningBox>
+                )}
+
+                {hasNegativeModulus && (
+                  <WarningBox style={{ margin: "2px 10px 10px 10px" }}>
+                    Warning: One or more moduli are negative, indicating
+                    mechanical instability for this q-points distance.
                   </WarningBox>
                 )}
 

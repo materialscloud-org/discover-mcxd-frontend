@@ -97,8 +97,9 @@ export default function SuperConductivitySection({
         )}
         {
           <WarningBox>
-            Warning: This dataset re-relaxes the structure with a different
-            methodology. To see this new structure, explore the AiiDA provenance{" "}
+            Warning: This dataset re-relaxes (<em>PBE instead of PBEsol-v1</em>)
+            the structure with a different methodology. To see this new
+            structure, explore the AiiDA provenance{" "}
             <ExploreButton
               explore_url={EXPLORE_URLS["pbesol-v1-supercon"]}
               uuid={supercon.structure_uuid}
