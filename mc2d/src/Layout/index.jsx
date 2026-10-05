@@ -2,11 +2,19 @@ import { Container } from "react-bootstrap";
 
 import MaterialsCloudHeader from "mc-react-header";
 
-import { TitleAndLogo } from "@mcxd/shared";
+import {
+  TitleAndLogo,
+  TableOfContents,
+  TableOfContentsMenu,
+} from "@mcxd/shared";
 
 import Mc2dLogo from "../assets/mc2d.png";
 
-export default function PageLayout({ children, breadcrumbs = [] }) {
+export default function PageLayout({
+  children,
+  breadcrumbs = [],
+  tocRegistry = null,
+}) {
   const defaultBreadcrumbs = [
     {
       name: "Discover",
@@ -40,6 +48,12 @@ export default function PageLayout({ children, breadcrumbs = [] }) {
         />
         {children}
       </Container>
+      {tocRegistry && (
+        <>
+          <TableOfContents registry={tocRegistry} />
+          <TableOfContentsMenu registry={tocRegistry} />
+        </>
+      )}
     </>
   );
 }

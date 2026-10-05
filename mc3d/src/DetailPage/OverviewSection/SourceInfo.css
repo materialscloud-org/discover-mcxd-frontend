@@ -7,3 +7,15 @@
   filter: brightness(80%);
   text-decoration: underline;
 }
+
+.source-toggle {
+  background: none;
+  border: none;
+  padding-top: 4px;
+  color: #303f9f;
+  cursor: pointer;
+}
+
+.source-toggle:hover {
+  text-decoration: underline;
+}

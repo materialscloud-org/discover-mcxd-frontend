@@ -1,5 +1,3 @@
-import { useMemo } from "react";
-
 import "./index.css";
 
 import StructureVisualizer from "mc-react-structure-visualizer";
@@ -8,25 +6,21 @@ import { StructureDownload } from "../../common/StructureDownload";
 
 import { Container, Row, Col } from "react-bootstrap";
 
-import { formula } from "mc-react-library";
-
 import {
   ExploreButton,
-  StructDownloadButton,
   formatChemicalFormula,
   formatSpaceGroupSymbol,
 } from "mc-react-library";
 
-import { format_aiida_prop } from "../../common/utils";
 import { McInfoBox } from "@mcxd/shared";
+
+import { OverviewIcon } from "../../assets/sectionIcons";
 
 import SourceInfo from "./SourceInfo";
 
-import { AIIDA_API_URLS, EXPLORE_URLS } from "../../common/fetchingUtils";
+import { EXPLORE_URLS } from "../../common/fetchingUtils";
 
-import { ToggleSwitch } from "mc-react-library";
-
-import { toCIF, volume, density } from "matsci-parse";
+import { volume, density } from "matsci-parse";
 import CellSelector from "../../common/CellSelector";
 
 function GeneralInfoBox({
@@ -37,18 +31,10 @@ function GeneralInfoBox({
   cellMode,
 }) {
   const crystalStructure = crystals[cellMode.selectedCell];
-
-  console.log(crystals);
-
-  console.log(crystals?.calculationResults?.hm_symbol);
-
   const symbol = crystals?.calculationResults?.hm_symbol ?? "";
 
-  const cleanSymbol =
-    typeof symbol === "string" ? symbol.replace(/\s+/g, "") : "";
-
   return (
-    <McInfoBox style={{ height: "350px" }}>
+    <McInfoBox style={{ maxHeight: "420px" }}>
       <div>
         <b>Info</b>
         <ul className="no-bullets">
@@ -59,18 +45,7 @@ function GeneralInfoBox({
             Hill formula (full):{" "}
             {formatChemicalFormula(details.general.formula_hill)}{" "}
           </li>
-          {/* <li>
-            Formula (IUPAC): {formatChemicalFormula(details.general.formula)}
-          </li>
-          <li>
-            Hill formula (full):{" "}
-            {formatChemicalFormula(details.general.formula_hill)}
-          </li> */}
           <li>Bravais lattice: {details.general.bravais_lattice}</li>
-          {/* <li>
-            Space group symbol:{" "}
-            {formatSpaceGroupSymbol(details.general.spacegroup_international)}
-          </li> */}
           <li>
             Space group info:{" "}
             {crystalStructure?.lattice ? (
@@ -87,20 +62,19 @@ function GeneralInfoBox({
               "—"
             )}
           </li>
-          {/* <li>Space group number: {details.general.spacegroup_number}</li> */}
           <li>
-            <li>
-              Volume:{" "}
-              {crystalStructure?.lattice
-                ? `${volume(crystalStructure).toFixed(2)} Å³`
-                : "—"}
-            </li>
-            <li>
-              Atoms per cell:{" "}
-              {crystalStructure?.sites?.length
-                ? `${crystalStructure.sites.length}`
-                : "—"}
-            </li>
+            Volume:{" "}
+            {crystalStructure?.lattice
+              ? `${volume(crystalStructure).toFixed(2)} Å³`
+              : "—"}
+          </li>
+          <li>
+            Atoms per cell:{" "}
+            {crystalStructure?.sites?.length
+              ? `${crystalStructure.sites.length}`
+              : "—"}
+          </li>
+          <li>
             Density:{" "}
             {crystalStructure?.lattice // inlined kg/m3 conversion
               ? `${(density(crystalStructure) * 1660.5390666).toFixed(0)} kg/m³`
@@ -109,47 +83,10 @@ function GeneralInfoBox({
         </ul>
       </div>
       <div>
-        <b>Source</b>
         <SourceInfo sources={details.source} metadata={metadata} />
       </div>
       <div>
-        <ul className="no-bullets">
-          {/* <li>
-            Density:{" "}
-            {formula.calculateDensity(
-              details.general.formula_hill,
-              details.properties.cell_volume,
-            )}{" "}
-            kg/m<sup>3</sup>
-          </li> */}
-          {/* <li>
-            Cell volume:{" "}
-            {format_aiida_prop(
-              details.properties.cell_volume,
-              metadata.info.properties.cell_volume,
-              methodLabel,
-              2,
-            )}
-          </li> */}
-          {/* <li>
-            Total magnetization:{" "}
-            {format_aiida_prop(
-              details.properties.total_magnetization,
-              metadata.info.properties.total_magnetization,
-              methodLabel,
-              2,
-            )}
-          </li>
-          <li>
-            Absolute magnetization:{" "}
-            {format_aiida_prop(
-              details.properties.absolute_magnetization,
-              metadata.info.properties.absolute_magnetization,
-              methodLabel,
-              2,
-            )}
-          </li> */}
-        </ul>
+        <ul className="no-bullets"></ul>
       </div>
     </McInfoBox>
   );
@@ -169,28 +106,6 @@ const StructureViewerBox = ({
 
   const crystalStructure = crystals[cellMode.selectedCell];
 
-  const primitiveCif = useMemo(
-    () => (crystals.primitive ? toCIF(crystals.primitive) : null),
-    [crystals.primitive],
-  );
-
-  const conventionalCif = useMemo(
-    () => (crystals.conventional ? toCIF(crystals.conventional) : null),
-    [crystals.conventional],
-  );
-
-  const aiidaCif = useMemo(
-    () => (crystals.aiida ? toCIF(crystals.aiida) : null),
-    [crystals.aiida],
-  );
-
-  const cifMap = {
-    primitive: primitiveCif,
-    conventional: conventionalCif,
-    aiida: aiidaCif,
-  };
-
-  const cifText = cifMap[cellMode.selectedCell];
   const filenamePrefix = `${id}_${cellMode.selectedCell}`;
 
   return (
@@ -218,8 +133,11 @@ const StructureViewerBox = ({
           />
         </div>
 
-        {cifText && (
-          <StructureVisualizer cifText={cifText} initSupercell={[2, 2, 2]} />
+        {crystalStructure && (
+          <StructureVisualizer
+            structure={crystalStructure}
+            initSupercell={[2, 2, 2]}
+          />
         )}
 
         <div className="download-button-container px-1">
@@ -250,8 +168,9 @@ export default function OverviewSection({
   cellMode,
 }) {
   return (
-    <div>
+    <div id="overview" data-toc-section="overview">
       <div className="section-heading" style={headerStyle}>
+        <OverviewIcon size={22} className="section-heading-icon" />
         General overview
       </div>
       <Container fluid className="section-container">
