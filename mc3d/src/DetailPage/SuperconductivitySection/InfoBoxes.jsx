@@ -120,7 +120,7 @@ export function SuperconInfoBox({ params, superconData, style = {} }) {
       key: "Type of anisotropy",
       value: formatIfExists({
         value: superconData.type,
-        uuid: superconData.epw_aniso_uuid,
+        // uuid: superconData.epw_aniso_uuid,
         format: (v) => `${v}`,
       }),
     },
@@ -187,14 +187,14 @@ export function SuperconInfoBox({ params, superconData, style = {} }) {
         format: (v) => `${v} meV`,
       }),
     },
-    {
-      key: "Degauss smearing",
-      value: formatIfExists({
-        value: superconData.smearing_w,
-        uuid: superconData.uuid,
-        format: (v) => `${v} meV`,
-      }),
-    },
+    // {
+    //   key: "Degauss smearing",
+    //   value: formatIfExists({
+    //     value: superconData.smearing_w,
+    //     uuid: superconData.uuid,
+    //     format: (v) => `${v} meV`,
+    //   }),
+    // },
     {
       key: "Fermi window",
       value: formatIfExists({
