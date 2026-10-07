@@ -120,7 +120,7 @@ export function SuperconInfoBox({ params, superconData, style = {} }) {
       key: "Type of anisotropy",
       value: formatIfExists({
         value: superconData.type,
-        uuid: superconData.uuid,
+        uuid: superconData.epw_aniso_uuid,
         format: (v) => `${v}`,
       }),
     },
@@ -183,6 +183,14 @@ export function SuperconInfoBox({ params, superconData, style = {} }) {
       key: "Smearing-q",
       value: formatIfExists({
         value: superconData.smearing_q,
+        uuid: superconData.uuid,
+        format: (v) => `${v} meV`,
+      }),
+    },
+    {
+      key: "Degauss smearing",
+      value: formatIfExists({
+        value: superconData.smearing_w,
         uuid: superconData.uuid,
         format: (v) => `${v} meV`,
       }),
@@ -273,8 +281,13 @@ export function SuperconInfoBox({ params, superconData, style = {} }) {
                 </li>
               ))}
           </ul>
-          <b>Superconducting properties</b>
-
+          <b>
+            Superconducting properties{" "}
+            <ExploreButton
+              explore_url={EXPLORE_URLS["pbesol-v1-supercon"]}
+              uuid={superconData.epw_final_uuid}
+            />
+          </b>
           <ul className="no-bullets">
             {superconInfo
               .filter((item) => item.value !== undefined)
