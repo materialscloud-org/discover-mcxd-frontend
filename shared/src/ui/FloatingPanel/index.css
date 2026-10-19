@@ -1,15 +1,30 @@
 /* Shared floating-panel language (table of contents, recently visited).
-   Fixed to the left viewport edge, out of document flow so page content
-   keeps its full width. Visibility per breakpoint keeps the three pieces
-   (card, minimised button, mobile menu) mutually exclusive. */
+   Fixed, out of document flow so page content keeps its full width.
+   Visibility per breakpoint keeps the three pieces (card, minimised
+   button, mobile menu) mutually exclusive. */
+
+:root {
+  /* Horizontal placement of the wide-screen card, measured from the
+     viewport centre to the card's left edge. Tune this to move the card
+     relative to the main content (the xxl container is 1320px wide, so
+     its left edge sits at 50% - 660px; card is 264px wide). */
+  --mcxd-fp-center-offset: 940px;
+  /* Never closer than this to the viewport's left edge. */
+  --mcxd-fp-min-left: 4px;
+  --mcxd-fp-card-width: 264px;
+  --mcxd-fp-left: max(
+    var(--mcxd-fp-min-left),
+    calc(50% - var(--mcxd-fp-center-offset))
+  );
+}
 
 /* Wide screens: floating card. */
 .mcxd-fp-card {
   position: fixed;
-  left: 12px;
+  left: var(--mcxd-fp-left);
   top: 140px;
   z-index: 1020;
-  width: 264px;
+  width: var(--mcxd-fp-card-width);
   max-height: calc(100vh - 220px);
   overflow-y: auto;
   background: rgba(255, 255, 255, 0.97);
@@ -33,7 +48,6 @@
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: #6c757d;
-  margin: 0;
 }
 
 .mcxd-fp-min-btn {
@@ -52,13 +66,15 @@
   color: #212529;
 }
 
-/* Wide screens: hamburger in the card's place when minimised. */
+/* Hamburger buttons: in the card's place when minimised (wide screens),
+   or toggling the overlay panel (small screens). */
+.mcxd-fp-fab,
 .mcxd-fp-fab-desktop {
   display: flex;
   align-items: center;
   justify-content: center;
   position: fixed;
-  left: 12px;
+  left: var(--mcxd-fp-left);
   bottom: 16px;
   z-index: 30;
   width: 40px;
@@ -71,19 +87,22 @@
   line-height: 1;
   box-shadow: 0 4px 12px rgba(124, 123, 123, 0.25);
   cursor: pointer;
-  padding: 0px;
+  padding: 0;
 }
 
+.mcxd-fp-fab {
+  left: 12px;
+}
+
+/* Minimised: sit under the card's right edge, next to the content. */
+.mcxd-fp-fab-desktop {
+  left: calc(var(--mcxd-fp-left) + var(--mcxd-fp-card-width) - 40px);
+}
+
+.mcxd-fp-fab:hover,
 .mcxd-fp-fab-desktop:hover {
   background: #bfd4e9;
   border: 1px solid #454444;
-}
-
-@media (max-width: 1755.98px) {
-  .mcxd-fp-card,
-  .mcxd-fp-fab-desktop {
-    display: none;
-  }
 }
 
 /* CSS-drawn burger: exactly centred, unlike text glyphs. */
@@ -91,46 +110,16 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
   gap: 4px;
   width: 20px;
   height: 20px;
 }
 
 .mcxd-fp-burger > span {
-  display: block;
   width: 20px;
   height: 3px;
   border-radius: 2px;
   background: #575757;
-}
-
-/* Small screens: floating hamburger button + expandable overlay panel. */
-.mcxd-fp-fab {
-  display: none;
-}
-
-@media (max-width: 1755.98px) {
-  .mcxd-fp-fab {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: fixed;
-    left: 12px;
-    bottom: 16px;
-    z-index: 30;
-    width: 40px;
-    height: 40px;
-    border-radius: 10%;
-    border: 1px solid #767575;
-    background: #dde8f3;
-    color: #999;
-    font-size: 22px;
-    line-height: 1;
-    box-shadow: 0 4px 12px rgba(124, 123, 123, 0.25);
-    cursor: pointer;
-    padding: 0px;
-  }
 }
 
 .mcxd-fp-backdrop {
@@ -156,7 +145,16 @@
   font-size: 14px;
 }
 
-@media (min-width: 1756px) {
+/* Breakpoint: wide screens get the card (or its minimised button),
+   small screens the hamburger + overlay. */
+@media (max-width: 1789.98px) {
+  .mcxd-fp-card,
+  .mcxd-fp-fab-desktop {
+    display: none;
+  }
+}
+
+@media (min-width: 1790px) {
   .mcxd-fp-fab,
   .mcxd-fp-backdrop,
   .mcxd-fp-panel {
