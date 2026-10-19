@@ -18,7 +18,7 @@
     "@tanstack/store": "^0.11.2",
     "better-react-mathjax": "^2.0.3",
     "bootstrap": "^5.3.2",
-    "matsci-parse": "^0.16.4",
+    "matsci-parse": "^0.17.0",
     "mc-react-header": "^0.7.2",
     "mc-react-library": "^0.5.0",
     "mc-react-phonon-visualizer": "^0.4.1",

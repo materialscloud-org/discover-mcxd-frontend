@@ -4,7 +4,6 @@ import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import remarkGfm from "remark-gfm";
-import remarkFootnotes from "remark-footnotes";
 
 import "katex/dist/katex.min.css";
 import { Table } from "react-bootstrap";
@@ -55,7 +54,7 @@ function ContributionsIndexPage() {
         <>
           <div className="markdown-entry">
             <ReactMarkdown
-              remarkPlugins={[remarkMath, remarkGfm, remarkFootnotes]}
+              remarkPlugins={[remarkMath, remarkGfm]}
               rehypePlugins={[rehypeKatex]}
             >
               {markdown}

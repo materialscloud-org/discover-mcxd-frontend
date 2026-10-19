@@ -8,4 +8,10 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   base: process.env.BRANCH_SUBPATH || "/",
+  // moyo-wasm locates its .wasm via `new URL(..., import.meta.url)`; if
+  // pre-bundled into node_modules/.vite/deps that URL points at a missing
+  // file (dev server returns index.html). Serve both packages unbundled.
+  optimizeDeps: {
+    exclude: ["matsci-parse", "@spglib/moyo-wasm"],
+  },
 });

@@ -21,7 +21,7 @@
     "fermisurface-visualiser": "^0.0.4",
     "file-saver": "^2.0.5",
     "katex": "^0.16.22",
-    "matsci-parse": "^0.12.0",
+    "matsci-parse": "^0.17.0",
     "mc-react-header": "^0.7.2",
     "mc-react-library": "^0.5.3",
     "mc-react-phonon-visualizer": "^0.4.1",
@@ -34,7 +34,6 @@
     "react-router-dom": "6",
     "react-router-hash-link": "^2.4.3",
     "rehype-katex": "^7.0.1",
-    "remark-footnotes": "^4.0.1",
     "remark-gfm": "^4.0.1",
     "remark-math": "^6.0.0"
   },

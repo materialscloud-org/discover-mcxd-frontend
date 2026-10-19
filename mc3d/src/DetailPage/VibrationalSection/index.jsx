@@ -1,7 +1,7 @@
+import { lazy, Suspense } from "react";
 import { Row, Col, Container } from "react-bootstrap";
 
 import { CitationBanner } from "@mcxd/shared";
-import PhononVisualizer from "mc-react-phonon-visualizer";
 
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -20,6 +20,9 @@ import { TwoWideInfoBox } from "../../common/TwoWideInfoBox";
 import formatIfExists from "../../common/resultFormatter";
 
 import { Link } from "react-router-dom";
+
+// heavy (bundles its own plotly + three.js): load only when rendered
+const PhononVisualizer = lazy(() => import("mc-react-phonon-visualizer"));
 
 const CM1_TO_MEV = 0.12398;
 
@@ -151,22 +154,30 @@ export default function VibrationalSection({
     );
   } else if (phononVisData) {
     content = (
-      <PhononVisualizer
-        key={JSON.stringify(phononVisData)}
-        props={{
-          plotlyLayoutFormat: {
-            xaxis: {
-              title: {},
-            },
-            yaxis: {
-              title: {
-                text: "Energy [meV]",
+      <Suspense
+        fallback={
+          <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
+            <McloudSpinner />
+          </div>
+        }
+      >
+        <PhononVisualizer
+          key={JSON.stringify(phononVisData)}
+          props={{
+            plotlyLayoutFormat: {
+              xaxis: {
+                title: {},
+              },
+              yaxis: {
+                title: {
+                  text: "Energy [meV]",
+                },
               },
             },
-          },
-          ...phononVisData,
-        }}
-      />
+            ...phononVisData,
+          }}
+        />
+      </Suspense>
     );
   }
 

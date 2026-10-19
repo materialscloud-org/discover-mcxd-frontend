@@ -1,12 +1,8 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { McloudSpinner, ExploreButton } from "mc-react-library";
 import { Container, Row, Col } from "react-bootstrap";
-import PhononVisualizer from "mc-react-phonon-visualizer";
 
-import {
-  BandStructure,
-  COMMON_LAYOUT_CONFIG,
-} from "@mcxd/shared";
+import { BandStructure, COMMON_LAYOUT_CONFIG } from "@mcxd/shared";
 import {
   loadAiidaBands,
   loadPhononVis,
@@ -18,6 +14,9 @@ import { useQuery } from "@tanstack/react-query";
 import { buildTraceFormat } from "@mcxd/shared";
 
 import { VibrationalIcon } from "../../assets/sectionIcons";
+
+// heavy (bundles its own plotly + three.js): load only when rendered
+const PhononVisualizer = lazy(() => import("mc-react-phonon-visualizer"));
 
 const phononTraceConfig = {
   label: "Phonons",
@@ -61,9 +60,17 @@ const VibrationalSection = (props) => {
           <ExploreButton explore_url={EXPLORE_URL} uuid={bandsUuid} />
         </div>
       </div>
-      <PhononVisualizer
-        props={{ title: "Phonon visualizer", ...phononVisData }}
-      />
+      <Suspense
+        fallback={
+          <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
+            <McloudSpinner />
+          </div>
+        }
+      >
+        <PhononVisualizer
+          props={{ title: "Phonon visualizer", ...phononVisData }}
+        />
+      </Suspense>
     </div>
   );
 
