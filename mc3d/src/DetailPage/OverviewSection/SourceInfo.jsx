@@ -136,7 +136,8 @@ export default function SourceInfo({ sources, metadata }) {
   return (
     <>
       <span>
-        <b>Sources</b> <SourceInfoText sources={sources} metadata={metadata} />
+        <b>Sources (primary source is in bold)</b>{" "}
+        <SourceInfoText sources={sources} metadata={metadata} />
       </span>
       <div
         style={{
@@ -149,7 +150,7 @@ export default function SourceInfo({ sources, metadata }) {
           padding: "8px 0px 0px 8px",
         }}
       >
-        {visibleSources.map((s) => {
+        {visibleSources.map((s, i) => {
           const logo = logos[s.database];
 
           return (
@@ -164,6 +165,8 @@ export default function SourceInfo({ sources, metadata }) {
                 display: "inline-flex",
                 gap: "5px",
                 alignItems: "center",
+                // API lists the primary source first
+                fontWeight: i === 0 ? "500" : "200",
               }}
             >
               {logo && <img src={logo} style={{ height: "20px" }} />}

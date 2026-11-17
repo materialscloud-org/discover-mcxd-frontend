@@ -38,7 +38,12 @@
 .mcxd-toc-icon {
   display: inline-flex;
   margin-right: 6px;
-  vertical-align: -2px;
+  vertical-align: -3px;
+}
+
+.mcxd-toc-icon svg {
+  width: 20px;
+  height: 20px;
 }
 
 /* Custom stroke icons follow the active link colour. */

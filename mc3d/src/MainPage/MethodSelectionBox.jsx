@@ -107,6 +107,8 @@ export const MethodSelectionBox = (props) => {
                 onClick={() => handleSelect(value)}
                 className="method-selection-entry"
               >
+                {/* blank icon so labels line up with the view entries */}
+                <svg width="18" height="18" aria-hidden="true" />
                 <span>{label}</span>
               </Dropdown.Item>
             ))}
