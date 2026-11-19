@@ -82,4 +82,5 @@
 .method-selection-entry.active {
   background-color: #e9ecef !important;
   color: #212529 !important;
+  text-decoration: none; /* items are <a>; mc2d underlines all a:hover */
 }

@@ -1,6 +1,8 @@
-import { Form, Popover } from "react-bootstrap";
+import { Dropdown, Popover } from "react-bootstrap";
 
 import { HelpButton } from "mc-react-library";
+
+import { TopologyIcon } from "../assets/sectionIcons";
 
 import "./MethodSelectionBox.css";
 
@@ -40,35 +42,75 @@ export const MethodSelectionBox = (props) => {
     }
   });
 
+  const viewOptions = [
+    {
+      value: "2dtopo",
+      label: "Topological Insulators",
+      icon: <TopologyIcon />,
+    },
+  ];
+
   // used to spoof values in the display box.
   const displayValue = props.selectedDisplay || props.method;
+
+  const selectedView = viewOptions.find(({ value }) => value === displayValue);
+
+  const handleSelect = (value) => {
+    props.handleMethodChange({ target: { value } });
+  };
 
   return (
     <div className="method-selection-box-outer">
       <div className="method-selection-box">
         <p>Select a dataset or view:</p>
-        <Form.Select
-          size="sm"
-          value={displayValue}
-          onChange={props.handleMethodChange}
-          style={{
-            display: "inline-block",
-            margin: "4px 6px 2px 6px",
-            width: "auto",
-            minWidth: "max-content",
-          }}
-        >
-          <optgroup label="Structure datasets">
-            {Object.entries(options).map(([key, label]) => (
-              <option key={key} value={key}>
-                {label}
-              </option>
+
+        <Dropdown>
+          <Dropdown.Toggle
+            className="method-selection-panel"
+            size="sm"
+            variant="light"
+          >
+            <span className="method-selection-selected">
+              {selectedView?.icon}
+              <span>{selectedView?.label || options[displayValue]}</span>
+            </span>
+          </Dropdown.Toggle>
+
+          <Dropdown.Menu>
+            <Dropdown.Header className="method-selection-category">
+              Structure datasets
+            </Dropdown.Header>
+
+            {Object.entries(options).map(([value, label]) => (
+              <Dropdown.Item
+                key={value}
+                active={displayValue === value}
+                onClick={() => handleSelect(value)}
+                className="method-selection-entry"
+              >
+                {/* blank icon so labels line up with the view entries */}
+                <svg width="18" height="18" aria-hidden="true" />
+                <span>{label}</span>
+              </Dropdown.Item>
             ))}
-          </optgroup>
-          <optgroup label="Property-based views">
-            <option value="2dtopo">Topological Insulators</option>
-          </optgroup>
-        </Form.Select>
+
+            <Dropdown.Header className="method-selection-category">
+              Property-based views
+            </Dropdown.Header>
+
+            {viewOptions.map(({ value, label, icon }) => (
+              <Dropdown.Item
+                key={value}
+                active={displayValue === value}
+                onClick={() => handleSelect(value)}
+                className="method-selection-entry"
+              >
+                {icon}
+                <span>{label}</span>
+              </Dropdown.Item>
+            ))}
+          </Dropdown.Menu>
+        </Dropdown>
 
         <HelpButton popover={popover} placement="bottom" />
       </div>
