@@ -27,3 +27,16 @@ export {
 export { BandsVisualiser, splitBandsData } from "bands-visualiser";
 
 export { formatTitle } from "./utils.jsx";
+
+export {
+  default as TableOfContents,
+  TableOfContentsMenu,
+} from "./TableOfContents/index.jsx";
+
+export {
+  BurgerIcon,
+  FloatingCard,
+  MinimisedFab,
+  MenuFab,
+  MenuOverlay,
+} from "./FloatingPanel/index.jsx";

@@ -1,5 +1,6 @@
 /node_modules
 /coverage
 /dist
-/mc3d/contributions/
+# contribution pages: prettier mangles $...$ math (e.g. \mu^* -> \mu^_)
+/mc*/public/contributions/**/*.md
 .vscode

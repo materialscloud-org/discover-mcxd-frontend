@@ -1,11 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React from "react";
 
-import { ExploreButton, StructDownloadButton } from "mc-react-library";
+import { ExploreButton } from "mc-react-library";
 
 import { Tooltip, OverlayTrigger } from "react-bootstrap";
 import { Container, Row, Col } from "react-bootstrap";
-
-import { FaExclamationCircle } from "react-icons/fa";
 
 import { McInfoBox } from "@mcxd/shared";
 
@@ -14,16 +12,18 @@ import { Link } from "react-router-dom";
 import {
   BandStructure,
   COMMON_LAYOUT_CONFIG,
-  standardTraceConfigs,
   topologyTraceConfigs,
 } from "@mcxd/shared";
 
 import { CitationBanner } from "@mcxd/shared";
 
+import { TopologyIcon } from "../../assets/sectionIcons";
+
 import { buildTraceFormat } from "@mcxd/shared";
 
 import { HWCCPlot } from "./hwccPlot";
 
+import { useQuery } from "@tanstack/react-query";
 import {
   TOPOLOGICAL_EXPLORE_URL,
   loadTopoBands,
@@ -36,6 +36,38 @@ function shiftBands(bandsData, shift) {
         arr[idx] += shift;
       });
     });
+  });
+}
+
+function useTopoBands(topologyData) {
+  return useQuery({
+    queryKey: [
+      "topo-bands",
+      topologyData?.soc_bandstructure_uuid,
+      topologyData?.nosoc_bandstructure_uuid,
+    ],
+    queryFn: () =>
+      Promise.all([
+        loadTopoBands(topologyData.soc_bandstructure_uuid),
+        loadTopoBands(topologyData.nosoc_bandstructure_uuid),
+      ]).then(([socBands, nosocBands]) => {
+        shiftBands(socBands, -topologyData.fermi_with_SOC);
+        shiftBands(nosocBands, -topologyData.fermi_without_SOC);
+
+        return [
+          {
+            bandsData: nosocBands,
+            traceFormat: buildTraceFormat(topologyTraceConfigs.nosoc),
+          },
+          {
+            bandsData: socBands,
+            traceFormat: buildTraceFormat(topologyTraceConfigs.soc),
+          },
+        ];
+      }),
+    enabled:
+      !!topologyData?.soc_bandstructure_uuid &&
+      !!topologyData?.nosoc_bandstructure_uuid,
   });
 }
 
@@ -71,94 +103,62 @@ const WarningLabel = ({ warning }) => {
           verticalAlign: "top",
         }}
       >
-        <FaExclamationCircle
-          size="1.25em"
+        <svg
+          width="1.25em"
+          height="1.25em"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
           style={{ marginBottom: "2px" }}
-        />{" "}
+        >
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 8v4" />
+          <path d="M12 16h.01" />
+        </svg>{" "}
       </span>
     </OverlayTrigger>
   );
 };
 
 const TopologySection = ({ params, loadedData }) => {
-  const [bandsData, setBandsData] = useState(null);
-  const [loadingBands, setLoadingBands] = useState(true);
-  let details = loadedData.details;
-
   const topologyData = loadedData?.topologyInfo;
 
-  useEffect(() => {
-    if (
-      !topologyData?.soc_bandstructure_uuid ||
-      !topologyData?.nosoc_bandstructure_uuid
-    ) {
-      return;
-    }
-
-    const loadBands = async () => {
-      setLoadingBands(true);
-
-      try {
-        const [socBands, nosocBands] = await Promise.all([
-          loadTopoBands(topologyData.soc_bandstructure_uuid),
-          loadTopoBands(topologyData.nosoc_bandstructure_uuid),
-        ]);
-
-        shiftBands(socBands, -topologyData.fermi_with_SOC);
-        shiftBands(nosocBands, -topologyData.fermi_without_SOC);
-
-        const finalBands = [
-          {
-            bandsData: nosocBands,
-            traceFormat: buildTraceFormat(topologyTraceConfigs.nosoc),
-          },
-          {
-            bandsData: socBands,
-            traceFormat: buildTraceFormat(topologyTraceConfigs.soc),
-          },
-        ];
-
-        setBandsData(finalBands);
-      } catch (err) {
-        console.error("Failed to load topology bands:", err);
-      } finally {
-        setLoadingBands(false);
-      }
-    };
-
-    loadBands();
-  }, [
-    topologyData?.soc_bandstructure_uuid,
-    topologyData?.nosoc_bandstructure_uuid,
-  ]);
+  const { data: bandsData, isPending: loadingBands } =
+    useTopoBands(topologyData);
 
   console.log(topologyData);
 
   return (
-    <div>
-      <Container fluid className="section-container">
+    <div id="topology" data-toc-section="topology">
+      <div
+        style={{
+          margin: "10px 0px",
+          padding: "20px 0px 10px",
+          borderBottom: "1px solid #c4c4c4",
+        }}
+      >
+        <div style={{ fontSize: "24px" }}>
+          <TopologyIcon size={22} className="section-heading-icon" />
+          Topological insulators
+        </div>
         <div
           style={{
-            margin: "10px 0px",
-            padding: "20px 0px 10px",
-            borderBottom: "1px solid #c4c4c4",
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "2px",
+            alignItems: "center",
+            padding: "2px 10px",
           }}
         >
-          <div style={{ fontSize: "24px" }}>Topological insulators</div>
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: "2px",
-              alignItems: "center",
-            }}
-          >
-            <CitationBanner
-              citationKeys={["Marrazzo2019", "Grassano2023"]}
-              doiIndices={[0, 1]}
-            />
-          </div>
+          <CitationBanner
+            citationKeys={["Marrazzo2019", "Grassano2023"]}
+            doiIndices={[0, 1]}
+          />
         </div>
+      </div>
+      <Container fluid className="section-container">
         <Row>
           <Col className="flex-column">
             <WarningBox>

@@ -3,7 +3,7 @@ import React, { useState, useMemo } from "react";
 import { ToggleSwitch } from "mc-react-library";
 import { McTable } from "@mcxd/shared";
 
-import { fractional, cartesian } from "matsci-parse";
+import { cartesian } from "matsci-parse";
 
 export const AtomicSitesInfoBox = ({ crystals, cellMode }) => {
   const [showFractional, setShowFractional] = useState(false);

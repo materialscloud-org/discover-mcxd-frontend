@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useMemo } from "react";
 
 import "./index.css";
 
 import StructureVisualizer from "mc-react-structure-visualizer";
+
+import { fromStructureData } from "matsci-parse";
 
 import { Container, Row, Col } from "react-bootstrap";
 
@@ -11,10 +13,11 @@ import {
   StructDownloadButton,
   formatChemicalFormula,
   formatSpaceGroupSymbol,
-  getSymmetryInfo,
 } from "mc-react-library";
 
 import { McInfoBox } from "@mcxd/shared";
+
+import { OverviewIcon } from "../../assets/sectionIcons";
 
 import { AIIDA_REST_API_URL, EXPLORE_URL } from "../../common/restApiUtils";
 
@@ -153,16 +156,26 @@ function GeneralInfoBox({
 }
 
 const StructureViewerBox = ({ uuid, structureInfo }) => {
+  const crystalStructure = useMemo(
+    () =>
+      structureInfo?.aiidaAttributes
+        ? fromStructureData(structureInfo.aiidaAttributes)
+        : null,
+    [structureInfo],
+  );
+
   return (
     <>
       <div className="subsection-title">
         Structure <ExploreButton explore_url={EXPLORE_URL} uuid={uuid} />
       </div>
       <div className="structure-view-box subsection-shadow">
-        <StructureVisualizer
-          cifText={structureInfo.cif}
-          initSupercell={[3, 3, 1]}
-        />
+        {crystalStructure && (
+          <StructureVisualizer
+            structure={crystalStructure}
+            initSupercell={[3, 3, 1]}
+          />
+        )}
         <div className="download-button-container">
           <StructDownloadButton
             aiida_rest_url={AIIDA_REST_API_URL}
@@ -176,8 +189,11 @@ const StructureViewerBox = ({ uuid, structureInfo }) => {
 
 function OverviewSection({ params, loadedData }) {
   return (
-    <div>
-      <div className="section-heading">General overview</div>
+    <div id="overview" data-toc-section="overview">
+      <div className="section-heading">
+        <OverviewIcon size={22} className="section-heading-icon" />
+        General overview
+      </div>
       <Container fluid className="section-container">
         <Row>
           <Col className="flex-column">

@@ -10,6 +10,11 @@
   border-bottom: 1px solid #c4c4c4;
 }
 
+.section-heading-icon {
+  vertical-align: -4px;
+  margin-right: 8px;
+}
+
 .section-container {
   border-radius: 5px;
 }

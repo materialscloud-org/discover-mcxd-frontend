@@ -4,14 +4,10 @@ import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import remarkGfm from "remark-gfm";
-import remarkFootnotes from "remark-footnotes";
 
 import "katex/dist/katex.min.css";
-import { Container, Table } from "react-bootstrap";
+import { Table } from "react-bootstrap";
 import { McloudSpinner } from "mc-react-library";
-
-import { TitleAndLogo } from "@mcxd/shared";
-import MaterialsCloudHeader from "mc-react-header";
 
 import "../ContributionsPage/index.css";
 
@@ -58,7 +54,7 @@ function ContributionsIndexPage() {
         <>
           <div className="markdown-entry">
             <ReactMarkdown
-              remarkPlugins={[remarkMath, remarkGfm, remarkFootnotes]}
+              remarkPlugins={[remarkMath, remarkGfm]}
               rehypePlugins={[rehypeKatex]}
             >
               {markdown}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 
 import PageLayout from "../Layout";
 
@@ -10,11 +10,11 @@ import { getSymmetryInfo } from "mc-react-library";
 
 import { CitationBanner } from "@mcxd/shared";
 
+import { useQuery } from "@tanstack/react-query";
 import {
   loadMetadata,
   loadDetails,
   loadAiidaAttributes,
-  loadAiidaCif,
   loadDatasetIndex,
   loadTopologyDetails,
 } from "../common/restApiUtils";
@@ -30,6 +30,10 @@ import StructureSection from "./StructureSection";
 
 import TopologySection from "./TopologySection";
 
+import { MC2D_TOC_REGISTRY } from "./tocRegistry";
+
+import { recordVisit } from "../common/recentlyVisited";
+
 async function fetchCompoundData(id) {
   let datasetIndex = await loadDatasetIndex(id);
 
@@ -41,7 +45,6 @@ async function fetchCompoundData(id) {
   let structureUuid = details.general.structure_relaxed_uuid;
 
   let aiidaAttributes = await loadAiidaAttributes(structureUuid);
-  let structureCif = await loadAiidaCif(structureUuid);
 
   // fetch and bundle topology metadata.
   let topologyInfo = {};
@@ -53,38 +56,58 @@ async function fetchCompoundData(id) {
     metadata: metadata,
     details: details,
     symmetryInfo: symmetryInfo,
-    structureInfo: { aiidaAttributes: aiidaAttributes, cif: structureCif },
+    structureInfo: { aiidaAttributes: aiidaAttributes },
     datasetIndex: datasetIndex,
     topologyInfo: topologyInfo,
   };
 }
 
-function DetailPage() {
-  const [loadedData, setLoadedData] = useState(null);
+function useCompoundData(id) {
+  return useQuery({
+    queryKey: ["compound", id],
+    queryFn: () => fetchCompoundData(id),
+    enabled: !!id,
+  });
+}
 
+function DetailPage() {
   // for routing
   const navigate = useNavigate();
   const params = useParams(); // Route parameters
 
-  useEffect(() => {
-    setLoadedData(null);
-    fetchCompoundData(params.id).then((loadedData) => {
-      console.log("Loaded general data", loadedData);
-      setLoadedData(loadedData);
-    });
-  }, [params.id]);
+  const {
+    data: loadedData,
+    isPending: loading,
+    isError,
+  } = useCompoundData(params.id);
 
   let title = null;
-  let loading = loadedData == null;
-  if (!loading) {
+  if (!loading && !isError && loadedData) {
     title = formatTitle(loadedData.details.general.formula, params.id);
   }
 
+  // track recently visited entries for the landing page
+  useEffect(() => {
+    if (!loadedData?.details) return;
+    recordVisit({
+      id: params.id,
+      formula: loadedData.details.general.formula,
+      spacegroup: loadedData.symmetryInfo?.space_group_symbol,
+    });
+  }, [loadedData, params.id]);
+
   return (
-    <PageLayout breadcrumbs={[{ name: params.id, link: null }]}>
+    <PageLayout
+      breadcrumbs={[{ name: params.id, link: null }]}
+      tocRegistry={MC2D_TOC_REGISTRY}
+    >
       {loading ? (
         <div style={{ width: "150px", padding: "40px", margin: "0 auto" }}>
           <McloudSpinner />
+        </div>
+      ) : isError ? (
+        <div style={{ padding: "40px", margin: "0 auto", textAlign: "center" }}>
+          Failed to load data for {params.id}.
         </div>
       ) : (
         <>

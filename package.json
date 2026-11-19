@@ -17,6 +17,7 @@
     "preview:mc3d": "npm run preview --workspace=mc3d"
   },
   "devDependencies": {
+    "oxlint": "^1.86.0",
     "pixelmatch": "^7.2.0",
     "playwright": "^1.61.0"
   }

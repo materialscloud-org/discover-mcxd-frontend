@@ -2,38 +2,33 @@ import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import { Spinner } from "react-bootstrap";
 
+import { useQueryClient } from "@tanstack/react-query";
+
+import { loadXrdWavelength } from "../../common/fetchingUtils.js";
+
 const WAVELENGTHS = ["CuKa", "MoKa", "CrKa", "FeKa", "CoKa", "AgKa"];
 
-const S3_BASE_URL = "https://rgw.cscs.ch/matcloud:mc-discover-mcxd-public/mc3d";
+export default function BundleAndDownload({ method, id }) {
+  const queryClient = useQueryClient();
+  const [pending, setPending] = useState(false);
 
-export default function BundleAndDownload({ cache, setCache, method, id }) {
-  const [loading, setLoading] = useState(false);
-
-  const fetchWavelength = async (wl) => {
-    const url = `${S3_BASE_URL}/${method}_xrd/prod/${id}/${wl}.json.br`;
-
-    const res = await fetch(url);
-    return res.json();
-  };
-
+  // Fetch the remaining wavelengths on demand; the currently selected one
+  // is served from the react-query cache shared with the plot.
   const handleDownload = async () => {
-    setLoading(true);
-
+    setPending(true);
     try {
-      const missing = WAVELENGTHS.filter((wl) => !cache[wl]);
-
-      const results = await Promise.all(
-        missing.map(async (wl) => {
-          const data = await fetchWavelength(wl);
-          return [wl, data];
-        }),
+      const entries = await Promise.all(
+        WAVELENGTHS.map((wavelength) =>
+          queryClient.fetchQuery({
+            queryKey: ["xrd", method, id, wavelength],
+            queryFn: () => loadXrdWavelength({ method, id, wavelength }),
+          }),
+        ),
       );
 
-      const full = { ...cache };
-
-      for (const [wl, data] of results) {
-        full[wl] = data;
-      }
+      const full = Object.fromEntries(
+        WAVELENGTHS.map((wavelength, i) => [wavelength, entries[i]]),
+      );
 
       // download bundled dataset
       const blob = new Blob([JSON.stringify(full, null, 2)], {
@@ -48,11 +43,8 @@ export default function BundleAndDownload({ cache, setCache, method, id }) {
       a.click();
 
       URL.revokeObjectURL(url);
-
-      // update cache so UI stays in sync
-      setCache(full);
     } finally {
-      setLoading(false);
+      setPending(false);
     }
   };
 
@@ -61,10 +53,10 @@ export default function BundleAndDownload({ cache, setCache, method, id }) {
       size="sm"
       style={{ margin: "4px", padding: "2px 7px" }}
       onClick={handleDownload}
-      disabled={loading}
+      disabled={pending}
       title="Download full dataset"
     >
-      {loading ? (
+      {pending ? (
         <>
           <Spinner animation="border" size="sm" />
           <span className="visually-hidden">Loading...</span>
