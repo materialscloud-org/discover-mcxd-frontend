@@ -15,8 +15,9 @@ export const OverviewIcon = ({
     strokeLinecap="round"
     {...props}
   >
-    <path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z" />
-    <circle cx="12" cy="12" r="2.5" />
+    <circle cx="12" cy="12" r="9.5" />
+    <path d="M12 11v6" />
+    <circle cx="12" cy="7.5" r="1.2" fill={color} stroke="none" />
   </svg>
 );
 
@@ -37,9 +38,12 @@ export const StructureIcon = ({
     strokeLinecap="round"
     {...props}
   >
-    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-    <path d="M3.3 7l8.7 5 8.7-5" strokeLinejoin="round" />
-    <path d="M12 22V12" />
+    {/* unit cell wireframe, hidden edges dashed */}
+    <path
+      d="M4 8h12v12H4zM8 4h12v12h-4M4 8l4-4M16 8l4-4M16 20l4-4"
+      strokeLinejoin="round"
+    />
+    <path d="M8 4v12h8M8 16l-4 4" strokeDasharray="1.5 2" />
   </svg>
 );
 
@@ -60,9 +64,9 @@ export const ElectronicIcon = ({
     strokeLinecap="round"
     {...props}
   >
-    <path d="M4 4v16h16" />
-    <path d="M5 7Q12 15 19 7" />
-    <path d="M5 17Q12 9 19 17" />
+    {/* valence/conduction bands with dashed Fermi level */}
+    <path d="M2 6Q12 16 22 6M2 18Q12 8 22 18" />
+    <path d="M2 12h20" strokeDasharray="2 2" strokeWidth={strokeWidth * 0.75} />
   </svg>
 );
 
@@ -83,15 +87,14 @@ export const VibrationalIcon = ({
     strokeLinecap="round"
     {...props}
   >
-    <path d="M2 11v2" />
-    <path d="M4.5 8v8" />
-    <path d="M7 4v16" />
-    <path d="M9.5 8v8" />
-    <path d="M12 11v2" />
-    <path d="M14.5 8v8" />
-    <path d="M17 4v16" />
-    <path d="M19.5 8v8" />
-    <path d="M22 11v2" />
+    {/* two atoms joined by a spring */}
+    <circle cx="4.5" cy="12" r="3" fill={color} stroke="none" />
+    <circle cx="19.5" cy="12" r="3" fill={color} stroke="none" />
+    <path
+      d="M7.5 12l1-3.5 1.75 7 1.75-7 1.75 7 1.75-7 1 3.5"
+      strokeWidth={strokeWidth * 0.86}
+      strokeLinejoin="round"
+    />
   </svg>
 );
 

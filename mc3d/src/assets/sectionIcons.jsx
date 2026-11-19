@@ -15,9 +15,12 @@ export const VibrationalIcon = ({
     strokeLinecap="round"
     {...props}
   >
-    {/* wave packet: flat, a burst of oscillation, flat */}
+    {/* two atoms joined by a spring */}
+    <circle cx="4.5" cy="12" r="3" fill={color} stroke="none" />
+    <circle cx="19.5" cy="12" r="3" fill={color} stroke="none" />
     <path
-      d="M2 12h4.5Q7.25 9 8 12T9.8 12Q10.8 -2 11.8 12Q12.8 26 13.8 12Q14.7 4 15.6 12Q16.4 15.6 17.2 12H22"
+      d="M7.5 12l1-3.5 1.75 7 1.75-7 1.75 7 1.75-7 1 3.5"
+      strokeWidth={strokeWidth * 0.5}
       strokeLinejoin="round"
     />
   </svg>
@@ -40,8 +43,9 @@ export const OverviewIcon = ({
     strokeLinecap="round"
     {...props}
   >
-    <path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z" />
-    <circle cx="12" cy="12" r="2.5" />
+    <circle cx="12" cy="12" r="9.5" />
+    <path d="M12 11v6" />
+    <circle cx="12" cy="7.5" r="1.2" fill={color} stroke="none" />
   </svg>
 );
 
@@ -62,9 +66,12 @@ export const StructureIcon = ({
     strokeLinecap="round"
     {...props}
   >
-    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-    <path d="M3.3 7l8.7 5 8.7-5" strokeLinejoin="round" />
-    <path d="M12 22V12" />
+    {/* unit cell wireframe, hidden edges dashed */}
+    <path
+      d="M4 8h12v12H4zM8 4h12v12h-4M4 8l4-4M16 8l4-4M16 20l4-4"
+      strokeLinejoin="round"
+    />
+    <path d="M8 4v12h8M8 16l-4 4" strokeDasharray="1.5 2" />
   </svg>
 );
 
@@ -112,11 +119,14 @@ export const XrdIcon = ({
     strokeLinecap="round"
     {...props}
   >
-    {/* Bragg reflection: X-ray scattering off a lattice plane */}
-    <path d="M3 4.5l9 9 9-9M16 4.5h5v5" strokeLinejoin="round" />
+    {/* Bragg reflection: X-ray scattering off two lattice planes */}
+    <path d="M3 3.5l8 8 8-8M14 3.5h5v5" strokeLinejoin="round" />
     <g fill={color} stroke="none">
       {[3, 7.5, 12, 16.5, 21].map((x) => (
-        <circle key={x} cx={x} cy="16.8" r="1.5" />
+        <circle key={x} cx={x} cy="14.5" r="1.4" />
+      ))}
+      {[5.25, 9.75, 14.25, 18.75].map((x) => (
+        <circle key={x} cx={x} cy="19.5" r="1.4" />
       ))}
     </g>
   </svg>
@@ -145,7 +155,7 @@ export const SuperconductivityIcon = ({
     <path d="M15 13c.3-3 1.5-5.5 3.5-8" />
     <ellipse cx="12" cy="15.5" rx="8" ry="4" />
     <path d="M1 15.5h3M20 15.5h3" />
-    <g fill="#e03131" stroke="none">
+    <g fill={color} stroke="none">
       <rect x="10.75" y="10.25" width="2.5" height="2.5" rx="0.4" />
       <rect x="10.75" y="18.25" width="2.5" height="2.5" rx="0.4" />
     </g>
@@ -169,10 +179,13 @@ export const MechanicalIcon = ({
     strokeLinecap="round"
     {...props}
   >
-    <circle cx="12" cy="12" r="2.5" />
-    <path d="M9.5 12H4" />
-    <path d="M6.2 9.8L4 12l2.2 2.2" strokeLinejoin="round" />
-    <path d="M14.5 12h5.5" />
-    <path d="M17.8 9.8l2.2 2.2-2.2 2.2" strokeLinejoin="round" />
+    {/* loaded beam bending on two supports */}
+    <path d="M2 9.5q10 6 20 0" />
+    <path d="M12 2.5v7M10 7.5l2 2 2-2" strokeLinejoin="round" />
+    <path
+      d="M2.5 16.5l1.5-3 1.5 3zM18.5 16.5l1.5-3 1.5 3z"
+      fill={color}
+      strokeLinejoin="round"
+    />
   </svg>
 );

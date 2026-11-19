@@ -15,8 +15,9 @@
 }
 
 .mcxd-toc-list a {
-  display: block;
-  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+  padding: 8px 8px;
   border-radius: 4px;
   color: #495057;
   text-decoration: none;
@@ -37,8 +38,8 @@
 
 .mcxd-toc-icon {
   display: inline-flex;
+  flex-shrink: 0;
   margin-right: 6px;
-  vertical-align: -3px;
 }
 
 .mcxd-toc-icon svg {
@@ -46,7 +47,12 @@
   height: 20px;
 }
 
-/* Custom stroke icons follow the active link colour. */
+/* Custom icons follow the active link colour: strokes, plus any solid parts
+   drawn in the default grey (so the multicolour AiiDA logo is left alone). */
 .mcxd-toc-list a.active .mcxd-toc-icon svg {
   stroke: #0b5ed7;
+}
+
+.mcxd-toc-list a.active .mcxd-toc-icon [fill="#767676"] {
+  fill: #0b5ed7;
 }
