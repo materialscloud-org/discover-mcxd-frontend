@@ -1,5 +1,19 @@
 import "./index.css";
 
+// The apps use a fixed 968px viewport, so phones render zoomed out (~0.4x)
+// and the mobile menu becomes too small to tap. Expose the inverse zoom so
+// the CSS can scale the menu back to a normal physical size.
+if (typeof window !== "undefined" && window.visualViewport) {
+  const vv = window.visualViewport;
+  const update = () =>
+    document.documentElement.style.setProperty(
+      "--mcxd-fp-zoom",
+      Math.max(1, 1 / vv.scale),
+    );
+  vv.addEventListener("resize", update);
+  update();
+}
+
 export function BurgerIcon() {
   return (
     <span className="mcxd-fp-burger" aria-hidden="true">

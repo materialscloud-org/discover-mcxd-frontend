@@ -92,6 +92,9 @@
 
 .mcxd-fp-fab {
   left: 12px;
+  /* --mcxd-fp-zoom: set in index.jsx, >1 only when the page is zoomed out */
+  transform: scale(var(--mcxd-fp-zoom, 1));
+  transform-origin: bottom left;
 }
 
 /* Minimised: sit under the card's right edge, next to the content. */
@@ -132,10 +135,13 @@
 .mcxd-fp-panel {
   position: fixed;
   left: 12px;
-  bottom: 72px;
+  /* sit above the (scaled) fab; size limits are pre-divided by the scale */
+  bottom: calc(16px + 56px * var(--mcxd-fp-zoom, 1));
   z-index: 1030;
-  width: min(280px, calc(100vw - 24px));
-  max-height: 60vh;
+  width: min(280px, calc(100vw / var(--mcxd-fp-zoom, 1) - 24px));
+  max-height: calc(60vh / var(--mcxd-fp-zoom, 1));
+  transform: scale(var(--mcxd-fp-zoom, 1));
+  transform-origin: bottom left;
   overflow-y: auto;
   background: #fff;
   border: 1px solid #dee2e6;

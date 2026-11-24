@@ -161,6 +161,9 @@ function getColumnDefs(columns) {
         filter: "agTextColumnFilter",
         valueFormatter: textFormatter,
         pinned: "left",
+        // dragging the header out would hide the only link to the detail page
+        suppressMovable: true,
+        lockVisible: true,
         cellRenderer: idCellRenderer,
       });
     } else if (col["colType"] === "formula") {
